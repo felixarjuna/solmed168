@@ -14,7 +14,7 @@ import MenuCard from "./menu-card";
 import { setMenus } from "../menu";
 import { useRouter } from "next/navigation";
 import CartButton from "./cart-button";
-import { useCart } from "../cart/_hooks/useCart";
+import { useCart } from "../order/_hooks/useCart";
 import { IncrementalCache } from "next/dist/server/lib/incremental-cache";
 import CartMenuCard from "./cart-menu-card";
 

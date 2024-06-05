@@ -12,7 +12,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { CartItemExtended } from "~/app/cart/_hooks/useCart";
+import { CartItem, CartItemExtended } from "~/app/order/_hooks/useCart";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -27,7 +27,7 @@ export const productCategoryEnum = pgEnum("category", [
   "beverage",
   "snack",
 ]);
-export const product = createTable("product", {
+export const products = createTable("product", {
   productId: uuid("id").primaryKey(),
   price: integer("price"),
   category: productCategoryEnum("category"),
@@ -35,10 +35,11 @@ export const product = createTable("product", {
   updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
 
-export const order = createTable("order", {
+export type NewOrder = typeof orders.$inferInsert;
+export const orders = createTable("order", {
   orderId: serial("id").primaryKey(),
-  tableId: integer("table_id"),
+  tableId: integer("table_id").notNull(),
   orderDate: timestamp("order_date", { withTimezone: true }).defaultNow(),
-  totalAmount: decimal("total_amount"),
-  products: json("products").$type<CartItemExtended>().notNull(),
+  totalAmount: integer("total_amount").notNull(),
+  products: json("products").$type<CartItem[]>().notNull(),
 });

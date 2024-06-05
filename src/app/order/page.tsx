@@ -6,6 +6,8 @@ import MenuCard from "../_components/menu-card";
 import { useCart } from "./_hooks/useCart";
 import { Button } from "~/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import AddOrderButton from "../_components/add-order-button";
+import { NewOrder } from "~/server/db/schema";
 
 export default function Page() {
   const router = useRouter();
@@ -15,6 +17,12 @@ export default function Page() {
     (total, { product }) => total + product.price * product.amount,
     0,
   );
+
+  const order: NewOrder = {
+    tableId: 1,
+    products: items,
+    totalAmount: cartTotal,
+  };
 
   return (
     <main>
@@ -46,7 +54,7 @@ export default function Page() {
         </div>
       </section>
       <section className="fixed bottom-0 flex w-full items-center justify-center bg-neutral-100 p-4">
-        <CartButton text="Selesai" />
+        <AddOrderButton order={order} />
       </section>
     </main>
   );

@@ -14,7 +14,7 @@ export default function CartButton({ text }: CartButtonProps) {
   return (
     <Button
       className="flex w-full items-center gap-2"
-      onClick={() => router.push("/cart")}
+      onClick={() => router.push("/order")}
     >
       <ShoppingCart className="h-4 w-4" />
       <p>{text}</p>

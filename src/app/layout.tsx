@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
+import { Toaster } from "~/components/ui/toaster";
 
 export const metadata = {
   title: "SOLMED 168",
@@ -20,6 +21,7 @@ export default function RootLayout({
           <nav className="text-bold m-8 mb-0">SOLMED 168</nav>
           {children}
         </div>
+        <Toaster />
       </body>
     </html>
   );

@@ -4,7 +4,7 @@ import { Button, buttonVariants } from "~/components/ui/button";
 import { SetMenuType } from "../menu";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { useCart } from "../cart/_hooks/useCart";
+import { useCart } from "../order/_hooks/useCart";
 import { cn } from "~/lib/utils";
 
 interface MenuCardProps {
