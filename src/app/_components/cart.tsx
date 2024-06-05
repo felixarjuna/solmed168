@@ -1,7 +1,7 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import {
   Drawer,
   DrawerContent,
@@ -15,7 +15,7 @@ import { useCart } from "../order/_hooks/useCart";
 import CartMenuCard from "./cart-menu-card";
 
 export default function Cart() {
-  const { items, removeItem } = useCart();
+  const { items } = useCart();
   const numberOfItems = items.length;
 
   return (

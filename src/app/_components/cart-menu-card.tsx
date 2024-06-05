@@ -12,18 +12,19 @@ interface CartMenuCardProps {
 }
 
 export default function CartMenuCard({ menu, amount }: CartMenuCardProps) {
-  const { items, updateAmount, removeItem } = useCart();
+  const { updateAmount, removeItem } = useCart();
 
   const total = amount * menu.price;
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg bg-neutral-200/30 p-4">
-      <div className="flex flex-col">
+    <section className="flex flex-col gap-4 rounded-lg bg-neutral-200/30 p-4">
+      <section className="flex flex-col">
         <h1 className="text-left font-bold">{menu.name}</h1>
         <p className="text-wrap text-left text-xs">{menu.description}</p>
-        <div className="flex items-center justify-between">
+
+        <section className="flex items-center justify-between">
           <p className="mt-2 text-sm">Rp. {total}</p>
-          <div className="mt-1 flex items-center justify-end gap-2">
+          <p className="mt-1 flex items-center justify-end gap-2">
             <Button variant={"outline"} size={"icon"} className="h-6 w-6">
               <Minus
                 className="h-4 w-4"
@@ -48,9 +49,9 @@ export default function CartMenuCard({ menu, amount }: CartMenuCardProps) {
             >
               <Trash className="h-4 w-4" />
             </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </p>
+        </section>
+      </section>
+    </section>
   );
 }
