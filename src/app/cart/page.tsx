@@ -1,10 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import CartButton from "../_components/cart-button";
 import MenuCard from "../_components/menu-card";
 import { useCart } from "./_hooks/useCart";
+import { Button } from "~/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export default function Page() {
+  const router = useRouter();
   const { items } = useCart();
 
   const cartTotal = items.reduce(
@@ -15,8 +19,17 @@ export default function Page() {
   return (
     <main>
       <section className="m-4 flex flex-col gap-4 p-4">
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          className="gap-1 self-end"
+          onClick={() => router.back()}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Kembali</span>
+        </Button>
         <h3 className="font-bold">Pesanan #1</h3>
-        <div>
+        <div className="flex flex-col gap-2">
           {items.map((item) => (
             <MenuCard
               key={item.product.id}
