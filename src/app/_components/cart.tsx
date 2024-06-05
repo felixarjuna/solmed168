@@ -1,7 +1,7 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Drawer,
   DrawerContent,
@@ -10,12 +10,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
-import MenuCard from "./menu-card";
-import { setMenus } from "../menu";
-import { useRouter } from "next/navigation";
 import CartButton from "./cart-button";
 import { useCart } from "../order/_hooks/useCart";
-import { IncrementalCache } from "next/dist/server/lib/incremental-cache";
 import CartMenuCard from "./cart-menu-card";
 
 export default function Cart() {
@@ -25,10 +21,10 @@ export default function Cart() {
   return (
     <div className="absolute right-0 top-0">
       <Drawer>
-        <DrawerTrigger>
-          <Button variant={"outline"} size={"icon"}>
-            <ShoppingCart className="h-4 w-4" />
-          </Button>
+        <DrawerTrigger
+          className={buttonVariants({ size: "icon", variant: "outline" })}
+        >
+          <ShoppingCart className="h-4 w-4" />
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
@@ -42,6 +38,7 @@ export default function Cart() {
 
               {items.map((item) => (
                 <CartMenuCard
+                  key={item.product.id}
                   menu={item.product}
                   amount={item.product.amount}
                 />
