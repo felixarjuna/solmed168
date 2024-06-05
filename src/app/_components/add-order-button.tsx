@@ -15,12 +15,18 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
   return (
     <Button
       className="flex w-full items-center gap-2"
-      onClick={() => {
-        addOrder(order);
-        toast({
-          title: "Pesanan berhasil. ✅",
-          description: "Pesanan anda telah berhasil ditambahkan.",
-        });
+      onClick={async () => {
+        const res = await addOrder(order);
+        if (res == "successfull")
+          toast({
+            title: "Pesanan berhasil. ✅",
+            description: "Pesanan anda telah berhasil ditambahkan.",
+          });
+        else
+          toast({
+            title: "Pesanan gagal. ❌",
+            description: "Pesanan anda gagal ditambahkan. ",
+          });
       }}
     >
       <ShoppingCart className="h-4 w-4" />
