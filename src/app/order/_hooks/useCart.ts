@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ItemType } from "~/app/menu";
+import { calculateTotal } from "~/lib/utils";
 
 export type CartItemExtended = ItemType & {
   amount: number;
@@ -14,6 +15,7 @@ export type UpdateAmountMethod = "increment" | "decrement";
 
 type CartState = {
   readonly items: CartItem[];
+  readonly cartTotal: number;
   readonly addItem: (item: ItemType, startAmount?: number) => void;
   readonly removeItem: (itemId: string) => void;
   readonly clearCart: () => void;
@@ -29,6 +31,7 @@ export const useCart = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      cartTotal: 0,
       addItem: (product, amount) =>
         set((state) => {
           const index = state.items.findIndex(
@@ -42,13 +45,15 @@ export const useCart = create<CartState>()(
               product: { ...product, amount: amount ? amount : 1 },
             };
             const items = [...state.items, item];
-            return { items };
+            const total = calculateTotal(items);
+            return { items, cartTotal: total };
           }
 
           /* if index found, increase the amount of the same item in the cart */
           const items = [...state.items];
           items[index]!.product.amount += amount ? amount : 1;
-          return { items: items };
+          const total = calculateTotal(items);
+          return { items: items, cartTotal: total };
         }),
       removeItem: (id) =>
         set((state) => ({
