@@ -13,11 +13,9 @@ import {
 import CartButton from "./cart-button";
 import { useCart } from "../order/_hooks/useCart";
 import CartMenuCard from "./cart-menu-card";
+import React from "react";
 
 export default function Cart() {
-  const { items } = useCart();
-  const numberOfItems = items.length;
-
   return (
     <div className="absolute right-0 top-0">
       <Drawer>
@@ -27,27 +25,51 @@ export default function Cart() {
           <ShoppingCart className="h-4 w-4" />
         </DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>
-              Cart {numberOfItems > 0 ? `(${numberOfItems})` : null}
-            </DrawerTitle>
-            <DrawerDescription className="flex flex-col gap-4 py-4">
-              {numberOfItems === 0 ? (
-                <p>Belum ada barang dalam keranjang.</p>
-              ) : null}
-
-              {items.map((item) => (
-                <CartMenuCard
-                  key={item.product.id}
-                  menu={item.product}
-                  amount={item.product.amount}
-                />
-              ))}
-              <CartButton text="Lanjutkan" />
-            </DrawerDescription>
-          </DrawerHeader>
+          <CartContent />
         </DrawerContent>
       </Drawer>
     </div>
+  );
+}
+
+export function CartTriggerText() {
+  return (
+    <Drawer>
+      <DrawerTrigger>
+        <p className="text-sm underline underline-offset-2">Detail pesanan</p>
+      </DrawerTrigger>
+      <DrawerContent>
+        <CartContent />
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+export function CartContent() {
+  const { items } = useCart();
+  const numberOfItems = items.reduce(
+    (total, { product }) => total + product.amount,
+    0,
+  );
+
+  return (
+    <DrawerHeader>
+      <DrawerTitle>
+        Keranjang {numberOfItems > 0 ? `(${numberOfItems})` : null}
+      </DrawerTitle>
+      <DrawerDescription className="flex flex-col gap-4 py-4">
+        {numberOfItems === 0 ? <p>Belum ada barang dalam keranjang.</p> : null}
+
+        {items.map((item) => (
+          <CartMenuCard
+            key={item.product.id}
+            menu={item.product}
+            amount={item.product.amount}
+          />
+        ))}
+
+        <CartButton text="Lanjut" />
+      </DrawerDescription>
+    </DrawerHeader>
   );
 }

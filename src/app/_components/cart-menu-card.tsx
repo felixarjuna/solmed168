@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "~/components/ui/button";
 import { SetMenuType } from "../menu";
 import { Minus, Plus, Trash } from "lucide-react";
