@@ -3,12 +3,16 @@
 
 import { sql } from "drizzle-orm";
 import {
-  index,
+  decimal,
+  integer,
+  json,
+  pgEnum,
   pgTableCreator,
   serial,
   timestamp,
-  varchar,
+  uuid,
 } from "drizzle-orm/pg-core";
+import { CartItemExtended } from "~/app/cart/_hooks/useCart";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -16,19 +20,25 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `solmed_${name}`);
+export const createTable = pgTableCreator((name) => `solmed168_${name}`);
 
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true }),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  })
-);
+export const productCategoryEnum = pgEnum("category", [
+  "food",
+  "beverage",
+  "snack",
+]);
+export const product = createTable("product", {
+  productId: uuid("id").primaryKey(),
+  price: integer("price"),
+  category: productCategoryEnum("category"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }),
+});
+
+export const order = createTable("order", {
+  orderId: serial("id").primaryKey(),
+  tableId: integer("table_id"),
+  orderDate: timestamp("order_date", { withTimezone: true }).defaultNow(),
+  totalAmount: decimal("total_amount"),
+  products: json("products").$type<CartItemExtended>().notNull(),
+});
