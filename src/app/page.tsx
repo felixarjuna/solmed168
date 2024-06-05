@@ -3,6 +3,8 @@ import { beverages, setMenus, snacks } from "./menu";
 import Cart from "./_components/cart";
 import CartButton from "./_components/cart-button";
 import MenuCard from "./_components/menu-card";
+import { ShoppingBag } from "lucide-react";
+import OrderSummary from "./_components/order-summary";
 
 export default function HomePage() {
   return (
@@ -40,9 +42,7 @@ export default function HomePage() {
           </Tabs>
         </section>
       </section>
-      <section className="fixed bottom-0 flex w-full items-center justify-center bg-neutral-100 p-4">
-        <CartButton text="Lanjutkan" />
-      </section>
+      <OrderSummary />
     </main>
   );
 }

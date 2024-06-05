@@ -1,22 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import CartButton from "../_components/cart-button";
 import MenuCard from "../_components/menu-card";
 import { useCart } from "./_hooks/useCart";
 import { Button } from "~/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AddOrderButton from "../_components/add-order-button";
 import { NewOrder } from "~/server/db/schema";
+import { calculateTotal } from "~/lib/utils";
 
 export default function Page() {
   const router = useRouter();
-  const { items } = useCart();
 
-  const cartTotal = items.reduce(
-    (total, { product }) => total + product.price * product.amount,
-    0,
-  );
+  const { items, cartTotal } = useCart();
 
   const order: NewOrder = {
     tableId: 1,
@@ -48,7 +44,7 @@ export default function Page() {
           ))}
         </div>
 
-        <div className="flex items-center justify-between rounded-xl bg-neutral-100 p-4">
+        <div className="flex items-center justify-between rounded-lg bg-neutral-100 p-4">
           <p className="text-sm font-bold">Total</p>
           <span>Rp. {cartTotal}</span>
         </div>
