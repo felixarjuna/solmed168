@@ -22,3 +22,7 @@ export function today() {
   const today = DateTime.now();
   return today.toLocaleString(DateTime.DATE_MED);
 }
+
+export function formatDate(date: Date) {
+  return DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_MED);
+}
