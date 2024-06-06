@@ -30,7 +30,8 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 ## To Do
 
-- [ ] Handle server actions state (loading, success, error)
+- [x] Handle server actions state (loading, success, error)
 - [ ] Auto-generate order id
-- [ ] Fix order page design
+- [x] Redesign order page
 - [ ] Add alacarte
+- [ ] Add today's order page

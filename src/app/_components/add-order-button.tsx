@@ -42,7 +42,7 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
       onClick={() => execute(order)}
       disabled={status === "executing"}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex h-4 items-center gap-2">
         {status === "executing" ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
