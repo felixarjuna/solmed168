@@ -20,6 +20,17 @@ export default function MenuCard({
   isAdjustable,
   hasCartButton,
 }: MenuCardProps) {
+  /** state to handle timeout when adding item to the cart */
+  const [isAdded, setIsAdded] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsAdded(false);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [isAdded]);
+
+  /** state to handle the amount of items */
   const [amount, setAmount] = React.useState<number>(
     itemAmount ? itemAmount : 1,
   );
@@ -70,9 +81,13 @@ export default function MenuCard({
         <Button
           variant={"default"}
           size={"sm"}
-          onClick={() => addItem(menu, amount)}
+          onClick={() => {
+            addItem(menu, amount);
+            setIsAdded(true);
+          }}
+          disabled={isAdded}
         >
-          Tambah
+          {isAdded ? "Berhasil di tambahkan! ✅" : "Tambah"}
         </Button>
       ) : null}
     </div>

@@ -1,9 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { beverages, setMenus, snacks } from "./menu";
 import Cart from "./_components/cart";
-import CartButton from "./_components/cart-button";
 import MenuCard from "./_components/menu-card";
-import { ShoppingBag } from "lucide-react";
 import OrderSummary from "./_components/order-summary";
 
 export default function HomePage() {
