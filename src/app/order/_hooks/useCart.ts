@@ -61,7 +61,7 @@ export const useCart = create<CartState>()(
           const total = calculateTotal(items);
           return { items, cartTotal: total };
         }),
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], cartTotal: 0 }),
       // updateAmount: (product, method, startAmount) =>
       //   set((state) => {
       //     /** index validation.
