@@ -39,7 +39,7 @@ export default async function Page() {
             <p>{formatDate(order.orderDate!)}</p>
             <div className="my-4">
               {order.products.map(({ product }) => (
-                <div className="grid grid-cols-10 gap-2">
+                <div className="grid grid-cols-10 gap-2" key={product.id}>
                   <p className="col-span-1">{product.amount}x</p>
                   <div className="col-span-6 flex flex-col gap-x-2">
                     <p>{product.name}</p>
