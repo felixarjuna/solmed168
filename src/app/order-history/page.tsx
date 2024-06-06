@@ -34,7 +34,7 @@ export default async function Page() {
       <h1 className="font-bold">Riwayat Pesanan</h1>
       <Suspense fallback={<Loader2 />}>
         {orders.map((order) => (
-          <div className="font-mono text-sm">
+          <div className="font-mono text-sm" key={order.orderId}>
             <h3>Order Id #{order.orderId}</h3>
             <p>{formatDate(order.orderDate!)}</p>
             <div className="my-4">
