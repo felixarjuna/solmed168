@@ -14,7 +14,7 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
   const { toast } = useToast();
   return (
     <Button
-      className="flex w-full items-center gap-2"
+      className="flex w-fit items-center gap-2"
       onClick={async () => {
         const res = await addOrder(order);
         if (res == "successfull")
