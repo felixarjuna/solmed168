@@ -16,13 +16,24 @@ import CartMenuCard from "./cart-menu-card";
 import React from "react";
 
 export default function Cart() {
+  const { items } = useCart();
+  const numberOfItems = items.reduce(
+    (total, { product }) => total + product.amount,
+    0,
+  );
+
   return (
     <div className="absolute right-0 top-0">
       <Drawer>
         <DrawerTrigger
           className={buttonVariants({ size: "icon", variant: "outline" })}
         >
-          <ShoppingCart className="h-4 w-4" />
+          <div className="relative">
+            <ShoppingCart className="h-4 w-4" />
+            <span className="absolute -top-5 left-4 flex h-6 w-6 items-center justify-center rounded-full border bg-neutral-100/90 text-xs">
+              {numberOfItems}
+            </span>
+          </div>
         </DrawerTrigger>
         <DrawerContent>
           <CartContent />
