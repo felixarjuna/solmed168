@@ -1,34 +1,32 @@
-export type SetMenuType = {
+export type ProductType = {
   id: string;
   name: string;
   price: number;
+  type?: "bakso" | "mie" | "à la carte";
   description?: string;
 };
 
-export type ItemType = {
-  id: string;
-  name: string;
-  price: number;
-};
-
-export const setMenus: SetMenuType[] = [
+export const setMenus: ProductType[] = [
   {
     id: "1",
     name: "Bakso Campur (Isi 6)",
     price: 20000,
     description: "3 Bakso Halus/Kasar, Siomay, Tahu Bakso, Gorengan, Suun",
+    type: "bakso",
   },
   {
     id: "2",
     name: "Bakso Campur (Isi 8)",
     price: 25000,
     description: "5 Bakso Halus/Kasar, Siomay, Tahu Bakso, Gorenganm, Suun",
+    type: "bakso",
   },
   {
     id: "3",
     name: "Bakso Polos (Isi 9)",
     price: 25000,
     description: "9 Bakso Halus/Kasar, Suun",
+    type: "bakso",
   },
   {
     id: "4",
@@ -36,62 +34,84 @@ export const setMenus: SetMenuType[] = [
     price: 25000,
     description:
       "2 Siomay, 2 Tahu Bakso, 3 Gorengan atau 8 Gorengan atau Bebas Pilih",
+    type: "bakso",
   },
-  { id: "5", name: "Mie ayam pangsit", price: 23000, description: undefined },
-  { id: "6", name: "Mie ayam bakso", price: 26000, description: undefined },
+  {
+    id: "5",
+    name: "Mie ayam pangsit",
+    price: 23000,
+    description: undefined,
+    type: "mie",
+  },
+  {
+    id: "6",
+    name: "Mie ayam bakso",
+    price: 26000,
+    description: undefined,
+    type: "mie",
+  },
   {
     id: "7",
     name: "Mie ayam pangsit bakso",
     price: 28000,
     description: undefined,
+    type: "mie",
   },
   {
     id: "8",
     name: "Pangsit goreng/kuah (Isi 10)",
     price: 26000,
     description: undefined,
+    type: "mie",
   },
 ];
 
-export const alacarte: ItemType[] = [
+export const alacarte: ProductType[] = [
   {
     id: "9",
     name: "Bakso Halus/Kasar",
     price: 3000,
+    type: "à la carte",
   },
   {
     id: "10",
     name: "Gorengan Panjang",
     price: 3500,
+    type: "à la carte",
   },
   {
     id: "11",
     name: "Pangsit Goreng",
     price: 3000,
+    type: "à la carte",
   },
   {
     id: "12",
     name: "Bakwan Goreng",
     price: 5000,
+    type: "à la carte",
   },
   {
     id: "13",
     name: "Siomay",
     price: 4000,
+    type: "à la carte",
   },
   {
     id: "14",
     name: "Tahu Bakso",
     price: 4000,
+    type: "à la carte",
   },
   {
     id: "15",
     name: "Nasi Putih",
     price: 6000,
+    type: "à la carte",
   },
 ];
 
-export const snacks: ItemType[] = [
+export const snacks: ProductType[] = [
   {
     id: "16",
     name: "Pisang Goreng",
@@ -99,7 +119,7 @@ export const snacks: ItemType[] = [
   },
 ];
 
-export const beverages: ItemType[] = [
+export const beverages: ProductType[] = [
   {
     id: "17",
     name: "Es Teh Manis",

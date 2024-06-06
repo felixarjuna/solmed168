@@ -1,14 +1,14 @@
 "use client";
 
 import { Button, buttonVariants } from "~/components/ui/button";
-import { SetMenuType } from "../menu";
+import { ProductType } from "../menu";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
 import { useCart } from "../order/_hooks/useCart";
 import { cn, toRp } from "~/lib/utils";
 
 interface MenuCardProps {
-  readonly menu: SetMenuType;
+  readonly menu: ProductType;
   readonly amount?: number;
   readonly isAdjustable?: boolean;
   readonly hasCartButton?: boolean;

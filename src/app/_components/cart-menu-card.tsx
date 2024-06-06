@@ -1,12 +1,12 @@
 import { Button } from "~/components/ui/button";
-import { SetMenuType } from "../menu";
+import { ProductType } from "../menu";
 import { Minus, Plus, Trash } from "lucide-react";
 import React from "react";
 import { useCart } from "../order/_hooks/useCart";
 import { toRp } from "~/lib/utils";
 
 interface CartMenuCardProps {
-  readonly menu: SetMenuType;
+  readonly menu: ProductType;
   readonly amount: number;
 }
 

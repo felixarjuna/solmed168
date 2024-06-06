@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { ItemType } from "~/app/menu";
+import { ProductType } from "~/app/menu";
 import { calculateTotal } from "~/lib/utils";
 
-export type CartItemExtended = ItemType & {
+export type CartItemExtended = ProductType & {
   amount: number;
 };
 
@@ -16,7 +16,7 @@ export type UpdateAmountMethod = "increment" | "decrement";
 type CartState = {
   readonly items: CartItem[];
   readonly cartTotal: number;
-  readonly addItem: (item: ItemType, startAmount?: number) => void;
+  readonly addItem: (item: ProductType, startAmount?: number) => void;
   readonly removeItem: (itemId: string) => void;
   readonly clearCart: () => void;
   readonly updateAmount: (itemId: string, method: UpdateAmountMethod) => void;
