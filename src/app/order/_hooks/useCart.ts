@@ -56,9 +56,11 @@ export const useCart = create<CartState>()(
           return { items: items, cartTotal: total };
         }),
       removeItem: (id) =>
-        set((state) => ({
-          items: state.items.filter((item) => item.product.id !== id),
-        })),
+        set((state) => {
+          const items = state.items.filter((item) => item.product.id !== id);
+          const total = calculateTotal(items);
+          return { items, cartTotal: total };
+        }),
       clearCart: () => set({ items: [] }),
       // updateAmount: (product, method, startAmount) =>
       //   set((state) => {
@@ -96,7 +98,9 @@ export const useCart = create<CartState>()(
               1,
               items[index]!.product.amount - 1,
             );
-          return { items: items };
+
+          const total = calculateTotal(items);
+          return { items: items, cartTotal: total };
         }),
     }),
     {
