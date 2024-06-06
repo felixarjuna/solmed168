@@ -1,11 +1,22 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { beverages, setMenus, snacks } from "./menu";
+import { ProductType, alacarte, beverages, setMenus, snacks } from "./menu";
 import Cart from "./_components/cart";
 import MenuCard from "./_components/menu-card";
 import OrderSummary from "./_components/order-summary";
 import OrderHistoryButton from "./_components/order-history-button";
+import _ from "lodash";
+
+type NewType = "bakso" | "mie" | "à la carte" | undefined;
 
 export default function HomePage() {
+  const foods = [...setMenus, ...alacarte];
+  const groupedFoods = new Map<NewType, ProductType[]>();
+  foods.forEach((item) => {
+    const category = item.type;
+    if (!groupedFoods.has(category)) groupedFoods.set(category, []);
+    groupedFoods.get(category)?.push(item);
+  });
+
   return (
     <main>
       <section className="flex h-screen flex-col gap-4 p-8">
@@ -22,8 +33,20 @@ export default function HomePage() {
             </TabsList>
             <TabsContent value="foods">
               <div className="mb-12 flex flex-col gap-4">
-                {setMenus.map((menu, i) => (
-                  <MenuCard menu={menu} key={i} isAdjustable hasCartButton />
+                {Array.from(groupedFoods).map(([key, values]) => (
+                  <div className="flex flex-col gap-2">
+                    <h1 className="font-bold ">{_.startCase(key)}</h1>
+                    <div className="flex flex-col gap-4">
+                      {values.map((food) => (
+                        <MenuCard
+                          menu={food}
+                          key={food.id}
+                          isAdjustable
+                          hasCartButton
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </TabsContent>
