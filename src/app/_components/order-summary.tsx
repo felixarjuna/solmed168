@@ -14,7 +14,7 @@ export default function OrderSummary() {
   );
 
   return (
-    <section className="F fixed bottom-0 flex w-full items-center justify-between rounded-lg bg-neutral-100 p-4">
+    <section className="fixed bottom-0 flex w-full items-center justify-between rounded-lg bg-neutral-100 p-4">
       <div className="flex items-center gap-3 text-sm">
         <div className="relative">
           <ShoppingBag />
