@@ -3,11 +3,17 @@ import { beverages, setMenus, snacks } from "./menu";
 import Cart from "./_components/cart";
 import MenuCard from "./_components/menu-card";
 import OrderSummary from "./_components/order-summary";
+import { ScrollText } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import OrderHistoryButton from "./_components/order-history-button";
 
 export default function HomePage() {
   return (
     <main>
-      <section className="flex h-screen flex-col p-8">
+      <section className="flex h-screen flex-col gap-4 p-8">
+        <div className="flex self-end">
+          <OrderHistoryButton />
+        </div>
         <section className="relative pb-12">
           <Cart />
           <Tabs defaultValue="foods">

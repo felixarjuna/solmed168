@@ -9,6 +9,7 @@ import AddOrderButton from "../_components/add-order-button";
 import { NewOrder } from "~/server/db/schema";
 import { toRp, today } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
+import BackButton from "../_components/back-button";
 
 export default function Page() {
   const router = useRouter();
@@ -28,15 +29,7 @@ export default function Page() {
   return (
     <main>
       <section className="m-4 flex flex-col gap-4 p-4">
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          className="gap-1 self-end"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Kembali</span>
-        </Button>
+        <BackButton />
 
         <div className="flex items-center gap-4">
           <div className="w-fit rounded-full bg-neutral-100 p-2">
