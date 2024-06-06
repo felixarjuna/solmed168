@@ -5,7 +5,7 @@ import { SetMenuType } from "../menu";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
 import { useCart } from "../order/_hooks/useCart";
-import { cn } from "~/lib/utils";
+import { cn, toRp } from "~/lib/utils";
 
 interface MenuCardProps {
   readonly menu: SetMenuType;
@@ -44,7 +44,7 @@ export default function MenuCard({
         <h1 className="font-bold">{menu.name}</h1>
         <p className="text-wrap text-xs">{menu.description}</p>
         <div className="flex items-center justify-between">
-          <p className="mt-2 text-sm">Rp. {total}</p>
+          <p className="mt-2 text-sm">{toRp(total)}</p>
           <div className="mt-1 flex items-center justify-end gap-2">
             {isAdjustable ? (
               <>

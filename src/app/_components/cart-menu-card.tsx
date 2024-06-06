@@ -3,6 +3,7 @@ import { SetMenuType } from "../menu";
 import { Minus, Plus, Trash } from "lucide-react";
 import React from "react";
 import { useCart } from "../order/_hooks/useCart";
+import { toRp } from "~/lib/utils";
 
 interface CartMenuCardProps {
   readonly menu: SetMenuType;
@@ -21,7 +22,7 @@ export default function CartMenuCard({ menu, amount }: CartMenuCardProps) {
         <p className="text-wrap text-left text-xs">{menu.description}</p>
 
         <section className="flex items-center justify-between">
-          <p className="mt-2 text-sm">Rp. {total}</p>
+          <p className="mt-2 text-sm">{toRp(total)}</p>
           <p className="mt-1 flex items-center justify-end gap-2">
             <Button variant={"outline"} size={"icon"} className="h-6 w-6">
               <Minus

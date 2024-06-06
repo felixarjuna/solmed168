@@ -3,8 +3,6 @@ import { beverages, setMenus, snacks } from "./menu";
 import Cart from "./_components/cart";
 import MenuCard from "./_components/menu-card";
 import OrderSummary from "./_components/order-summary";
-import { ScrollText } from "lucide-react";
-import { Button } from "~/components/ui/button";
 import OrderHistoryButton from "./_components/order-history-button";
 
 export default function HomePage() {
