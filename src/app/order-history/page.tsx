@@ -1,12 +1,15 @@
 import { db } from "~/server/db";
 import BackButton from "../_components/back-button";
 import { Suspense } from "react";
-import { Divide, Loader2, PiggyBank, ShoppingBag } from "lucide-react";
+import { Loader2, PiggyBank, ShoppingBag } from "lucide-react";
 import { formatDate, toRp, today } from "~/lib/utils";
 import { orders } from "~/server/db/schema";
 import { and, gt, lt } from "drizzle-orm";
 import { DateTime } from "luxon";
 import { Separator } from "~/components/ui/separator";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 /** method to return all today orders */
 async function getOrders() {
