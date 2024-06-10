@@ -36,29 +36,37 @@ export default async function Page() {
       <BackButton />
       <h1 className="font-bold">Riwayat Pesanan</h1>
       <Suspense fallback={<Loader2 />}>
-        {orders.map((order) => (
-          <div className="font-mono text-sm" key={order.orderId}>
-            <h3>Order Id #{order.orderId}</h3>
-            <p>{formatDate(order.orderDate!)}</p>
-            <div className="my-4">
-              {order.products.map(({ product }) => (
-                <div className="grid grid-cols-10 gap-2" key={product.id}>
-                  <p className="col-span-1">{product.amount}x</p>
-                  <div className="col-span-6 flex flex-col gap-x-2">
-                    <p>{product.name}</p>
-                    <p className="text-xs">{toRp(product.price)}</p>
+        {orders.length > 0 ? (
+          orders.map((order) => (
+            <div className="font-mono text-sm" key={order.orderId}>
+              <h3>Order Id #{order.orderId}</h3>
+              <p>{formatDate(order.orderDate!)}</p>
+              <div className="my-4">
+                {order.products.map(({ product }) => (
+                  <div className="grid grid-cols-10 gap-2" key={product.id}>
+                    <p className="col-span-1">{product.amount}x</p>
+                    <div className="col-span-6 flex flex-col gap-x-2">
+                      <p>{product.name}</p>
+                      <p className="text-xs">{toRp(product.price)}</p>
+                    </div>
+                    <p className="col-span-3 text-right">
+                      {toRp(product.price * product.amount)}
+                    </p>
                   </div>
-                  <p className="col-span-3 text-right">
-                    {toRp(product.price * product.amount)}
-                  </p>
-                </div>
-              ))}
-              <p className="text-right font-bold">{toRp(order.totalAmount)}</p>
-            </div>
+                ))}
+                <p className="text-right font-bold">
+                  {toRp(order.totalAmount)}
+                </p>
+              </div>
 
-            <Separator className="mt-3" />
+              <Separator className="mt-3" />
+            </div>
+          ))
+        ) : (
+          <div>
+            <p>Belum ada pesanan tercatat di hari ini.</p>
           </div>
-        ))}
+        )}
 
         <section className="fixed bottom-0 -mx-8 flex w-full items-center justify-between bg-neutral-100 p-4">
           <div className="relative flex items-center gap-2">
