@@ -30,7 +30,7 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
   const router = useRouter();
 
   const getIconFromServingMethod = (method: ServingMethodType) => {
-    if (method === "dine-in") return <HandPlatter className="h-4 w-4" />;
+    if (method === "dine_in") return <HandPlatter className="h-4 w-4" />;
     if (method === "takeaway") return <Utensils className="h-4 w-4" />;
   };
   const { onChangeServingMethod } = useClientState();

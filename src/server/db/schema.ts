@@ -34,8 +34,11 @@ export const products = createTable("product", {
 });
 
 export type NewOrder = typeof orders.$inferInsert;
-const servingMethodTypeEnum = pgEnum("serving_type", ["dine_in", "takeaway"]);
-const paymentMethodTypeEnum = pgEnum("payment_type", [
+export const servingMethodEnum = pgEnum("serving_method", [
+  "dine_in",
+  "takeaway",
+]);
+export const paymentMethodEnum = pgEnum("payment_method", [
   "cash",
   "qris",
   "transfer",
@@ -46,6 +49,6 @@ export const orders = createTable("order", {
   orderDate: timestamp("order_date", { withTimezone: true }).defaultNow(),
   totalAmount: integer("total_amount").notNull(),
   products: json("products").$type<CartItem[]>().notNull(),
-  paymentMethod: paymentMethodTypeEnum("payment_method"),
-  servingMethod: servingMethodTypeEnum("serving_type"),
+  paymentMethod: paymentMethodEnum("payment_method"),
+  servingMethod: servingMethodEnum("serving_method"),
 });

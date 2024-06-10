@@ -1,5 +1,5 @@
 {
-  "id": "e28ab7d9-abbb-4ccf-b9d9-71a09f5be515",
+  "id": "d4457e61-6af2-42e2-a65f-316ac0809c69",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -18,7 +18,7 @@
           "name": "table_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "order_date": {
           "name": "order_date",
@@ -29,15 +29,29 @@
         },
         "total_amount": {
           "name": "total_amount",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "products": {
           "name": "products",
           "type": "json",
           "primaryKey": false,
           "notNull": true
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "payment_method",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "serving_method": {
+          "name": "serving_method",
+          "type": "serving_method",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -89,6 +103,15 @@
     }
   },
   "enums": {
+    "public.payment_method": {
+      "name": "payment_method",
+      "schema": "public",
+      "values": [
+        "cash",
+        "qris",
+        "transfer"
+      ]
+    },
     "public.category": {
       "name": "category",
       "schema": "public",
@@ -96,6 +119,14 @@
         "food",
         "beverage",
         "snack"
+      ]
+    },
+    "public.serving_method": {
+      "name": "serving_method",
+      "schema": "public",
+      "values": [
+        "dine_in",
+        "takeaway"
       ]
     }
   },

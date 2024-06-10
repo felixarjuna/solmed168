@@ -12,7 +12,7 @@ type ClientState = {
 export const useClientState = create<ClientState>()(
   persist(
     (set) => ({
-      servingMethod: "dine-in",
+      servingMethod: "dine_in",
       paymentMethod: "cash",
       onChangeServingMethod: (method: ServingMethodType) =>
         set({ servingMethod: method }),

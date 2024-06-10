@@ -63,8 +63,8 @@ export default function PayButton({ order, onPrintInvoice }: PayButtonProps) {
    * 3. print order invoice
    */
   const onClickPaymentMethod = (method: PaymentMethodType) => {
-    console.log(method);
-    execute(order);
+    const _order = { ...order, paymentMethod: method };
+    execute(_order);
     onPrintInvoice();
   };
 

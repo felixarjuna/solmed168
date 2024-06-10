@@ -21,13 +21,6 @@ export default function Page() {
     0,
   );
 
-  /** Add new order. Table ID is now default to 1. */
-  const order: NewOrder = {
-    tableId: 1,
-    products: items,
-    totalAmount: cartTotal,
-  };
-
   /** Define component to be referenced for invoice printing */
   const [isPrinting, setIsPrinting] = React.useState<boolean>(false);
   const printRef = React.useRef(null);
@@ -60,8 +53,16 @@ export default function Page() {
   const { servingMethod } = useClientState();
 
   const getTextFromServingMethod = (method: ServingMethodType) => {
-    if (method === "dine-in") return "Dine in";
+    if (method === "dine_in") return "Dine in";
     if (method === "takeaway") return "Takeaway";
+  };
+
+  /** Add new order. Table ID is now default to 1. */
+  const order: NewOrder = {
+    tableId: 1,
+    products: items,
+    totalAmount: cartTotal,
+    servingMethod: servingMethod,
   };
 
   return (
