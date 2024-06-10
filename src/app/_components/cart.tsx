@@ -67,8 +67,9 @@ export function CartContent() {
       <DrawerTitle>
         Keranjang {numberOfItems > 0 ? `(${numberOfItems})` : null}
       </DrawerTitle>
+
       <DrawerDescription className="flex flex-col gap-4 py-4">
-        {numberOfItems === 0 ? <p>Belum ada barang dalam keranjang.</p> : null}
+        {numberOfItems === 0 ? "Belum ada barang dalam keranjang." : null}
 
         {items.map((item) => (
           <CartMenuCard
