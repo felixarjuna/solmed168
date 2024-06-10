@@ -8,9 +8,11 @@ import { toRp, today } from "~/lib/utils";
 import { type NewOrder } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import Invoice, { InvoiceContent } from "../_components/invoice";
-import PayButton from "../_components/pay-button";
+import PayButton from "../_components/payment-method-button";
 import ViewReceiptButton from "../_components/view-receipt-button";
+import { type ServingMethodType } from "../menu";
 import { useCart } from "./_hooks/useCart";
+import { useClientState } from "./_hooks/useClientState";
 
 export default function Page() {
   const { items, cartTotal } = useCart();
@@ -55,6 +57,13 @@ export default function Page() {
     onPrint(null, () => printRef.current);
   };
 
+  const { servingMethod } = useClientState();
+
+  const getTextFromServingMethod = (method: ServingMethodType) => {
+    if (method === "dine-in") return "Dine in";
+    if (method === "takeaway") return "Takeaway";
+  };
+
   return (
     <main className="z-0">
       <section className="m-4 flex flex-col gap-4 p-4">
@@ -65,7 +74,9 @@ export default function Page() {
             <HandPlatter className="h-4 w-4" />
           </div>
           <div className="flex flex-col">
-            <p className="text-sm">Dine in.</p>
+            <p className="text-sm">
+              {getTextFromServingMethod(servingMethod)}.
+            </p>
             <p className="text-xs font-bold">{today()}</p>
           </div>
         </div>
