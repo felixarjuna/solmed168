@@ -6,9 +6,9 @@ import { useReactToPrint } from "react-to-print";
 import { Separator } from "~/components/ui/separator";
 import { toRp, today } from "~/lib/utils";
 import { type NewOrder } from "~/server/db/schema";
-import PayButton from "../_components/add-order-button";
 import BackButton from "../_components/back-button";
 import Invoice, { InvoiceContent } from "../_components/invoice";
+import PayButton from "../_components/pay-button";
 import ViewReceiptButton from "../_components/view-receipt-button";
 import { useCart } from "./_hooks/useCart";
 

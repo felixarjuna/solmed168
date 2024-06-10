@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, ShoppingCart } from "lucide-react";
+import { Banknote, Loader2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
@@ -13,7 +13,7 @@ interface AddOrderButtonProps {
   readonly order: NewOrder;
 }
 
-export default function AddOrderButton({ order }: AddOrderButtonProps) {
+export default function PayButton({ order }: AddOrderButtonProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { clearCart } = useCart();
@@ -46,9 +46,9 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
         {status === "executing" ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <ShoppingCart className="h-4 w-4" />
+          <Banknote className="h-4 w-4" />
         )}
-        <p>Selesai</p>
+        <p>Bayar</p>
       </div>
     </Button>
   );
