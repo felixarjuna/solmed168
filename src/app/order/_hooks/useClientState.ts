@@ -5,9 +5,11 @@ import { type PaymentMethodType, type ServingMethodType } from "~/app/menu";
 type ClientState = {
   readonly servingMethod: ServingMethodType;
   readonly paymentMethod: PaymentMethodType;
+  readonly onChangeServingMethod: (method: ServingMethodType) => void;
+  readonly onChangePaymentMethod: (method: PaymentMethodType) => void;
 };
 
-export const useServingMethod = create<ClientState>()(
+export const useClientState = create<ClientState>()(
   persist(
     (set) => ({
       servingMethod: "dine-in",
