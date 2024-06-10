@@ -199,3 +199,6 @@ export const beverages: ProductType[] = [
 
 export type PaymentMethodType = "cash" | "qris" | "transfer";
 export const paymentMethods: PaymentMethodType[] = ["cash", "qris", "transfer"];
+
+export type ServingMethodType = "dine-in" | "takeaway";
+export const servingMethods: ServingMethodType[] = ["dine-in", "takeaway"];
