@@ -196,3 +196,6 @@ export const beverages: ProductType[] = [
   { id: "40", name: "Es Milo", price: 12000 },
   { id: "41", name: "Es Milo Cao", price: 13000 },
 ];
+
+export type PaymentMethodType = "cash" | "qris" | "transfer";
+export const paymentMethods: PaymentMethodType[] = ["cash", "qris", "transfer"];
