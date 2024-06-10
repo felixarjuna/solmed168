@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, Utensils } from "lucide-react";
+import { HandPlatter, ShoppingBag } from "lucide-react";
 import React from "react";
 import { useReactToPrint } from "react-to-print";
 import { Separator } from "~/components/ui/separator";
@@ -62,7 +62,7 @@ export default function Page() {
 
         <div className="flex items-center gap-4">
           <div className="w-fit rounded-full bg-neutral-100 p-2">
-            <Utensils className="h-4 w-4" />
+            <HandPlatter className="h-4 w-4" />
           </div>
           <div className="flex flex-col">
             <p className="text-sm">Dine in.</p>
