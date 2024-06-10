@@ -1,9 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
 import {
-  decimal,
   integer,
   json,
   pgEnum,
@@ -12,7 +10,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { CartItem, CartItemExtended } from "~/app/order/_hooks/useCart";
+import { type CartItem } from "~/app/order/_hooks/useCart";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same

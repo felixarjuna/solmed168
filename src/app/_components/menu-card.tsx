@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, buttonVariants } from "~/components/ui/button";
-import { ProductType } from "../menu";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { useCart } from "../order/_hooks/useCart";
+import { Button, buttonVariants } from "~/components/ui/button";
 import { cn, toRp } from "~/lib/utils";
+import { type ProductType } from "../menu";
+import { useCart } from "../order/_hooks/useCart";
 
 interface MenuCardProps {
   readonly menu: ProductType;

@@ -1,7 +1,7 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { CartItem } from "~/app/order/_hooks/useCart";
+import { clsx, type ClassValue } from "clsx";
 import { DateTime } from "luxon";
+import { twMerge } from "tailwind-merge";
+import { type CartItem } from "~/app/order/_hooks/useCart";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

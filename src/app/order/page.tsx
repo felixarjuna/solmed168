@@ -4,7 +4,7 @@ import { useCart } from "./_hooks/useCart";
 import { Button } from "~/components/ui/button";
 import { Printer, ShoppingBag, Utensils } from "lucide-react";
 import AddOrderButton from "../_components/add-order-button";
-import { NewOrder } from "~/server/db/schema";
+import { type NewOrder } from "~/server/db/schema";
 import { toRp, today } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
 import BackButton from "../_components/back-button";
@@ -29,7 +29,7 @@ export default function Page() {
   /** Define component to be referenced for invoice printing */
   const [isPrinting, setIsPrinting] = React.useState<boolean>(false);
   const printRef = React.useRef(null);
-  const promiseRef = React.useRef<((value?: any) => void) | null>(null);
+  const promiseRef = React.useRef<((value?: unknown) => void) | null>(null);
 
   React.useEffect(() => {
     if (isPrinting && promiseRef.current) {

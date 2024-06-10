@@ -1,7 +1,7 @@
-import { formatDate, toRp } from "~/lib/utils";
-import { CartItem } from "../order/_hooks/useCart";
-import { Separator } from "~/components/ui/separator";
 import React from "react";
+import { Separator } from "~/components/ui/separator";
+import { formatDate, toRp } from "~/lib/utils";
+import { type CartItem } from "../order/_hooks/useCart";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly items: CartItem[];
@@ -21,6 +21,7 @@ const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => {
     </div>
   );
 });
+Invoice.displayName = "Invoice";
 
 export default Invoice;
 

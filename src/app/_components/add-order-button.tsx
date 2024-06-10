@@ -1,12 +1,12 @@
 "use client";
 
 import { Loader2, ShoppingCart } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { NewOrder } from "~/server/db/schema";
-import { useToast } from "~/components/ui/use-toast";
 import { useAction } from "next-safe-action/hooks";
-import { safeAddOrder } from "../order/_actions/order-actions";
 import { useRouter } from "next/navigation";
+import { Button } from "~/components/ui/button";
+import { useToast } from "~/components/ui/use-toast";
+import { type NewOrder } from "~/server/db/schema";
+import { safeAddOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
 
 interface AddOrderButtonProps {

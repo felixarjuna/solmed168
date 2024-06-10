@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { ProductType } from "~/app/menu";
+import { type ProductType } from "~/app/menu";
 import { calculateTotal } from "~/lib/utils";
 
 export type CartItemExtended = ProductType & {

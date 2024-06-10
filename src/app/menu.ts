@@ -2,7 +2,7 @@ export type ProductType = {
   id: string;
   name: string;
   price: number;
-  type?: "bakso" | "mie" | "à la carte";
+  type?: "bakso" | "mie" | "satuan";
   description?: string;
 };
 
@@ -71,43 +71,49 @@ export const alacarte: ProductType[] = [
     id: "9",
     name: "Bakso Halus/Kasar",
     price: 3000,
-    type: "à la carte",
+    type: "satuan",
   },
   {
     id: "10",
     name: "Gorengan Panjang",
     price: 3500,
-    type: "à la carte",
+    type: "satuan",
   },
   {
     id: "11",
     name: "Pangsit Goreng",
     price: 3000,
-    type: "à la carte",
+    type: "satuan",
   },
   {
     id: "12",
     name: "Bakwan Goreng",
     price: 5000,
-    type: "à la carte",
+    type: "satuan",
   },
   {
     id: "13",
     name: "Siomay",
     price: 4000,
-    type: "à la carte",
+    type: "satuan",
   },
   {
     id: "14",
     name: "Tahu Bakso",
     price: 4000,
-    type: "à la carte",
+    type: "satuan",
   },
   {
     id: "15",
     name: "Nasi Putih",
     price: 6000,
-    type: "à la carte",
+    type: "satuan",
+  },
+  {
+    id: "16",
+    name: "Takeaway",
+    price: 1500,
+    type: "satuan",
   },
 ];
 

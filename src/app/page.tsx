@@ -1,12 +1,18 @@
+import _ from "lodash";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { ProductType, alacarte, beverages, setMenus, snacks } from "./menu";
 import Cart from "./_components/cart";
 import MenuCard from "./_components/menu-card";
-import OrderSummary from "./_components/order-summary";
 import OrderHistoryButton from "./_components/order-history-button";
-import _ from "lodash";
+import OrderSummary from "./_components/order-summary";
+import {
+  alacarte,
+  beverages,
+  setMenus,
+  snacks,
+  type ProductType,
+} from "./menu";
 
-type NewType = "bakso" | "mie" | "à la carte" | undefined;
+type NewType = "bakso" | "mie" | "satuan" | undefined;
 
 export default function HomePage() {
   const foods = [...setMenus, ...alacarte];
