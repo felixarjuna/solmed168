@@ -1,7 +1,7 @@
 "use client";
 
 import * as _ from "lodash";
-import { Banknote, Landmark, Loader2, QrCode } from "lucide-react";
+import { Banknote, Landmark, Loader2, QrCode, X } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "~/components/ui/button";
@@ -101,8 +101,10 @@ export default function PayButton({ order, onPrintInvoice }: PayButtonProps) {
           ))}
         </div>
         <DrawerFooter>
-          <DrawerClose>
-            <Button variant="outline">Tutup</Button>
+          <DrawerClose
+            className={buttonVariants({ variant: "outline", size: "icon" })}
+          >
+            <X>Tutup</X>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
