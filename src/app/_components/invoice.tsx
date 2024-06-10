@@ -1,12 +1,11 @@
 import React from "react";
 import { Separator } from "~/components/ui/separator";
 import { cn, formatDate, toRp } from "~/lib/utils";
-import { type CartItem } from "../order/_hooks/useCart";
+import { type ReceiptProps } from "./view-receipt-button";
 
-interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
-  readonly items: CartItem[];
-  readonly totalAmount: number;
-}
+interface InvoiceProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    ReceiptProps {}
 
 const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => {
   return (
@@ -17,7 +16,7 @@ const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => {
         <p>Pakuwon City, Surabaya, Jawa Timur</p>
         <p>(031) 5929985 - (081) 287968899</p>
       </div>
-      <InvoiceContent items={props.items} totalAmount={props.totalAmount} />{" "}
+      <InvoiceContent {...props} />
     </div>
   );
 });

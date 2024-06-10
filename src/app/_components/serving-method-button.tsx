@@ -1,7 +1,7 @@
 "use client";
 
 import _ from "lodash";
-import { HandPlatter, ShoppingCart, Utensils } from "lucide-react";
+import { HandPlatter, ShoppingCart, Utensils, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
@@ -18,6 +18,7 @@ import { useToast } from "~/components/ui/use-toast";
 import { cn } from "~/lib/utils";
 import { servingMethods, type ServingMethodType } from "../menu";
 import { useCart } from "../order/_hooks/useCart";
+import { useClientState } from "../order/_hooks/useClientState";
 
 interface ServingMethodProps {
   readonly text: string;
@@ -32,10 +33,9 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
     if (method === "dine-in") return <HandPlatter className="h-4 w-4" />;
     if (method === "takeaway") return <Utensils className="h-4 w-4" />;
   };
-
+  const { onChangeServingMethod } = useClientState();
   /** method to handle serving */
   const onClickServingMethod = (method: ServingMethodType) => {
-    console.log(method);
     /** cart validation.
      * disallow user to continue if it the cart is empty.
      */
@@ -47,6 +47,7 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
       });
       return;
     }
+    onChangeServingMethod(method);
     router.push("/order");
   };
 
@@ -78,8 +79,10 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
             </Button>
           ))}
           <DrawerFooter>
-            <DrawerClose>
-              <Button variant="outline">Tutup</Button>
+            <DrawerClose
+              className={buttonVariants({ variant: "outline", size: "icon" })}
+            >
+              <X>Tutup</X>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>

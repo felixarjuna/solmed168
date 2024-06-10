@@ -1,5 +1,5 @@
-import { View } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { View, X } from "lucide-react";
+import { buttonVariants } from "~/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -7,26 +7,30 @@ import {
   DrawerFooter,
   DrawerTrigger,
 } from "~/components/ui/drawer";
+import { cn } from "~/lib/utils";
 import { type CartItem } from "../order/_hooks/useCart";
 import Invoice from "./invoice";
 
-interface ViewReceiptButtonProps {
+export interface ReceiptProps {
   readonly items: CartItem[];
   readonly totalAmount: number;
 }
-export default function ViewReceiptButton(props: ViewReceiptButtonProps) {
+
+export default function ViewReceiptButton(props: ReceiptProps) {
   return (
     <Drawer>
-      <DrawerTrigger>
-        <Button size={"icon"}>
-          <View className="h-4 w-4" />
-        </Button>
+      <DrawerTrigger
+        className={cn(buttonVariants({ variant: "default", size: "icon" }))}
+      >
+        <View className="h-4 w-4" />
       </DrawerTrigger>
       <DrawerContent className="flex items-center justify-center">
         <Invoice {...props} className="py-8" />
         <DrawerFooter>
-          <DrawerClose>
-            <Button variant="outline">Tutup</Button>
+          <DrawerClose
+            className={buttonVariants({ variant: "outline", size: "icon" })}
+          >
+            <X>Tutup</X>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
