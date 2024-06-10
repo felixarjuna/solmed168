@@ -1,16 +1,16 @@
 "use client";
 
-import { useCart } from "./_hooks/useCart";
-import { Button } from "~/components/ui/button";
-import { Printer, ShoppingBag, Utensils } from "lucide-react";
-import AddOrderButton from "../_components/add-order-button";
-import { type NewOrder } from "~/server/db/schema";
-import { toRp, today } from "~/lib/utils";
+import { ShoppingBag, Utensils } from "lucide-react";
+import React from "react";
+import { useReactToPrint } from "react-to-print";
 import { Separator } from "~/components/ui/separator";
+import { toRp, today } from "~/lib/utils";
+import { type NewOrder } from "~/server/db/schema";
+import PayButton from "../_components/add-order-button";
 import BackButton from "../_components/back-button";
 import Invoice, { InvoiceContent } from "../_components/invoice";
-import { useReactToPrint } from "react-to-print";
-import React from "react";
+import ViewReceiptButton from "../_components/view-receipt-button";
+import { useCart } from "./_hooks/useCart";
 
 export default function Page() {
   const { items, cartTotal } = useCart();
@@ -89,13 +89,8 @@ export default function Page() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button
-            size={"icon"}
-            onClick={() => onPrint(null, () => printRef.current)}
-          >
-            <Printer className="h-4 w-4" />
-          </Button>
-          <AddOrderButton order={order} />
+          <ViewReceiptButton items={items} totalAmount={cartTotal} />
+          <PayButton order={order} />
         </div>
       </section>
     </main>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Separator } from "~/components/ui/separator";
-import { formatDate, toRp } from "~/lib/utils";
+import { cn, formatDate, toRp } from "~/lib/utils";
 import { type CartItem } from "../order/_hooks/useCart";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -10,7 +10,7 @@ interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => {
   return (
-    <div className="grid max-w-xs gap-4" ref={ref}>
+    <div className={cn("grid max-w-xs gap-4", props.className)} ref={ref}>
       <div className="text-center text-sm uppercase">
         <h3>Bakso Solmed 168</h3>
         <p>Ruko San Diego MR2–10/87</p>
