@@ -51,6 +51,10 @@ export default function Page() {
     },
   });
 
+  const onPrintInvoice = () => {
+    onPrint(null, () => printRef.current);
+  };
+
   return (
     <main className="z-0">
       <section className="m-4 flex flex-col gap-4 p-4">
@@ -90,7 +94,7 @@ export default function Page() {
         </div>
         <div className="flex gap-2">
           <ViewReceiptButton items={items} totalAmount={cartTotal} />
-          <PayButton order={order} />
+          <PayButton order={order} onPrintInvoice={onPrintInvoice} />
         </div>
       </section>
     </main>
