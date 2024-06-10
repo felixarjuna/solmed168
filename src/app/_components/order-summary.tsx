@@ -1,10 +1,10 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
-import CartButton from "./cart-button";
-import { useCart } from "../order/_hooks/useCart";
 import { toRp } from "~/lib/utils";
+import { useCart } from "../order/_hooks/useCart";
 import { CartTriggerText } from "./cart";
+import ServingMethodButton from "./serving-method-button";
 
 export default function OrderSummary() {
   const { items, cartTotal } = useCart();
@@ -30,7 +30,7 @@ export default function OrderSummary() {
         </div>
       </div>
       <div>
-        <CartButton text="Lanjut" />
+        <ServingMethodButton text="Lanjut" />
       </div>
     </section>
   );

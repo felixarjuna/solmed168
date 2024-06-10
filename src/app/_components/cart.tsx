@@ -10,10 +10,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
-import CartButton from "./cart-button";
 import { useCart } from "../order/_hooks/useCart";
 import CartMenuCard from "./cart-menu-card";
-import React from "react";
+import ServingMethodButton from "./serving-method-button";
 
 export default function Cart() {
   const { items } = useCart();
@@ -79,7 +78,7 @@ export function CartContent() {
           />
         ))}
 
-        <CartButton text="Lanjut" />
+        <ServingMethodButton text="Lanjut" />
       </DrawerDescription>
     </DrawerHeader>
   );
