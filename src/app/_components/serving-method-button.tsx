@@ -62,9 +62,9 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
         </DrawerTrigger>
         <DrawerContent className="flex items-center justify-center">
           <DrawerHeader>
-            <DrawerTitle>Methode Pelayanan</DrawerTitle>
+            <DrawerTitle>Metode Pelayanan</DrawerTitle>
             <DrawerDescription>
-              Silahkan pilih methode pelayanan di bawah ini.
+              Silahkan pilih metode pelayanan di bawah ini.
             </DrawerDescription>
           </DrawerHeader>
           {servingMethods.map((method, i) => (

@@ -82,9 +82,9 @@ export default function PayButton({ order, onPrintInvoice }: PayButtonProps) {
       </DrawerTrigger>
       <DrawerContent className="flex items-center justify-center">
         <DrawerHeader>
-          <DrawerTitle>Methode Pembayaran</DrawerTitle>
+          <DrawerTitle>Metode Pembayaran</DrawerTitle>
           <DrawerDescription>
-            Silahkan pilih methode pembayaran di bawah ini.
+            Silahkan pilih metode pembayaran di bawah ini.
           </DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-2">
