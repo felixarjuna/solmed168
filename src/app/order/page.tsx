@@ -1,18 +1,22 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { HandPlatter, ShoppingBag } from "lucide-react";
-import React from "react";
-import { useReactToPrint } from "react-to-print";
+import { HandPlatter, PrinterIcon, ShoppingBag } from "lucide-react";
+import { Br, Line, Printer, Row, Text, render } from "react-thermal-printer";
+import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { toRp, today } from "~/lib/utils";
+import { cn, formatDate, toRp, today } from "~/lib/utils";
 import { type NewOrder } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
-import Invoice, { InvoiceContent } from "../_components/invoice";
+import { InvoiceContent } from "../_components/invoice";
 import PayButton from "../_components/payment-method-button";
 import ViewReceiptButton from "../_components/view-receipt-button";
 import { type ServingMethodType } from "../menu";
 import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
+import { useThermalPrinter } from "./_hooks/useThermalPrinter";
 
 export default function Page() {
   const { items, cartTotal } = useCart();
@@ -21,41 +25,13 @@ export default function Page() {
     0,
   );
 
-  /** Define component to be referenced for invoice printing */
-  const [isPrinting, setIsPrinting] = React.useState<boolean>(false);
-  const printRef = React.useRef(null);
-  const promiseRef = React.useRef<((value?: unknown) => void) | null>(null);
-
-  React.useEffect(() => {
-    if (isPrinting && promiseRef.current) {
-      // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
-      promiseRef.current();
-    }
-  }, [isPrinting]);
-
-  const onPrint = useReactToPrint({
-    onBeforeGetContent: () => {
-      return new Promise((resolve) => {
-        promiseRef.current = resolve;
-        setIsPrinting(true);
-      });
-    },
-    onAfterPrint: () => {
-      promiseRef.current = null;
-      setIsPrinting(false);
-    },
-  });
-
-  const onPrintInvoice = () => {
-    onPrint(null, () => printRef.current);
-  };
-
   const { servingMethod } = useClientState();
-
   const getTextFromServingMethod = (method: ServingMethodType) => {
     if (method === "dine_in") return "Dine in";
     if (method === "takeaway") return "Takeaway";
   };
+
+  const { device, onConnectDevice, onPrint } = useThermalPrinter();
 
   /** Add new order. Table ID is now default to 1. */
   const order: NewOrder = {
@@ -63,6 +39,60 @@ export default function Page() {
     products: items,
     totalAmount: cartTotal,
     servingMethod: servingMethod,
+  };
+
+  /** Method to handle invoice print.
+   * 1. Connect to bluetooth thermal printer
+   * device disconnected.
+   * 2. Render the receipt
+   * 3. Print the receipt
+   */
+  const onHandlePrint = async () => {
+    if (device === undefined) await onConnectDevice();
+
+    const encoder = (text: string) => new TextEncoder().encode(text);
+    const receipt = (
+      <Printer
+        type="epson"
+        width={32}
+        characterSet="wpc1252"
+        encoder={encoder}
+        initialize={false}
+      >
+        <Text align="center">SOLMED 168</Text>
+        <Text align="center">RUKO SAN DIEGO MR2-10/87</Text>
+        <Text align="center">PAKUWON CITY, SURABAYA</Text>
+        <Text align="center">(031) 5929985 - (081) 287968899</Text>
+        <Line />
+        <Text>Waktu Pemesanan</Text>
+        <Text>{formatDate(new Date())}</Text>
+        <Br />
+        {items.map((item) => {
+          const amount = `${item.product.amount}x`;
+          const price = toRp(item.product.price);
+          return (
+            <Row
+              key={item.product.id}
+              left={amount}
+              center={item.product.name}
+              right={price}
+              gap={1}
+            />
+          );
+        })}
+        <Br />
+        <Row left="Grand Total" right={<Text bold>{toRp(cartTotal)}</Text>} />
+        <Br />
+        <Text align="center">HARGA SUDAH TERMASUK PAJAK</Text>
+        <Text align="center">
+          TERIMA KASIH SUDAH BERKUNJUNG KE SOLMED168 PAKUWON CITY
+        </Text>
+        <Br />
+        <Br />
+      </Printer>
+    );
+    const data = await render(receipt);
+    await onPrint(data);
   };
 
   return (
@@ -87,10 +117,6 @@ export default function Page() {
         <div className="flex flex-col gap-2">
           <h3 className="font-bold">Rincian order</h3>
           {<InvoiceContent items={items} totalAmount={cartTotal} />}
-
-          <div ref={printRef} className={isPrinting ? "mt-4 p-8" : "hidden"}>
-            <Invoice items={items} totalAmount={cartTotal} />
-          </div>
         </div>
       </section>
 
@@ -105,8 +131,30 @@ export default function Page() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button size={"icon"} onClick={onHandlePrint} className="relative">
+            <PrinterIcon className="relative h-4 w-4"></PrinterIcon>
+            <span className="absolute -right-1 -top-1 flex h-3 w-3">
+              <span
+                className={cn(
+                  "absolute inline-flex h-full w-full  rounded-full bg-neutral-400 opacity-75",
+                  {
+                    "animate-ping bg-cyan-400": device !== undefined,
+                  },
+                )}
+              />
+              <span
+                className={cn(
+                  "relative inline-flex h-3 w-3 rounded-full bg-neutral-400",
+                  {
+                    "bg-cyan-400": device !== undefined,
+                  },
+                )}
+              ></span>
+            </span>
+          </Button>
+
           <ViewReceiptButton items={items} totalAmount={cartTotal} />
-          <PayButton order={order} onPrintInvoice={onPrintInvoice} />
+          <PayButton order={order} onPrintInvoice={onHandlePrint} />
         </div>
       </section>
     </main>
