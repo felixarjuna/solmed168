@@ -2,6 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import {
+  boolean,
   integer,
   json,
   pgEnum,
@@ -46,9 +47,12 @@ export const paymentMethodEnum = pgEnum("payment_method", [
 export const orders = createTable("order", {
   orderId: serial("id").primaryKey(),
   tableId: integer("table_id").notNull(),
-  orderDate: timestamp("order_date", { withTimezone: true }).defaultNow(),
+  orderDate: timestamp("order_date", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
   totalAmount: integer("total_amount").notNull(),
   products: json("products").$type<CartItem[]>().notNull(),
   paymentMethod: paymentMethodEnum("payment_method"),
   servingMethod: servingMethodEnum("serving_method"),
+  paid: boolean("paid").notNull().default(false),
 });
