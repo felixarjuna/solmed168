@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/drawer";
 import { useToast } from "~/components/ui/use-toast";
 import { cn } from "~/lib/utils";
-import { servingMethods, type ServingMethodType } from "../menu";
+import { servingMethods, type ServingMethodType } from "../data";
 import { useCart } from "../order/_hooks/useCart";
 import { useClientState } from "../order/_hooks/useClientState";
 

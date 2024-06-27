@@ -15,4 +15,10 @@ export const AddOrderValidator = z.object({
   ),
   paymentMethod: z.enum(["cash", "qris", "transfer"]),
   servingMethod: z.enum(["dine_in", "takeaway"]).nullable().optional(),
+  servant: z.string(),
+});
+
+export const PayOrderValidator = z.object({
+  orderId: z.number(),
+  paymentMethod: z.enum(["cash", "qris", "transfer"]),
 });

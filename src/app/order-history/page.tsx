@@ -1,12 +1,14 @@
 import { and, eq, gt, lt, type SQLWrapper } from "drizzle-orm";
-import { Loader2, PiggyBank } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2, PiggyBank } from "lucide-react";
 import { DateTime } from "luxon";
 import { Suspense } from "react";
+import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { formatDate, toRp, today } from "~/lib/utils";
 import { db } from "~/server/db";
 import { orders } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
+import PayButton from "../_components/payment-method-button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -41,8 +43,25 @@ export default async function Page(
   const total = orders.reduce((total, order) => total + order.totalAmount, 0);
 
   function getTextForEmptyOrder() {
-    if (isActive) return "Belum ada pesanan aktif tercatat hari ini";
-    return "Belum ada pesanan terbayar hari ini";
+    if (isActive) return "Belum ada pesanan aktif tercatat hari ini.";
+    return "Belum ada pesanan terbayar hari ini.";
+  }
+
+  function renderBadge() {
+    if (isActive)
+      return (
+        <Badge className="flex items-center gap-1 bg-yellow-200 text-black">
+          <AlertCircle className="h-3 w-3" />
+          <p>Unpaid</p>
+        </Badge>
+      );
+    else
+      return (
+        <Badge className="flex items-center gap-1 bg-green-200 text-black">
+          <CheckCircle className="h-3 w-3" />
+          <p>Paid</p>
+        </Badge>
+      );
   }
 
   return (
@@ -53,8 +72,18 @@ export default async function Page(
         {orders.length > 0 ? (
           orders.map((order) => (
             <div className="font-mono text-sm" key={order.orderId}>
-              <h3>Order Id #{order.orderId}</h3>
-              <p>{formatDate(order.orderDate)}</p>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <h3>Order Id #{order.orderId}</h3>
+                    {renderBadge()}
+                  </div>
+                  <p>{formatDate(order.orderDate)}</p>
+                </div>
+
+                {isActive ? <PayButton order={order} /> : null}
+              </div>
+
               <div className="my-4">
                 {order.products.map(({ product }) => (
                   <div className="grid grid-cols-10 gap-2" key={product.id}>
