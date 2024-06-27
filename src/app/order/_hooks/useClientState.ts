@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { type PaymentMethodType, type ServingMethodType } from "~/app/menu";
+import { type PaymentMethodType, type ServingMethodType } from "~/app/data";
 
 type ClientState = {
   readonly servingMethod: ServingMethodType;
