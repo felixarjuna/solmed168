@@ -3,17 +3,30 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { HandPlatter, PrinterIcon, ShoppingBag } from "lucide-react";
-import { Br, Line, Printer, Row, Text, render } from "react-thermal-printer";
+import {
+  HandPlatter,
+  PrinterIcon,
+  ShoppingBag,
+  User,
+  Utensils,
+} from "lucide-react";
+import React from "react";
 import { Button } from "~/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
-import { cn, formatDate, toRp, today } from "~/lib/utils";
+import { cn, toRp, today } from "~/lib/utils";
 import { type NewOrder } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
-import PayButton from "../_components/payment-method-button";
 import ViewReceiptButton from "../_components/view-receipt-button";
-import { type ServingMethodType } from "../menu";
+import { servants, tableNums, type ServingMethodType } from "../data";
+import AddOrderButton from "./_components/add-order-button";
 import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
 import { useThermalPrinter } from "./_hooks/useThermalPrinter";
@@ -31,68 +44,21 @@ export default function Page() {
     if (method === "takeaway") return "Takeaway";
   };
 
-  const { device, onConnectDevice, onPrint } = useThermalPrinter();
+  const { device, onPrint } = useThermalPrinter(items);
+
+  /** local state for table id */
+  const [tableId, setTableId] = React.useState<string>("1");
+
+  /** local state for servant name */
+  const [servant, setServant] = React.useState<string>(servants[0]!);
 
   /** Add new order. Table ID is now default to 1. */
   const order: NewOrder = {
-    tableId: 1,
+    tableId: +tableId,
+    servant: servant,
     products: items,
     totalAmount: cartTotal,
     servingMethod: servingMethod,
-  };
-
-  /** Method to handle invoice print.
-   * 1. Connect to bluetooth thermal printer
-   * device disconnected.
-   * 2. Render the receipt
-   * 3. Print the receipt
-   */
-  const onHandlePrint = async () => {
-    if (device === undefined) await onConnectDevice();
-
-    const encoder = (text: string) => new TextEncoder().encode(text);
-    const receipt = (
-      <Printer
-        type="epson"
-        width={32}
-        characterSet="wpc1252"
-        encoder={encoder}
-        initialize={false}
-      >
-        <Text align="center">SOLMED 168</Text>
-        <Text align="center">RUKO SAN DIEGO MR2-10/87</Text>
-        <Text align="center">PAKUWON CITY, SURABAYA</Text>
-        <Text align="center">(031) 5929985 - (081) 287968899</Text>
-        <Line />
-        <Text>Waktu Pemesanan</Text>
-        <Text>{formatDate(new Date())}</Text>
-        <Br />
-        {items.map((item) => {
-          const amount = `${item.product.amount}x`;
-          const price = toRp(item.product.price);
-          return (
-            <Row
-              key={item.product.id}
-              left={amount}
-              center={item.product.name}
-              right={price}
-              gap={1}
-            />
-          );
-        })}
-        <Br />
-        <Row left="Grand Total" right={<Text bold>{toRp(cartTotal)}</Text>} />
-        <Br />
-        <Text align="center">HARGA SUDAH TERMASUK PAJAK</Text>
-        <Text align="center">
-          TERIMA KASIH SUDAH BERKUNJUNG KE SOLMED168 PAKUWON CITY
-        </Text>
-        <Br />
-        <Br />
-      </Printer>
-    );
-    const data = await render(receipt);
-    await onPrint(data);
   };
 
   return (
@@ -109,6 +75,50 @@ export default function Page() {
               {getTextFromServingMethod(servingMethod)}.
             </p>
             <p className="text-xs font-bold">{today()}</p>
+          </div>
+        </div>
+
+        {servingMethod === "dine_in" ? (
+          <div className="flex items-center gap-4">
+            <div className="w-fit rounded-full bg-neutral-100 p-2">
+              <Utensils className="h-4 w-4" />
+            </div>
+            <div className="flex w-full items-center justify-between">
+              <p className="text-sm">No. Meja</p>
+              <Select onValueChange={(value) => setTableId(value)}>
+                <SelectTrigger className="max-w-24">
+                  <SelectValue placeholder="Meja 1" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tableNums.map((num) => (
+                    <SelectItem key={num} value={`${num}`}>
+                      {`Meja ${num}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="flex items-center gap-4">
+          <div className="w-fit rounded-full bg-neutral-100 p-2">
+            <User className="h-4 w-4" />
+          </div>
+          <div className="flex w-full items-center justify-between">
+            <p className="text-sm">Pelayan</p>
+            <Select onValueChange={(value) => setServant(value)}>
+              <SelectTrigger className="max-w-24">
+                <SelectValue placeholder="Nama" />
+              </SelectTrigger>
+              <SelectContent className="w-[24px]">
+                {servants.map((servant, i) => (
+                  <SelectItem key={i} value={servant}>
+                    {servant}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -131,7 +141,7 @@ export default function Page() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button size={"icon"} onClick={onHandlePrint} className="relative">
+          <Button size={"icon"} onClick={onPrint} className="relative">
             <PrinterIcon className="relative h-4 w-4"></PrinterIcon>
             <span className="absolute -right-1 -top-1 flex h-3 w-3">
               <span
@@ -154,7 +164,7 @@ export default function Page() {
           </Button>
 
           <ViewReceiptButton items={items} totalAmount={cartTotal} />
-          <PayButton order={order} onPrintInvoice={onHandlePrint} />
+          <AddOrderButton order={order} />
         </div>
       </section>
     </main>
