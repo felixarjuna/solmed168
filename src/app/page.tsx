@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import ActiveOrderButton from "./_components/active-order-button";
 import Cart from "./_components/cart";
 import MenuCard from "./_components/menu-card";
 import OrderHistoryButton from "./_components/order-history-button";
@@ -10,7 +11,7 @@ import {
   setMenus,
   snacks,
   type ProductType,
-} from "./menu";
+} from "./data";
 
 type NewType = "bakso" | "mie" | "satuan" | undefined;
 
@@ -26,9 +27,11 @@ export default function HomePage() {
   return (
     <main>
       <section className="flex h-screen flex-col gap-4 p-8">
-        <div className="flex self-end">
+        <div className="flex gap-2 self-end">
+          <ActiveOrderButton />
           <OrderHistoryButton />
         </div>
+
         <section className="relative pb-12">
           <Cart />
           <Tabs defaultValue="foods">
