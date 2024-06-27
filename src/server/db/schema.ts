@@ -10,6 +10,7 @@ import {
   serial,
   timestamp,
   uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { type CartItem } from "~/app/order/_hooks/useCart";
 
@@ -35,6 +36,7 @@ export const products = createTable("product", {
 });
 
 export type NewOrder = typeof orders.$inferInsert;
+export type Order = typeof orders.$inferSelect;
 export const servingMethodEnum = pgEnum("serving_method", [
   "dine_in",
   "takeaway",
@@ -50,6 +52,7 @@ export const orders = createTable("order", {
   orderDate: timestamp("order_date", { withTimezone: true })
     .notNull()
     .defaultNow(),
+  servant: varchar("servant").notNull(),
   totalAmount: integer("total_amount").notNull(),
   products: json("products").$type<CartItem[]>().notNull(),
   paymentMethod: paymentMethodEnum("payment_method"),
