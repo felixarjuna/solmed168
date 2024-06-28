@@ -45,3 +45,4 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [ ] Add cost for takeaway
 - [ ] Add dashboard for analytics
 - [ ] Add animation for payment method selection
+- [ ] Handle desktop mode

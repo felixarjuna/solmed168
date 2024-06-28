@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
         <div className="flex flex-col">
-          <nav className="text-bold m-8 mb-0">SOLMED 168</nav>
+          <nav className="m-8 mb-0 text-xl font-extrabold">SOLMED 168</nav>
           {children}
         </div>
         <Toaster />
