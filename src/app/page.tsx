@@ -2,6 +2,7 @@ import _ from "lodash";
 import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ActiveOrderButton from "./_components/active-order-button";
+import Cart from "./_components/cart";
 import MenuCard from "./_components/menu-card";
 import OrderHistoryButton from "./_components/order-history-button";
 import OrderSummary from "./_components/order-summary";
@@ -34,6 +35,7 @@ export default function HomePage() {
           </div>
 
           <section className="relative pb-12">
+            <Cart />
             <Tabs defaultValue="foods">
               <TabsList>
                 <TabsTrigger value="foods">Makanan</TabsTrigger>
