@@ -1,8 +1,25 @@
 import { and, eq, gt, lt, type SQLWrapper } from "drizzle-orm";
-import { AlertCircle, CheckCircle, Loader2, PiggyBank } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  MoreHorizontal,
+  Pen,
+  PiggyBank,
+  User,
+  Utensils,
+} from "lucide-react";
 import { DateTime } from "luxon";
 import { Suspense } from "react";
 import { Badge } from "~/components/ui/badge";
+import { Button, buttonVariants } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
 import { formatDate, toRp, today } from "~/lib/utils";
 import { db } from "~/server/db";
@@ -50,7 +67,7 @@ export default async function Page(
   function renderBadge() {
     if (isActive)
       return (
-        <Badge className="flex items-center gap-1 bg-yellow-200 text-black">
+        <Badge className="flex animate-pulse items-center gap-1 bg-yellow-200 text-black">
           <AlertCircle className="h-3 w-3" />
           <p>Unpaid</p>
         </Badge>
@@ -73,15 +90,65 @@ export default async function Page(
           orders.map((order) => (
             <div className="font-mono text-sm" key={order.orderId}>
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <h3>Order Id #{order.orderId}</h3>
-                    {renderBadge()}
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3>Order Id #{order.orderId}</h3>
+                      {renderBadge()}
+                    </div>
+
+                    <p>{formatDate(order.orderDate)}</p>
                   </div>
-                  <p>{formatDate(order.orderDate)}</p>
                 </div>
 
-                {isActive ? <PayButton order={order} /> : null}
+                {isActive ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      aria-haspopup
+                      className={buttonVariants({
+                        size: "icon",
+                        variant: "ghost",
+                      })}
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem>
+                        <Button
+                          className="flex w-24 items-center justify-start gap-2"
+                          size={"sm"}
+                          variant={"outline"}
+                        >
+                          <Pen className="h-4 w-4" />
+                          Edit
+                        </Button>
+                      </DropdownMenuItem>
+
+                      <PayButton
+                        order={order}
+                        className="mx-2 my-1 w-24 justify-start p-2"
+                      />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
+              </div>
+
+              <div className="my-4 flex gap-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="rounded-full bg-neutral-100 p-1">
+                    <Utensils className="h-3 w-3" />
+                  </div>
+                  <p>No. Meja: {order.tableId}</p>
+                </div>
+
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-fit rounded-full bg-neutral-100 p-1">
+                    <User className="h-3 w-3" />
+                  </div>
+                  <p>Waiter: {order.waiter}</p>
+                </div>
               </div>
 
               <div className="my-4">

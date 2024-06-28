@@ -40,3 +40,7 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Add serving method drawer
 - [x] Update payment method to order schema
 - [x] Update serving method to order schema ("Dine in" or "Takeaway")
+- [ ] Add animation for payment method selection
+- [x] Add table id and waiter at order-history
+- [ ] Add cost for takeaway
+- [ ] Add edit order button
