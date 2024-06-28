@@ -78,16 +78,16 @@ export default async function Page(
                 </div>
 
                 {isActive ? (
-                  <DropdownMenu>
+                  <DropdownMenu modal={false}>
                     <DropdownMenuTrigger
                       aria-haspopup
                       className={buttonVariants({
                         size: "icon",
                         variant: "ghost",
                       })}
+                      asChild
                     >
                       <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle menu</span>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
@@ -95,10 +95,7 @@ export default async function Page(
                         <EditOrderButton orderId={order.orderId} />
                       </DropdownMenuItem>
 
-                      <PayButton
-                        order={order}
-                        className="mx-2 my-1 w-24 justify-start p-2"
-                      />
+                      <PayButton order={order} />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : null}

@@ -37,7 +37,7 @@ interface PayButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly order: Order;
 }
 
-export default function PayButton({ order, className }: PayButtonProps) {
+export default function PayButton({ order }: PayButtonProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { clearCart } = useCart();
@@ -88,10 +88,10 @@ export default function PayButton({ order, className }: PayButtonProps) {
       <DrawerTrigger
         className={cn(
           buttonVariants({ variant: "outline", size: "sm" }),
-          className,
+          "mx-2 my-1 w-24 justify-start px-3",
         )}
       >
-        <div className="flex h-4 items-center gap-2">
+        <div className="flex items-center gap-2">
           {status === "executing" ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
