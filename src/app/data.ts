@@ -197,6 +197,10 @@ export const beverages: ProductType[] = [
   { id: "41", name: "Es Milo Cao", price: 13000 },
 ];
 
+export const addons: ProductType[] = [
+  { id: "42", name: "Takeaway cup", price: 2000 },
+];
+
 export type PaymentMethodType = "cash" | "qris" | "transfer";
 export const paymentMethods: PaymentMethodType[] = ["cash", "qris", "transfer"];
 
@@ -204,4 +208,4 @@ export type ServingMethodType = "dine_in" | "takeaway";
 export const servingMethods: ServingMethodType[] = ["dine_in", "takeaway"];
 
 export const tableNums = Array.from({ length: 10 }, (_, index) => index + 1);
-export const waiters = ["Ian", "Felix", "Victor", "Angelica"];
+export const waiters = ["Lia", "Citra", "Nikma", "Fia", "Parni", "Nur"];
