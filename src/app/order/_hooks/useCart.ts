@@ -20,6 +20,7 @@ type CartState = {
   readonly removeItem: (itemId: string) => void;
   readonly clearCart: () => void;
   readonly updateAmount: (itemId: string, method: UpdateAmountMethod) => void;
+  readonly syncCart: (items: CartItem[]) => void;
   // readonly updateAmount: (
   //   item: ItemType,
   //   method: UpdateAmountMethod,
@@ -101,6 +102,10 @@ export const useCart = create<CartState>()(
 
           const total = calculateTotal(items);
           return { items: items, cartTotal: total };
+        }),
+      syncCart: (items) =>
+        set(() => {
+          return { items: items, cartTotal: calculateTotal(items) };
         }),
     }),
     {

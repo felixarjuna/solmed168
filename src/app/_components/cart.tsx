@@ -1,6 +1,8 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import React from "react";
 import { buttonVariants } from "~/components/ui/button";
 import {
   Drawer,
@@ -10,16 +12,30 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
+import { getOrderById } from "../order-history/_actions/action";
 import { useCart } from "../order/_hooks/useCart";
 import CartMenuCard from "./cart-menu-card";
 import ServingMethodButton from "./serving-method-button";
 
 export default function Cart() {
-  const { items } = useCart();
+  const { items, syncCart } = useCart();
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
     0,
   );
+
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
+
+  React.useEffect(() => {
+    const fetchOrder = async (orderId: number) => {
+      const order = await getOrderById(orderId);
+      const products = order?.products;
+      if (products) syncCart(products);
+    };
+
+    if (orderId) void fetchOrder(+orderId);
+  }, [syncCart, orderId]);
 
   return (
     <div className="absolute right-0 top-0">
