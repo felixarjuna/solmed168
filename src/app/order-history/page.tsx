@@ -1,18 +1,15 @@
-import { and, eq, gt, lt, type SQLWrapper } from "drizzle-orm";
 import {
   AlertCircle,
   CheckCircle,
   Loader2,
   MoreHorizontal,
-  Pen,
   PiggyBank,
   User,
   Utensils,
 } from "lucide-react";
-import { DateTime } from "luxon";
 import { Suspense } from "react";
 import { Badge } from "~/components/ui/badge";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,34 +19,13 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
 import { formatDate, toRp, today } from "~/lib/utils";
-import { db } from "~/server/db";
-import { orders } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import PayButton from "../_components/payment-method-button";
+import { getOrders } from "./_actions/action";
+import EditOrderButton from "./_components/edit-order-button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-/** method to return all today orders */
-async function getOrders(isActive: boolean) {
-  const startOfDay = DateTime.now().startOf("day");
-  const startOfTomorrow = startOfDay.plus({ day: 1 });
-
-  const filters: SQLWrapper[] = [
-    gt(orders.orderDate, startOfDay.toJSDate()),
-    lt(orders.orderDate, startOfTomorrow.toJSDate()),
-  ];
-
-  if (isActive) filters.push(eq(orders.paid, false));
-  else filters.push(eq(orders.paid, true));
-
-  const query = db
-    .select()
-    .from(orders)
-    .where(and(...filters));
-
-  return await query;
-}
 
 export default async function Page(
   searchParams: Record<"searchParams", { active: string }>,
@@ -116,14 +92,7 @@ export default async function Page(
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem>
-                        <Button
-                          className="flex w-24 items-center justify-start gap-2"
-                          size={"sm"}
-                          variant={"outline"}
-                        >
-                          <Pen className="h-4 w-4" />
-                          Edit
-                        </Button>
+                        <EditOrderButton orderId={order.orderId} />
                       </DropdownMenuItem>
 
                       <PayButton

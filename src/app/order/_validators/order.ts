@@ -22,3 +22,18 @@ export const PayOrderValidator = z.object({
   orderId: z.number(),
   paymentMethod: z.enum(["cash", "qris", "transfer"]),
 });
+
+export const UpdateOrderValidator = z.object({
+  orderId: z.number(),
+  products: z.array(
+    z.object({
+      product: z.object({
+        id: z.string(),
+        name: z.string(),
+        price: z.number(),
+        amount: z.number(),
+      }),
+    }),
+  ),
+  totalAmount: z.number(),
+});

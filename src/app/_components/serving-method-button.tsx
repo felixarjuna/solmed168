@@ -2,7 +2,7 @@
 
 import _ from "lodash";
 import { HandPlatter, ShoppingCart, Utensils, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Drawer,
@@ -29,6 +29,9 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
   const { toast } = useToast();
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
+
   const getIconFromServingMethod = (method: ServingMethodType) => {
     if (method === "dine_in") return <HandPlatter className="h-4 w-4" />;
     if (method === "takeaway") return <Utensils className="h-4 w-4" />;
@@ -48,7 +51,8 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
       return;
     }
     onChangeServingMethod(method);
-    router.push("/order");
+    if (orderId) router.push(`/order?orderId=${orderId}`);
+    else router.push("/order?");
   };
 
   return (
