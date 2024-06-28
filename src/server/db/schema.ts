@@ -52,7 +52,7 @@ export const orders = createTable("order", {
   orderDate: timestamp("order_date", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  servant: varchar("servant").notNull(),
+  waiter: varchar("waiter").notNull(),
   totalAmount: integer("total_amount").notNull(),
   products: json("products").$type<CartItem[]>().notNull(),
   paymentMethod: paymentMethodEnum("payment_method"),

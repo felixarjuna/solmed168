@@ -25,7 +25,7 @@ import { type NewOrder } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
 import ViewReceiptButton from "../_components/view-receipt-button";
-import { servants, tableNums, type ServingMethodType } from "../data";
+import { tableNums, waiters, type ServingMethodType } from "../data";
 import AddOrderButton from "./_components/add-order-button";
 import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
@@ -49,13 +49,13 @@ export default function Page() {
   /** local state for table id */
   const [tableId, setTableId] = React.useState<string>("1");
 
-  /** local state for servant name */
-  const [servant, setServant] = React.useState<string>(servants[0]!);
+  /** local state for waiter name */
+  const [waiter, setWaiter] = React.useState<string>(waiters[0]!);
 
   /** Add new order. Table ID is now default to 1. */
   const order: NewOrder = {
     tableId: +tableId,
-    servant: servant,
+    waiter: waiter,
     products: items,
     totalAmount: cartTotal,
     servingMethod: servingMethod,
@@ -106,15 +106,15 @@ export default function Page() {
             <User className="h-4 w-4" />
           </div>
           <div className="flex w-full items-center justify-between">
-            <p className="text-sm">Pelayan</p>
-            <Select onValueChange={(value) => setServant(value)}>
+            <p className="text-sm">Waiter</p>
+            <Select onValueChange={(value) => setWaiter(value)}>
               <SelectTrigger className="max-w-24">
                 <SelectValue placeholder="Nama" />
               </SelectTrigger>
               <SelectContent className="w-[24px]">
-                {servants.map((servant, i) => (
-                  <SelectItem key={i} value={servant}>
-                    {servant}
+                {waiters.map((waiter, i) => (
+                  <SelectItem key={i} value={waiter}>
+                    {waiter}
                   </SelectItem>
                 ))}
               </SelectContent>
