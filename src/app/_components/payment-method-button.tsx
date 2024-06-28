@@ -33,11 +33,11 @@ import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
 import { useThermalPrinter } from "../order/_hooks/useThermalPrinter";
 
-interface PayButtonProps {
+interface PayButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly order: Order;
 }
 
-export default function PayButton({ order }: PayButtonProps) {
+export default function PayButton({ order, className }: PayButtonProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { clearCart } = useCart();
@@ -87,8 +87,8 @@ export default function PayButton({ order }: PayButtonProps) {
     <Drawer>
       <DrawerTrigger
         className={cn(
-          buttonVariants({ variant: "default", size: "sm" }),
-          "animate-pulse",
+          buttonVariants({ variant: "outline", size: "sm" }),
+          className,
         )}
       >
         <div className="flex h-4 items-center gap-2">
