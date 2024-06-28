@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollText } from "lucide-react";
+import { FileStack } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 
@@ -14,8 +14,8 @@ export default function OrderHistoryButton() {
       className="flex  items-center gap-1"
       onClick={() => router.push("/order-history")}
     >
-      <ScrollText className="h-4 w-4" />
-      <p>Order history</p>
+      <FileStack className="h-4 w-4" />
+      <p>History</p>
     </Button>
   );
 }
