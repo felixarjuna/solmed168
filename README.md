@@ -35,12 +35,13 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Auto-generate order id
 - [x] Add alacarte
 - [x] Add today's order page
-- [ ] Add dashboard for analytics
 - [x] Add payment method drawer
 - [x] Add serving method drawer
 - [x] Update payment method to order schema
 - [x] Update serving method to order schema ("Dine in" or "Takeaway")
-- [ ] Add animation for payment method selection
 - [x] Add table id and waiter at order-history
+- [x] Add edit order button
+- [x] Enable edit order
 - [ ] Add cost for takeaway
-- [ ] Add edit order button
+- [ ] Add dashboard for analytics
+- [ ] Add animation for payment method selection

@@ -72,7 +72,6 @@ export default function Page() {
     const fetchOrder = async (orderId: number) => {
       const order = await getOrderById(orderId);
       if (order) {
-        console.log(order);
         setTableId(order.tableId.toString());
         setWaiter(order.waiter);
       }
