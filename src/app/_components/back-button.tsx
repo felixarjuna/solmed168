@@ -12,7 +12,7 @@ export default function BackButton() {
       variant={"outline"}
       size={"default"}
       className="gap-1 self-end"
-      onClick={() => router.back()}
+      onClick={() => router.push("/")}
     >
       <ArrowLeft className="h-4 w-4" />
       <span>Kembali</span>
