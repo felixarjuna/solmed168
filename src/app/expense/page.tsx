@@ -26,7 +26,7 @@ export default async function Expense() {
   );
 
   return (
-    <section className="flex h-screen flex-col p-8">
+    <section className="flex min-h-screen flex-col p-8">
       <BackButton />
 
       <div className="flex flex-col gap-4">
@@ -58,11 +58,11 @@ export default async function Expense() {
                   <span className="inline-flex h-1 w-1 rounded-full bg-neutral-50"></span>
                 </span>
 
-                <div className="col-span-8">
+                <div className="col-span-7">
                   <h3 className="text-normal font-semibold">{e.name}</h3>
                   <p className="text-sm opacity-50">{formatDate(e.date)}</p>
                 </div>
-                <p className="col-span-3 text-right text-sm font-semibold">
+                <p className="col-span-4 text-right text-sm font-semibold">
                   {toRp(e.amount)}
                 </p>
               </div>
