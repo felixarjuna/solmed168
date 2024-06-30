@@ -34,7 +34,7 @@ import { paymentMethods, type PaymentMethodType } from "../data";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
 import { useThermalPrinter } from "../order/_hooks/useThermalPrinter";
-import CashPayment from "./payment-exchange";
+import CashPayment from "./cash-payment";
 
 interface PayButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly order: Order;

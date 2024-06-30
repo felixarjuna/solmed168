@@ -20,7 +20,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { formatDate, toRp, today } from "~/lib/utils";
 import BackButton from "../_components/back-button";
-import PayButton from "../_components/payment-method-button";
+import PayButton from "../_components/pay-button";
 import { getOrders } from "./_actions/action";
 import EditOrderButton from "./_components/edit-order-button";
 
