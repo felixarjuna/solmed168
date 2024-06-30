@@ -58,7 +58,7 @@ export default async function Page(
   }
 
   return (
-    <div className="flex min-h-screen flex-col gap-4 p-8 pb-20">
+    <div className="mb-20 flex min-h-screen flex-col gap-4 p-8">
       <BackButton />
       <h1 className="font-bold">Riwayat Pesanan</h1>
       <Suspense fallback={<Loader2 />}>
