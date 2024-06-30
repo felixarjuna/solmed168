@@ -36,11 +36,14 @@ import { useCart } from "../order/_hooks/useCart";
 import { useThermalPrinter } from "../order/_hooks/useThermalPrinter";
 import CashPayment from "./cash-payment";
 
-interface PayButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+interface IPaymentMethodDrawerProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   readonly order: Order;
 }
 
-export default function PayButton({ order }: PayButtonProps) {
+export default function PaymentMethodDrawer({
+  order,
+}: IPaymentMethodDrawerProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { clearCart } = useCart();

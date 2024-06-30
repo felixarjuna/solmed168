@@ -20,7 +20,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { formatDate, toRp, today } from "~/lib/utils";
 import BackButton from "../_components/back-button";
-import PayButton from "../_components/pay-button";
+import PaymentMethodDrawer from "../_components/payment-method-drawer";
 import { getOrders } from "./_actions/action";
 import EditOrderButton from "./_components/edit-order-button";
 
@@ -95,7 +95,7 @@ export default async function Page(
                         <EditOrderButton orderId={order.orderId} />
                       </DropdownMenuItem>
 
-                      <PayButton order={order} />
+                      <PaymentMethodDrawer order={order} />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : null}
