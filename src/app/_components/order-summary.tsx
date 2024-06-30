@@ -4,7 +4,7 @@ import { ShoppingBag } from "lucide-react";
 import { toRp } from "~/lib/utils";
 import { useCart } from "../order/_hooks/useCart";
 import { CartTriggerText } from "./cart";
-import ServingMethodButton from "./serving-method-button";
+import ServingMethodButton from "./serving-method-drawer";
 
 export default function OrderSummary() {
   const { items, cartTotal } = useCart();

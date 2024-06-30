@@ -24,7 +24,7 @@ interface ServingMethodProps {
   readonly text: string;
 }
 
-export default function ServingMethodButton({ text }: ServingMethodProps) {
+export default function ServingMethodDrawer({ text }: ServingMethodProps) {
   const { items } = useCart();
   const { toast } = useToast();
   const router = useRouter();
@@ -56,41 +56,39 @@ export default function ServingMethodButton({ text }: ServingMethodProps) {
   };
 
   return (
-    <>
-      <Drawer>
-        <DrawerTrigger
-          className={cn(buttonVariants({ variant: "default" }), "flex gap-2")}
-        >
-          <ShoppingCart className="h-4 w-4" />
-          <p>{text}</p>
-        </DrawerTrigger>
-        <DrawerContent className="flex items-center justify-center">
-          <DrawerHeader>
-            <DrawerTitle>Metode Pelayanan</DrawerTitle>
-            <DrawerDescription>
-              Silahkan pilih metode pelayanan di bawah ini.
-            </DrawerDescription>
-          </DrawerHeader>
-          {servingMethods.map((method, i) => (
-            <Button
-              key={i}
-              className="flex w-40 justify-start gap-2 rounded-lg border px-6 py-4"
-              size={"lg"}
-              onClick={() => onClickServingMethod(method)}
-            >
-              {getIconFromServingMethod(method)}
-              <p>{_.upperCase(method)}</p>
-            </Button>
-          ))}
-          <DrawerFooter>
-            <DrawerClose
-              className={buttonVariants({ variant: "outline", size: "icon" })}
-            >
-              <X>Tutup</X>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
+    <Drawer>
+      <DrawerTrigger
+        className={cn(buttonVariants({ variant: "default" }), "flex gap-2")}
+      >
+        <ShoppingCart className="h-4 w-4" />
+        <p>{text}</p>
+      </DrawerTrigger>
+      <DrawerContent className="flex items-center justify-center">
+        <DrawerHeader>
+          <DrawerTitle>Metode Pelayanan</DrawerTitle>
+          <DrawerDescription>
+            Silahkan pilih metode pelayanan di bawah ini.
+          </DrawerDescription>
+        </DrawerHeader>
+        {servingMethods.map((method, i) => (
+          <Button
+            key={i}
+            className="flex w-40 justify-start gap-2 rounded-lg border px-6 py-4"
+            size={"lg"}
+            onClick={() => onClickServingMethod(method)}
+          >
+            {getIconFromServingMethod(method)}
+            <p>{_.upperCase(method)}</p>
+          </Button>
+        ))}
+        <DrawerFooter>
+          <DrawerClose
+            className={buttonVariants({ variant: "outline", size: "icon" })}
+          >
+            <X>Tutup</X>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

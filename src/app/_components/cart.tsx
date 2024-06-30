@@ -15,7 +15,7 @@ import {
 import { getOrderById } from "../order-history/_actions/action";
 import { useCart } from "../order/_hooks/useCart";
 import CartMenuCard from "./cart-menu-card";
-import ServingMethodButton from "./serving-method-button";
+import ServingMethodDrawer from "./serving-method-drawer";
 
 export default function Cart() {
   const { items, syncCart } = useCart();
@@ -95,7 +95,7 @@ export function CartContent() {
           />
         ))}
 
-        <ServingMethodButton text="Lanjut" />
+        <ServingMethodDrawer text="Lanjut" />
       </DrawerDescription>
     </DrawerHeader>
   );
