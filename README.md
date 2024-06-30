@@ -48,7 +48,7 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Handle payment change
 - [x] Enable waiter to add expenses
 - [x] Fix order page min height
-- [ ] Fix expense drawer min height
+- [x] Fix expense drawer min height
 - [ ] Skip serving method choice when editing order
 - [ ] Add dashboard page
 

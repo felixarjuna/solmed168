@@ -82,7 +82,7 @@ export default function AddExpenseDrawer() {
         <CirclePlus className="h-5 w-5" />
       </DrawerTrigger>
       <DrawerContent className="flex items-center">
-        <div className="flex w-60 flex-col items-center justify-center">
+        <div className="mb-8 flex w-60 flex-col items-center justify-center">
           <DrawerHeader>
             <DrawerTitle>Pengeluaran</DrawerTitle>
           </DrawerHeader>
