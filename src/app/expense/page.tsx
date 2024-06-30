@@ -1,55 +1,18 @@
-import { CirclePlus } from "lucide-react";
-import { buttonVariants } from "~/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/components/ui/drawer";
-import { cn, formatDate, toRp } from "~/lib/utils";
+import { formatDate, toRp } from "~/lib/utils";
 import BackButton from "../_components/back-button";
-import AddExpenseForm from "./_components/add-expense-form";
+import { getExpenses } from "./_actions/expense-actions";
+import AddExpenseDrawer from "./_components/add-expense-drawer";
 
-const expenses = [
-  {
-    amount: 100000,
-    name: "Air galon",
-    description: "SOLMED 168",
-    date: new Date(),
-  },
-  {
-    amount: 20000,
-    name: "Daging sapi",
-    description: "Pasar",
-    date: new Date(),
-  },
-];
+export default async function Expense() {
+  const expenses = await getExpenses();
 
-export default function Expense() {
   return (
     <section className="flex h-screen flex-col p-8">
       <BackButton />
 
       <div className="flex w-full flex-col gap-2">
         <h1 className="font-bold">Expenses</h1>
-
-        <Drawer>
-          <DrawerTrigger
-            className={cn(buttonVariants({ variant: "default" }), "h-16")}
-          >
-            <CirclePlus className="h-5 w-5" />
-          </DrawerTrigger>
-          <DrawerContent className="flex items-center">
-            <div className="flex w-60 flex-col items-center justify-center">
-              <DrawerHeader>
-                <DrawerTitle>Pengeluaran</DrawerTitle>
-              </DrawerHeader>
-
-              <AddExpenseForm />
-            </div>
-          </DrawerContent>
-        </Drawer>
+        <AddExpenseDrawer />
 
         <h1 className="font-bold">Overview</h1>
         <div className="grid gap-3">

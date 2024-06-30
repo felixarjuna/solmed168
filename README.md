@@ -46,8 +46,8 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 **Priority**
 
 - [x] Handle payment change
+- [x] Enable waiter to add expenses
 - [ ] Add dashboard page
-- [ ] Enable waiter to add expenses
 
 **Nice to have**
 
