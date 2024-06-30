@@ -72,15 +72,6 @@ export default function AddExpenseDrawer() {
   }
 
   const [isOpen, setIsOpen] = React.useState(false);
-  React.useEffect(() => {
-    const handleResize = () => {
-      // Adjust layout here, e.g., scroll to bottom
-      window.scrollTo(0, document.body.scrollHeight);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
@@ -91,7 +82,7 @@ export default function AddExpenseDrawer() {
         <CirclePlus className="h-5 w-5" />
       </DrawerTrigger>
       <DrawerContent className="flex items-center">
-        <div className="mb-4 flex w-60 flex-col items-center justify-center">
+        <div className="mb-4 flex w-60 flex-col items-center overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle>Pengeluaran</DrawerTitle>
           </DrawerHeader>

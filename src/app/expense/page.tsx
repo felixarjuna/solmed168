@@ -8,6 +8,15 @@ import AddExpenseDrawer from "./_components/add-expense-drawer";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default async function Expense() {
   const expenses = await getExpenses();
 
