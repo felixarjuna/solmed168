@@ -42,7 +42,16 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Add table id and waiter at order-history
 - [x] Add edit order button
 - [x] Enable edit order
-- [ ] Add cost for takeaway
-- [ ] Add dashboard for analytics
+
+**Priority**
+
+- [x] Handle payment change
+- [ ] Add dashboard page
+- [ ] Enable waiter to add expenses
+
+**Nice to have**
+
 - [ ] Add animation for payment method selection
 - [ ] Handle desktop mode
+- [ ] Change order design?
+- [ ] Add cost for takeaway

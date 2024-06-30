@@ -4,6 +4,8 @@ import * as _ from "lodash";
 import {
   ArrowLeft,
   Banknote,
+  CircleAlert,
+  CircleCheck,
   Landmark,
   Loader2,
   PartyPopper,
@@ -32,6 +34,7 @@ import { paymentMethods, type PaymentMethodType } from "../data";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
 import { useThermalPrinter } from "../order/_hooks/useThermalPrinter";
+import CashPayment from "./payment-exchange";
 
 interface PayButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly order: Order;
@@ -83,6 +86,11 @@ export default function PayButton({ order }: PayButtonProps) {
     await onPrint();
   };
 
+  const [isSufficient, setIsSufficient] = React.useState<boolean>(false);
+  const onHandleCashSufficciency = (isSufficient: boolean) => {
+    setIsSufficient(isSufficient);
+  };
+
   return (
     <Drawer>
       <DrawerTrigger
@@ -125,16 +133,40 @@ export default function PayButton({ order }: PayButtonProps) {
         ) : null}
 
         {paymentMethod === "cash" ? (
-          <div className="grid min-w-60 gap-8">
-            <div className="text-center">
-              <p>Nominal pembayaran </p>
-              <p className="text-3xl font-bold">{toRp(order.totalAmount)}</p>
-            </div>
+          <div className="grid w-60 gap-4">
+            <CashPayment
+              totalAmount={order.totalAmount}
+              onHandleCashSufficiency={onHandleCashSufficciency}
+            />
+
+            {isSufficient ? (
+              <div
+                className={cn(
+                  buttonVariants({ variant: "default" }),
+                  "justify-start gap-2 bg-[#b9f4d8] text-black",
+                )}
+              >
+                <CircleCheck className="h-4 w-4" />
+                <p>Uang anda mencukupi.</p>
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  buttonVariants({ variant: "destructive" }),
+                  "justify-start gap-2",
+                )}
+              >
+                <CircleAlert className="h-4 w-4" />
+                <p>Uang tidak mencukupi.</p>
+              </div>
+            )}
 
             <ActionButton
               method={paymentMethod}
               onSelectPaymentMethod={onSelectPaymentMethod}
               onPaymentDone={onPaymentDone}
+              isCashSufficient={isSufficient}
+              onHandleCashSufficiency={onHandleCashSufficciency}
             />
           </div>
         ) : null}
@@ -196,12 +228,16 @@ interface IActionButton {
     method: PaymentMethodType | undefined,
   ) => void;
   readonly onPaymentDone: (method: PaymentMethodType) => Promise<void>;
+  readonly isCashSufficient?: boolean;
+  readonly onHandleCashSufficiency?: (isSufficient: boolean) => void;
 }
 
 function ActionButton({
   method,
   onSelectPaymentMethod,
   onPaymentDone,
+  isCashSufficient,
+  onHandleCashSufficiency,
 }: IActionButton) {
   return (
     <div className="mt-8 flex items-center justify-between">
@@ -209,7 +245,10 @@ function ActionButton({
         size={"sm"}
         variant={"secondary"}
         className="flex w-24 items-center gap-1"
-        onClick={() => onSelectPaymentMethod(undefined)}
+        onClick={() => {
+          onSelectPaymentMethod(undefined);
+          if (onHandleCashSufficiency) onHandleCashSufficiency(false);
+        }}
       >
         <ArrowLeft className="h-4 w-4" />
         <p>Kembali</p>
@@ -220,6 +259,7 @@ function ActionButton({
         variant={"default"}
         className="flex w-24 items-center gap-2 font-normal"
         onClick={() => onPaymentDone(method)}
+        disabled={!isCashSufficient}
       >
         <PartyPopper className="h-4 w-4" />
         <p>Selesai</p>
