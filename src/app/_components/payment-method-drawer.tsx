@@ -263,10 +263,10 @@ function ActionButton({
         variant={"default"}
         className="flex w-24 items-center gap-2 font-normal"
         onClick={() => onPaymentDone(method)}
-        disabled={!isCashSufficient}
+        disabled={!isCashSufficient || status === "executing"}
       >
         {status === "executing" ? (
-          <Loader2 className="h-4 w-4" />
+          <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
           <PartyPopper className="h-4 w-4" />
         )}
