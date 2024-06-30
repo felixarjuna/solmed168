@@ -61,6 +61,7 @@ export default function AddExpenseDrawer() {
     defaultValues: {
       name: "",
       description: "",
+      amount: "",
     },
   });
 
@@ -69,6 +70,7 @@ export default function AddExpenseDrawer() {
     const expense = { ...values, amount: amount };
     execute(expense);
     setIsOpen(false);
+    form.reset();
   }
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -154,7 +156,7 @@ export default function AddExpenseDrawer() {
                 >
                   <X>Tutup</X>
                 </DrawerClose>
-                <Button className="flex w-fit items-center gap-2">
+                <Button className="flex w-fit items-center gap-2" type="submit">
                   {status === "executing" ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (

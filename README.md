@@ -49,11 +49,11 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Enable waiter to add expenses
 - [x] Fix order page min height
 - [x] Fix expense drawer min height
+- [x] Padding bottom for order summary
+- [x] Loading spinner for selesai
+- [x] Automatically delete form data after submission
 - [ ] Skip serving method choice when editing order
 - [ ] Add dashboard page
-- [ ] Automatically delete form data
-- [ ] Padding bottom for order summary
-- [x] Loading spinner for selesai
 
 **Nice to have**
 
