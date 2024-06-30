@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ActiveOrderButton from "./_components/active-order-button";
 import Cart from "./_components/cart";
+import ExpenseButton from "./_components/expense-button";
 import MenuCard from "./_components/menu-card";
 import OrderHistoryButton from "./_components/order-history-button";
 import OrderSummary from "./_components/order-summary";
@@ -29,9 +30,12 @@ export default function HomePage() {
     <main>
       <Suspense>
         <section className="flex h-screen flex-col gap-4 p-8">
-          <div className="flex gap-2 self-end">
-            <ActiveOrderButton />
-            <OrderHistoryButton />
+          <div className="flex items-center justify-between gap-2">
+            <ExpenseButton />
+            <div className="flex gap-2">
+              <ActiveOrderButton />
+              <OrderHistoryButton />
+            </div>
           </div>
 
           <section className="relative pb-12">

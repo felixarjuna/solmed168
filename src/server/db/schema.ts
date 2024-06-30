@@ -8,9 +8,9 @@ import {
   pgEnum,
   pgTableCreator,
   serial,
+  text,
   timestamp,
   uuid,
-  varchar,
 } from "drizzle-orm/pg-core";
 import { type CartItem } from "~/app/order/_hooks/useCart";
 
@@ -22,6 +22,7 @@ import { type CartItem } from "~/app/order/_hooks/useCart";
  */
 export const createTable = pgTableCreator((name) => `solmed168_${name}`);
 
+/** product table */
 export const productCategoryEnum = pgEnum("category", [
   "food",
   "beverage",
@@ -35,6 +36,7 @@ export const products = createTable("product", {
   updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
 
+/** order table */
 export type NewOrder = typeof orders.$inferInsert;
 export type Order = typeof orders.$inferSelect;
 export const servingMethodEnum = pgEnum("serving_method", [
@@ -52,10 +54,20 @@ export const orders = createTable("order", {
   orderDate: timestamp("order_date", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  waiter: varchar("waiter").notNull(),
+  waiter: text("waiter").notNull(),
   totalAmount: integer("total_amount").notNull(),
   products: json("products").$type<CartItem[]>().notNull(),
   paymentMethod: paymentMethodEnum("payment_method"),
   servingMethod: servingMethodEnum("serving_method"),
   paid: boolean("paid").notNull().default(false),
+});
+
+/** expense table */
+export type NewExpense = typeof expenses.$inferInsert;
+export const expenses = createTable("expense", {
+  id: serial("id").primaryKey(),
+  amount: integer("amount").notNull(), // Store as cents to avoid floating-point issues
+  name: text("name"),
+  description: text("description"),
+  date: timestamp("date", { withTimezone: true }).notNull().defaultNow(),
 });
