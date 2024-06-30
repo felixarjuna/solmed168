@@ -81,8 +81,8 @@ export default function Page() {
   }, [orderId]);
 
   return (
-    <main className="min-h-svh">
-      <section className="m-4 flex flex-col gap-6 overflow-y-scroll p-4">
+    <main className="min-h-svh pb-20">
+      <section className="m-4 flex flex-col gap-6 p-4">
         <BackButton />
 
         <div className="flex flex-col gap-2">
