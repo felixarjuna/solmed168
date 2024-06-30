@@ -51,6 +51,9 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Fix expense drawer min height
 - [ ] Skip serving method choice when editing order
 - [ ] Add dashboard page
+- [ ] Automatically delete form data
+- [ ] Padding bottom for order summary
+- [x] Loading spinner for selesai
 
 **Nice to have**
 

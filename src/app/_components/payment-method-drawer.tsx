@@ -13,7 +13,7 @@ import {
   WalletMinimal,
   X,
 } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
+import { useAction, type HookActionStatus } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Button, buttonVariants } from "~/components/ui/button";
@@ -103,11 +103,7 @@ export default function PaymentMethodDrawer({
         )}
       >
         <div className="flex items-center gap-2">
-          {status === "executing" ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <WalletMinimal className="h-4 w-4" />
-          )}
+          <WalletMinimal className="h-4 w-4" />
           <p>Bayar</p>
         </div>
       </DrawerTrigger>
@@ -170,6 +166,7 @@ export default function PaymentMethodDrawer({
               onPaymentDone={onPaymentDone}
               isCashSufficient={isSufficient}
               onHandleCashSufficiency={onHandleCashSufficciency}
+              status={status}
             />
           </div>
         ) : null}
@@ -185,6 +182,7 @@ export default function PaymentMethodDrawer({
               method={paymentMethod}
               onSelectPaymentMethod={onSelectPaymentMethod}
               onPaymentDone={onPaymentDone}
+              status={status}
             />
           </div>
         ) : null}
@@ -209,6 +207,7 @@ export default function PaymentMethodDrawer({
               method={paymentMethod}
               onSelectPaymentMethod={onSelectPaymentMethod}
               onPaymentDone={onPaymentDone}
+              status={status}
             />
           </div>
         ) : null}
@@ -233,6 +232,7 @@ interface IActionButton {
   readonly onPaymentDone: (method: PaymentMethodType) => Promise<void>;
   readonly isCashSufficient?: boolean;
   readonly onHandleCashSufficiency?: (isSufficient: boolean) => void;
+  readonly status: HookActionStatus;
 }
 
 function ActionButton({
@@ -241,6 +241,7 @@ function ActionButton({
   onPaymentDone,
   isCashSufficient,
   onHandleCashSufficiency,
+  status,
 }: IActionButton) {
   return (
     <div className="mt-8 flex items-center justify-between">
@@ -264,7 +265,11 @@ function ActionButton({
         onClick={() => onPaymentDone(method)}
         disabled={!isCashSufficient}
       >
-        <PartyPopper className="h-4 w-4" />
+        {status === "executing" ? (
+          <Loader2 className="h-4 w-4" />
+        ) : (
+          <PartyPopper className="h-4 w-4" />
+        )}
         <p>Selesai</p>
       </Button>
     </div>
