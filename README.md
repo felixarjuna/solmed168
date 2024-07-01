@@ -52,8 +52,9 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 - [x] Padding bottom for order summary
 - [x] Loading spinner for selesai
 - [x] Automatically delete form data after submission
+- [x] Edit logic for monthly expenses
 - [ ] Skip serving method choice when editing order
-- [ ] Add dashboard page
+- [ ] Add dashboard page for income
 
 **Nice to have**
 

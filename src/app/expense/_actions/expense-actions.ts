@@ -16,12 +16,12 @@ export const safeAddExpense = action(AddExpenseValidator, async (expense) => {
 });
 
 export const getExpenses = async () => {
-  const startOfDay = DateTime.now().startOf("day");
-  const startOfTomorrow = startOfDay.plus({ day: 1 });
+  const startOfMonth = DateTime.now().startOf("month");
+  const endOfMonth = DateTime.now().endOf("month");
 
   const filters: SQLWrapper[] = [
-    gt(expenses.date, startOfDay.toJSDate()),
-    lt(expenses.date, startOfTomorrow.toJSDate()),
+    gt(expenses.date, startOfMonth.toJSDate()),
+    lt(expenses.date, endOfMonth.toJSDate()),
   ];
 
   const query = db
