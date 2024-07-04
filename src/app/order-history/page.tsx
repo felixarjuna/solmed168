@@ -20,6 +20,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { formatDate, toRp, today } from "~/lib/utils";
 import BackButton from "../_components/back-button";
+import PageLoader from "../_components/loading";
 import PaymentMethodDrawer from "../_components/payment-method-drawer";
 import { getOrders } from "./_actions/action";
 import EditOrderButton from "./_components/edit-order-button";
@@ -58,106 +59,108 @@ export default async function Page(
   }
 
   return (
-    <div className="flex min-h-screen flex-col gap-4 p-8 pb-20">
-      <BackButton />
-      <h1 className="font-bold">Riwayat Pesanan</h1>
-      <Suspense fallback={<Loader2 />}>
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <div className="font-mono text-sm" key={order.orderId}>
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-2">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3>Order Id #{order.orderId}</h3>
-                      {renderBadge()}
+    <Suspense fallback={<PageLoader />}>
+      <div className="flex min-h-screen flex-col gap-4 p-8 pb-20">
+        <BackButton />
+        <h1 className="font-bold">Riwayat Pesanan</h1>
+        <Suspense fallback={<Loader2 />}>
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <div className="font-mono text-sm" key={order.orderId}>
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3>Order Id #{order.orderId}</h3>
+                        {renderBadge()}
+                      </div>
+
+                      <p>{formatDate(order.orderDate)}</p>
                     </div>
-
-                    <p>{formatDate(order.orderDate)}</p>
                   </div>
+
+                  {isActive ? (
+                    <DropdownMenu modal={false}>
+                      <DropdownMenuTrigger
+                        aria-haspopup
+                        className={buttonVariants({
+                          size: "icon",
+                          variant: "ghost",
+                        })}
+                        asChild
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>
+                          <EditOrderButton orderId={order.orderId} />
+                        </DropdownMenuItem>
+
+                        <PaymentMethodDrawer order={order} />
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : null}
                 </div>
 
-                {isActive ? (
-                  <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger
-                      aria-haspopup
-                      className={buttonVariants({
-                        size: "icon",
-                        variant: "ghost",
-                      })}
-                      asChild
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>
-                        <EditOrderButton orderId={order.orderId} />
-                      </DropdownMenuItem>
-
-                      <PaymentMethodDrawer order={order} />
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : null}
-              </div>
-
-              <div className="my-4 flex gap-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="rounded-full bg-neutral-100 p-1">
-                    <Utensils className="h-3 w-3" />
-                  </div>
-                  <p>No. Meja: {order.tableId}</p>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-fit rounded-full bg-neutral-100 p-1">
-                    <User className="h-3 w-3" />
-                  </div>
-                  <p>Waiter: {order.waiter}</p>
-                </div>
-              </div>
-
-              <div className="my-4">
-                {order.products.map(({ product }) => (
-                  <div className="grid grid-cols-10 gap-2" key={product.id}>
-                    <p className="col-span-1">{product.amount}x</p>
-                    <div className="col-span-6 flex flex-col gap-x-2">
-                      <p>{product.name}</p>
-                      <p className="text-xs">{toRp(product.price)}</p>
+                <div className="my-4 flex gap-4">
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="rounded-full bg-neutral-100 p-1">
+                      <Utensils className="h-3 w-3" />
                     </div>
-                    <p className="col-span-3 text-right">
-                      {toRp(product.price * product.amount)}
-                    </p>
+                    <p>No. Meja: {order.tableId}</p>
                   </div>
-                ))}
-                <p className="text-right font-bold">
-                  {toRp(order.totalAmount)}
-                </p>
+
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-fit rounded-full bg-neutral-100 p-1">
+                      <User className="h-3 w-3" />
+                    </div>
+                    <p>Waiter: {order.waiter}</p>
+                  </div>
+                </div>
+
+                <div className="my-4">
+                  {order.products.map(({ product }) => (
+                    <div className="grid grid-cols-10 gap-2" key={product.id}>
+                      <p className="col-span-1">{product.amount}x</p>
+                      <div className="col-span-6 flex flex-col gap-x-2">
+                        <p>{product.name}</p>
+                        <p className="text-xs">{toRp(product.price)}</p>
+                      </div>
+                      <p className="col-span-3 text-right">
+                        {toRp(product.price * product.amount)}
+                      </p>
+                    </div>
+                  ))}
+                  <p className="text-right font-bold">
+                    {toRp(order.totalAmount)}
+                  </p>
+                </div>
+
+                <Separator className="mt-3" />
               </div>
-
-              <Separator className="mt-3" />
-            </div>
-          ))
-        ) : (
-          <div>
-            <p>{getTextForEmptyOrder()}</p>
-          </div>
-        )}
-
-        <section className="fixed bottom-0 -mx-8 flex w-full items-center justify-between bg-neutral-100 p-4">
-          <div className="relative flex items-center gap-2">
-            <div className="rounded-full border bg-neutral-100 p-2">
-              <PiggyBank />
-            </div>
+            ))
+          ) : (
             <div>
-              <p className="text-sm">
-                Total: <span className="font-bold">{toRp(total)}</span>
-              </p>
-              <p className="text-xs">{today()}</p>
+              <p>{getTextForEmptyOrder()}</p>
             </div>
-          </div>
-        </section>
-      </Suspense>
-    </div>
+          )}
+
+          <section className="fixed bottom-0 -mx-8 flex w-full items-center justify-between bg-neutral-100 p-4">
+            <div className="relative flex items-center gap-2">
+              <div className="rounded-full border bg-neutral-100 p-2">
+                <PiggyBank />
+              </div>
+              <div>
+                <p className="text-sm">
+                  Total: <span className="font-bold">{toRp(total)}</span>
+                </p>
+                <p className="text-xs">{today()}</p>
+              </div>
+            </div>
+          </section>
+        </Suspense>
+      </div>
+    </Suspense>
   );
 }
