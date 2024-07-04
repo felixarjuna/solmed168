@@ -52,7 +52,7 @@ export default function HomePage() {
                 <div className="mb-12 flex flex-col gap-4">
                   {Array.from(groupedFoods).map(([key, values]) => (
                     <div className="flex flex-col gap-2" key={key}>
-                      <h1 className="font-bold ">{_.startCase(key)}</h1>
+                      <h1>{_.startCase(key)}</h1>
                       <div className="flex flex-col gap-4">
                         {values.map((food) => (
                           <MenuCard

@@ -13,7 +13,8 @@
 - [x] Add edit order button
 - [x] Enable edit order
 - [x] Add custom page loader
-- [ ] Embed doodle font.
+- [x] Embed doodle font.
+- [ ] Update logo
 
 ## **Priority**
 
