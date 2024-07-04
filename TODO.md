@@ -14,7 +14,7 @@
 - [x] Enable edit order
 - [x] Add custom page loader
 - [x] Embed doodle font.
-- [ ] Update logo
+- [x] Update logo
 
 ## **Priority**
 
