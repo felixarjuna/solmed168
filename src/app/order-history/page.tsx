@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
-import { formatDate, toRp, today } from "~/lib/utils";
+import { formatDate, today, toRp } from "~/lib/utils";
 import BackButton from "../_components/back-button";
 import PageLoader from "../_components/loading";
 import PaymentMethodDrawer from "../_components/payment-method-drawer";
@@ -29,7 +29,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Page(
-  searchParams: Record<"searchParams", { active: string }>,
+  searchParams: Record<"searchParams", { active: string }>
 ) {
   // active order only
   const isActive = searchParams.searchParams.active === "true";
@@ -49,13 +49,12 @@ export default async function Page(
           <p>Unpaid</p>
         </Badge>
       );
-    else
-      return (
-        <Badge className="flex items-center gap-1 bg-green-200 text-black">
-          <CheckCircle className="h-3 w-3" />
-          <p>Paid</p>
-        </Badge>
-      );
+    return (
+      <Badge className="flex items-center gap-1 bg-green-200 text-black">
+        <CheckCircle className="h-3 w-3" />
+        <p>Paid</p>
+      </Badge>
+    );
   }
 
   return (
@@ -83,11 +82,11 @@ export default async function Page(
                     <DropdownMenu modal={false}>
                       <DropdownMenuTrigger
                         aria-haspopup
+                        asChild
                         className={buttonVariants({
                           size: "icon",
                           variant: "ghost",
                         })}
-                        asChild
                       >
                         <MoreHorizontal className="h-4 w-4" />
                       </DropdownMenuTrigger>
@@ -146,7 +145,7 @@ export default async function Page(
             </div>
           )}
 
-          <section className="fixed bottom-0 -mx-8 flex w-full items-center justify-between bg-neutral-100 p-4">
+          <section className="-mx-8 fixed bottom-0 flex w-full items-center justify-between bg-neutral-100 p-4">
             <div className="relative flex items-center gap-2">
               <div className="rounded-full border bg-neutral-100 p-2">
                 <PiggyBank />

@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/drawer";
 import { useToast } from "~/components/ui/use-toast";
 import { cn } from "~/lib/utils";
-import { servingMethods, type ServingMethodType } from "../data";
+import { type ServingMethodType, servingMethods } from "../data";
 import { useCart } from "../order/_hooks/useCart";
 import { useClientState } from "../order/_hooks/useClientState";
 
@@ -72,10 +72,10 @@ export default function ServingMethodDrawer({ text }: ServingMethodProps) {
         </DrawerHeader>
         {servingMethods.map((method, i) => (
           <Button
-            key={i}
             className="flex w-40 justify-start gap-2 rounded-lg border px-6 py-4"
-            size={"lg"}
+            key={i}
             onClick={() => onClickServingMethod(method)}
+            size={"lg"}
           >
             {getIconFromServingMethod(method)}
             <p>{_.upperCase(method)}</p>

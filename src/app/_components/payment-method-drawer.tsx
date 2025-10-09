@@ -13,8 +13,8 @@ import {
   WalletMinimal,
   X,
 } from "lucide-react";
-import { useAction, type HookActionStatus } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
+import { type HookActionStatus, useAction } from "next-safe-action/hooks";
 import React from "react";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
@@ -29,8 +29,8 @@ import {
 } from "~/components/ui/drawer";
 import { useToast } from "~/components/ui/use-toast";
 import { cn, toRp } from "~/lib/utils";
-import { type Order } from "~/server/db/schema";
-import { paymentMethods, type PaymentMethodType } from "../data";
+import type { Order } from "~/server/db/schema";
+import { type PaymentMethodType, paymentMethods } from "../data";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
 import { useThermalPrinter } from "../order/_hooks/useThermalPrinter";
@@ -99,7 +99,7 @@ export default function PaymentMethodDrawer({
       <DrawerTrigger
         className={cn(
           buttonVariants({ variant: "outline", size: "sm" }),
-          "mx-2 my-1 w-24 justify-start px-3",
+          "mx-2 my-1 w-24 justify-start px-3"
         )}
       >
         <div className="flex items-center gap-2">
@@ -119,10 +119,10 @@ export default function PaymentMethodDrawer({
           <div className="flex flex-col gap-2">
             {paymentMethods.map((method, i) => (
               <Button
-                key={i}
                 className="flex justify-start gap-2 rounded-lg border px-6 py-4"
-                size={"lg"}
+                key={i}
                 onClick={() => setPaymentMethod(method)}
+                size={"lg"}
               >
                 {getIconFromPaymentMethod(method)}
                 <p>{_.upperCase(method)}</p>
@@ -134,15 +134,15 @@ export default function PaymentMethodDrawer({
         {paymentMethod === "cash" ? (
           <div className="grid w-60 gap-4">
             <CashPayment
-              totalAmount={order.totalAmount}
               onHandleCashSufficiency={onHandleCashSufficciency}
+              totalAmount={order.totalAmount}
             />
 
             {isSufficient ? (
               <div
                 className={cn(
                   buttonVariants({ variant: "default" }),
-                  "justify-start gap-2 bg-[#b9f4d8] text-black",
+                  "justify-start gap-2 bg-[#b9f4d8] text-black"
                 )}
               >
                 <CircleCheck className="h-4 w-4" />
@@ -152,7 +152,7 @@ export default function PaymentMethodDrawer({
               <div
                 className={cn(
                   buttonVariants({ variant: "destructive" }),
-                  "justify-start gap-2",
+                  "justify-start gap-2"
                 )}
               >
                 <CircleAlert className="h-4 w-4" />
@@ -161,11 +161,11 @@ export default function PaymentMethodDrawer({
             )}
 
             <ActionButton
-              method={paymentMethod}
-              onSelectPaymentMethod={onSelectPaymentMethod}
-              onPaymentDone={onPaymentDone}
               isCashSufficient={isSufficient}
+              method={paymentMethod}
               onHandleCashSufficiency={onHandleCashSufficciency}
+              onPaymentDone={onPaymentDone}
+              onSelectPaymentMethod={onSelectPaymentMethod}
               status={status}
             />
           </div>
@@ -174,14 +174,14 @@ export default function PaymentMethodDrawer({
         {paymentMethod === "qris" ? (
           <div className="grid min-w-60 gap-8">
             <div className="text-center">
-              <p className="text-3xl font-bold">QRIS</p>
-              <p className="text-3xl font-bold">{toRp(order.totalAmount)}</p>
+              <p className="font-bold text-3xl">QRIS</p>
+              <p className="font-bold text-3xl">{toRp(order.totalAmount)}</p>
             </div>
 
             <ActionButton
               method={paymentMethod}
-              onSelectPaymentMethod={onSelectPaymentMethod}
               onPaymentDone={onPaymentDone}
+              onSelectPaymentMethod={onSelectPaymentMethod}
               status={status}
             />
           </div>
@@ -191,22 +191,22 @@ export default function PaymentMethodDrawer({
           <div className="grid min-w-60 gap-4">
             <div className="text-center">
               <p>Nominal pembayaran</p>
-              <p className="text-3xl font-bold">{toRp(order.totalAmount)}</p>
+              <p className="font-bold text-3xl">{toRp(order.totalAmount)}</p>
             </div>
 
             <div className="flex gap-2 text-center">
               <div>
                 <p>No. Rekening pembayaran</p>
-                <p className="text-3xl font-bold">
-                  <span className="italic text-blue-700">BCA</span> - 7881031331
+                <p className="font-bold text-3xl">
+                  <span className="text-blue-700 italic">BCA</span> - 7881031331
                 </p>
               </div>
             </div>
 
             <ActionButton
               method={paymentMethod}
-              onSelectPaymentMethod={onSelectPaymentMethod}
               onPaymentDone={onPaymentDone}
+              onSelectPaymentMethod={onSelectPaymentMethod}
               status={status}
             />
           </div>
@@ -227,7 +227,7 @@ export default function PaymentMethodDrawer({
 interface IActionButton {
   readonly method: PaymentMethodType;
   readonly onSelectPaymentMethod: (
-    method: PaymentMethodType | undefined,
+    method: PaymentMethodType | undefined
   ) => void;
   readonly onPaymentDone: (method: PaymentMethodType) => Promise<void>;
   readonly isCashSufficient?: boolean;
@@ -246,24 +246,24 @@ function ActionButton({
   return (
     <div className="mt-8 flex items-center justify-between">
       <Button
-        size={"sm"}
-        variant={"secondary"}
         className="flex w-24 items-center gap-1"
         onClick={() => {
           onSelectPaymentMethod(undefined);
           if (onHandleCashSufficiency) onHandleCashSufficiency(false);
         }}
+        size={"sm"}
+        variant={"secondary"}
       >
         <ArrowLeft className="h-4 w-4" />
         <p>Kembali</p>
       </Button>
 
       <Button
+        className="flex w-24 items-center gap-2 font-normal"
+        disabled={!isCashSufficient || status === "executing"}
+        onClick={() => onPaymentDone(method)}
         size={"sm"}
         variant={"default"}
-        className="flex w-24 items-center gap-2 font-normal"
-        onClick={() => onPaymentDone(method)}
-        disabled={!isCashSufficient || status === "executing"}
       >
         {status === "executing" ? (
           <Loader2 className="h-4 w-4 animate-spin" />

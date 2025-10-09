@@ -4,7 +4,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { formatRp, toRp } from "~/lib/utils";
 
-const nominals = [10000, 20000, 50000, 100000, 200000, 500000];
+const nominals = [10_000, 20_000, 50_000, 100_000, 200_000, 500_000];
 
 interface ICashPaymentProps {
   readonly totalAmount: number;
@@ -16,14 +16,14 @@ export default function CashPayment(props: ICashPaymentProps) {
   const [paidAmount, setPaidAmount] = React.useState<string>("0");
 
   const exchange =
-    parseInt(paidAmount.replace(/\D/g, ""), 10) - props.totalAmount;
+    Number.parseInt(paidAmount.replace(/\D/g, ""), 10) - props.totalAmount;
 
   const handlePaidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
     const amount = formatRp(value);
     setPaidAmount(amount);
 
-    if (parseInt(amount.replace(/\D/g, ""), 10) > props.totalAmount)
+    if (Number.parseInt(amount.replace(/\D/g, ""), 10) >= props.totalAmount)
       props.onHandleCashSufficiency(true);
     else props.onHandleCashSufficiency(false);
   };
@@ -33,7 +33,7 @@ export default function CashPayment(props: ICashPaymentProps) {
       <div className="grid gap-8">
         <div className="text-center">
           <p>Nominal pembayaran </p>
-          <p className="text-3xl font-bold">{toRp(props.totalAmount)}</p>
+          <p className="font-bold text-3xl">{toRp(props.totalAmount)}</p>
         </div>
 
         <div className="grid gap-4">
@@ -42,15 +42,15 @@ export default function CashPayment(props: ICashPaymentProps) {
               <Coins className="h-4 w-4" />
               Accepted
             </p>
-            <div className="flex items-center gap-1 text-3xl font-bold">
+            <div className="flex items-center gap-1 font-bold text-3xl">
               <span className="opacity-50">Rp.</span>
               <Input
                 className="w-48 border-none text-3xl focus-visible:ring-0 focus-visible:ring-offset-0"
-                onChange={handlePaidAmountChange}
-                type="text"
                 inputMode="numeric"
-                // pattern="\d*"
                 min={0}
+                onChange={handlePaidAmountChange}
+                // pattern="\d*"
+                type="text"
                 value={paidAmount}
               />
             </div>
@@ -58,7 +58,6 @@ export default function CashPayment(props: ICashPaymentProps) {
             <div className="no-scrollbar mt-4 flex w-60 gap-2 overflow-x-scroll">
               {nominals.map((n, i) => (
                 <Button
-                  size={"sm"}
                   key={i}
                   onClick={() => {
                     setPaidAmount(n.toLocaleString("id-ID"));
@@ -66,6 +65,7 @@ export default function CashPayment(props: ICashPaymentProps) {
                       props.onHandleCashSufficiency(true);
                     else props.onHandleCashSufficiency(false);
                   }}
+                  size={"sm"}
                 >
                   {toRp(n)}
                 </Button>
@@ -78,7 +78,7 @@ export default function CashPayment(props: ICashPaymentProps) {
               <HandCoins className="h-4 w-4" />
               Exchange
             </p>
-            <div className="flex items-center gap-1 text-3xl font-bold">
+            <div className="flex items-center gap-1 font-bold text-3xl">
               <p>
                 <span className="opacity-50">Rp. </span>
                 {exchange.toLocaleString("id-ID")}
