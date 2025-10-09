@@ -12,9 +12,9 @@ import OrderSummary from "./_components/order-summary";
 import {
   alacarte,
   beverages,
+  type ProductType,
   setMenus,
   snacks,
-  type ProductType,
 } from "./data";
 
 type NewType = "bakso" | "mie" | "satuan" | undefined;
@@ -49,17 +49,17 @@ export default function HomePage() {
                 <TabsTrigger value="snacks">Snacks</TabsTrigger>
               </TabsList>
               <TabsContent value="foods">
-                <div className="mb-12 flex flex-col gap-4">
+                <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {Array.from(groupedFoods).map(([key, values]) => (
                     <div className="flex flex-col gap-2" key={key}>
                       <h1>{_.startCase(key)}</h1>
                       <div className="flex flex-col gap-4">
                         {values.map((food) => (
                           <MenuCard
-                            menu={food}
-                            key={food.id}
-                            isAdjustable
                             hasCartButton
+                            isAdjustable
+                            key={food.id}
+                            menu={food}
                           />
                         ))}
                       </div>
@@ -68,16 +68,16 @@ export default function HomePage() {
                 </div>
               </TabsContent>
               <TabsContent value="beverages">
-                <div className="mb-12 flex flex-col gap-4">
+                <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {beverages.map((bev, i) => (
-                    <MenuCard menu={bev} key={i} isAdjustable hasCartButton />
+                    <MenuCard hasCartButton isAdjustable key={i} menu={bev} />
                   ))}
                 </div>
               </TabsContent>
               <TabsContent value="snacks">
-                <div className="mb-12 flex flex-col gap-4">
+                <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {snacks.map((snack, i) => (
-                    <MenuCard menu={snack} key={i} isAdjustable hasCartButton />
+                    <MenuCard hasCartButton isAdjustable key={i} menu={snack} />
                   ))}
                 </div>
               </TabsContent>
