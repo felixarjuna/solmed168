@@ -205,7 +205,7 @@ export default function PaymentMethodDrawer({
               <div>
                 <p>No. Rekening pembayaran</p>
                 <p className="font-bold text-3xl">
-                  <span className="text-blue-700 italic">BCA</span> - 7881031331
+                  <span className="text-blue-700 italic">BCA</span> - XXXXXXXXXX
                 </p>
               </div>
             </div>
