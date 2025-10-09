@@ -1,13 +1,14 @@
+/** biome-ignore-all lint/nursery/noShadow: <explanation> */
 import React from "react";
-import { Br, Line, Printer, Row, Text, render } from "react-thermal-printer";
+import { Br, Line, Printer, Row, render, Text } from "react-thermal-printer";
 import { calculateTotal, formatDate, toRp } from "~/lib/utils";
-import { type CartItem } from "./useCart";
+import type { CartItem } from "./useCart";
 
 const serviceId = "E7810A71-73AE-499D-8C15-FAA9AEF0C3F2".toLowerCase();
 export const useThermalPrinter = (items: CartItem[]) => {
   /** state to handle device status */
   const [device, setDevice] = React.useState<BluetoothDevice | undefined>(
-    undefined,
+    undefined
   );
 
   /** state to handle device bluetooth connection
@@ -42,17 +43,19 @@ export const useThermalPrinter = (items: CartItem[]) => {
    * 3. Print the receipt
    */
   const onPrint = async () => {
-    if (device === undefined) await onConnectDevice();
+    if (device === undefined) {
+      await onConnectDevice();
+    }
 
     const total = calculateTotal(items);
     const encoder = (text: string) => new TextEncoder().encode(text);
     const receipt = (
       <Printer
-        type="epson"
-        width={32}
         characterSet="wpc1252"
         encoder={encoder}
         initialize={false}
+        type="epson"
+        width={32}
       >
         <Text align="center">SOLMED 168</Text>
         <Text align="center">RUKO SAN DIEGO MR2-10/87</Text>
@@ -67,11 +70,11 @@ export const useThermalPrinter = (items: CartItem[]) => {
           const price = toRp(item.product.price);
           return (
             <Row
+              center={item.product.name}
+              gap={1}
               key={item.product.id}
               left={amount}
-              center={item.product.name}
               right={price}
-              gap={1}
             />
           );
         })}
@@ -92,9 +95,9 @@ export const useThermalPrinter = (items: CartItem[]) => {
 
   const print = async (data: Uint8Array) => {
     const chunkSize = 512;
-    const chunks = [];
+    const chunks: BufferSource[] = [];
     for (let i = 0; i < data.length; i += chunkSize) {
-      chunks.push(data.subarray(i, i + chunkSize));
+      chunks.push(data.slice(i, i + chunkSize));
     }
 
     for (const chunk of chunks) {
