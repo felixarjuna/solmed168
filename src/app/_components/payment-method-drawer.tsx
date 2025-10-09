@@ -72,11 +72,6 @@ export default function PaymentMethodDrawer({
 
   const { onPrint } = useThermalPrinter(order.products);
 
-  const [paymentMethod, setPaymentMethod] = React.useState<PaymentMethodType>();
-  const onSelectPaymentMethod = (method?: PaymentMethodType) => {
-    setPaymentMethod(method);
-  };
-
   /** Method to handle payment: cash, qris, and transfer.
    * The current workflow must be executed for each transaction:
    * 1. handle payment
@@ -89,9 +84,20 @@ export default function PaymentMethodDrawer({
     await onPrint();
   };
 
+  /** local state to check payment sufficiency. */
   const [isSufficient, setIsSufficient] = React.useState<boolean>(false);
   const onHandleCashSufficciency = (isSufficient: boolean) => {
     setIsSufficient(isSufficient);
+  };
+
+  /** local state for payment method. */
+  const [paymentMethod, setPaymentMethod] = React.useState<PaymentMethodType>();
+  const onSelectPaymentMethod = (method?: PaymentMethodType) => {
+    setPaymentMethod(method);
+
+    if (method !== "cash") {
+      onHandleCashSufficciency(true);
+    }
   };
 
   return (
@@ -179,6 +185,7 @@ export default function PaymentMethodDrawer({
             </div>
 
             <ActionButton
+              isCashSufficient={isSufficient}
               method={paymentMethod}
               onPaymentDone={onPaymentDone}
               onSelectPaymentMethod={onSelectPaymentMethod}
@@ -204,6 +211,7 @@ export default function PaymentMethodDrawer({
             </div>
 
             <ActionButton
+              isCashSufficient={isSufficient}
               method={paymentMethod}
               onPaymentDone={onPaymentDone}
               onSelectPaymentMethod={onSelectPaymentMethod}
