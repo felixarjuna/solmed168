@@ -1,9 +1,50 @@
 {
-  "id": "d4457e61-6af2-42e2-a65f-316ac0809c69",
+  "id": "ed8b5f7c-af2d-407a-b7f4-9713a79e79b8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
+    "public.solmed168_expense": {
+      "name": "solmed168_expense",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.solmed168_order": {
       "name": "solmed168_order",
       "schema": "",
@@ -24,8 +65,14 @@
           "name": "order_date",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
+        },
+        "waiter": {
+          "name": "waiter",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "total_amount": {
           "name": "total_amount",
@@ -52,6 +99,13 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
+        },
+        "paid": {
+          "name": "paid",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         }
       },
       "indexes": {},
