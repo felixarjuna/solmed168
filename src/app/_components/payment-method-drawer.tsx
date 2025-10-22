@@ -92,7 +92,7 @@ export default function PaymentMethodDrawer({
     execute(_order);
 
     const paymentDetails: PaymentDetails = {
-      cashierName: "Nigma",
+      cashierName: "Nikma",
       paymentMethod: method,
       paymentTotal,
       paymentChange,

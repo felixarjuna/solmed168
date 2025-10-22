@@ -8,11 +8,13 @@ export default function ExpenseButton() {
   const router = useRouter();
   return (
     <Button
-      size={"icon"}
-      variant={"outline"}
+      className="flex items-center gap-1"
       onClick={() => router.push("/expense")}
+      size={"sm"}
+      variant={"outline"}
     >
       <ReceiptText className="h-4 w-4" />
+      <p>Expense</p>
     </Button>
   );
 }
