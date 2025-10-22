@@ -235,7 +235,7 @@ export const addons: ProductType[] = [
   { id: uuidv4(), name: "Takeaway cup", price: 1000 },
 ];
 
-export type PaymentMethodType = "cash" | "qris" | "transfer";
+export type PaymentMethodType = "cash" | "qris" | "transfer" | undefined;
 export const paymentMethods: PaymentMethodType[] = ["cash", "qris", "transfer"];
 
 export type ServingMethodType = "dine_in" | "takeaway";

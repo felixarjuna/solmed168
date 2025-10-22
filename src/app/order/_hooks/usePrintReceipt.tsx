@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/nursery/noShadow: <explanation> */
-import React from "react";
 import { Br, Line, Printer, Row, render, Text } from "react-thermal-printer";
 import type { PaymentMethodType, ReceiptType } from "~/app/data";
 import { toast } from "~/components/ui/use-toast";
 import { calculateTotal, formatDate, toRp } from "~/lib/utils";
 import type { NewOrder } from "~/server/db/schema";
 import type { CartItem } from "./useCart";
+import { useThermalPrinterContext } from "./useThermalPrinterContext";
 
 export type PaymentDetails = {
   readonly cashierName: string;
@@ -14,37 +14,14 @@ export type PaymentDetails = {
   readonly paymentChange?: number;
 };
 
-const serviceId = "E7810A71-73AE-499D-8C15-FAA9AEF0C3F2".toLowerCase();
 export const usePrintReceipt = (items: CartItem[]) => {
-  /** state to handle device status */
-  const [device, setDevice] = React.useState<BluetoothDevice | undefined>(
-    undefined
-  );
-
-  /** state to handle device bluetooth connection
-   * connect and disconnect
-   */
-  const [server, setServer] = React.useState<BluetoothRemoteGATTServer>();
-
-  const [characteristic, setCharacteristic] =
-    React.useState<BluetoothRemoteGATTCharacteristic>();
-
-  const onConnectDevice = async () => {
-    const device = await navigator.bluetooth.requestDevice({
-      filters: [{ name: "RPP02N" }],
-      optionalServices: [serviceId],
-    });
-    setDevice(device);
-
-    const server = await device.gatt?.connect();
-    setServer(server);
-
-    const service = await server?.getPrimaryService(serviceId);
-    const characteristic = (await service?.getCharacteristics())?.at(0);
-    setCharacteristic(characteristic);
-  };
-
-  const onDisconnectDevice = () => server?.disconnect();
+  const {
+    device,
+    characteristic,
+    isConnected,
+    connectDevice,
+    disconnectDevice,
+  } = useThermalPrinterContext();
 
   const getReceipt = (
     receiptType: ReceiptType,
@@ -154,15 +131,9 @@ export const usePrintReceipt = (items: CartItem[]) => {
     );
   };
 
-  /** Method to handle invoice print.
-   * 1. Connect to bluetooth thermal printer
-   * device disconnected.
-   * 2. Render the receipt
-   * 3. Print the receipt
-   */
   const onPrintInternalReceipt = async (orderDetails: NewOrder) => {
-    if (device === undefined) {
-      await onConnectDevice();
+    if (!isConnected) {
+      await connectDevice();
     }
 
     const receipt = getReceipt("internal", orderDetails, undefined);
@@ -175,8 +146,8 @@ export const usePrintReceipt = (items: CartItem[]) => {
   };
 
   const onPrintCustomerReceipt = async (paymentDetails: PaymentDetails) => {
-    if (device === undefined) {
-      await onConnectDevice();
+    if (!isConnected) {
+      await connectDevice();
     }
 
     const receipt = getReceipt("client", undefined, paymentDetails);
@@ -206,8 +177,9 @@ export const usePrintReceipt = (items: CartItem[]) => {
   return {
     device,
     characteristic,
-    onConnectDevice,
-    onDisconnectDevice,
+    isConnected,
+    connectDevice,
+    disconnectDevice,
     onPrintInternalReceipt,
     onPrintCustomerReceipt,
   };

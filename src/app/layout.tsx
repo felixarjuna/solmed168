@@ -4,6 +4,7 @@ import localFont from "@next/font/local";
 import { GeistSans } from "geist/font/sans";
 import { Toaster } from "~/components/ui/toaster";
 import Logo from "./_components/logo";
+import { ThermalPrinterProvider } from "./order/_hooks/useThermalPrinterContext";
 
 export const metadata = {
   title: "SOLMED 168",
@@ -22,13 +23,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${vividly.variable} ${GeistSans.variable}`}>
+    <html className={`${vividly.variable} ${GeistSans.variable}`} lang="en">
       <body>
-        <div className="flex flex-col">
-          <Logo />
-          {children}
-        </div>
-        <Toaster />
+        <ThermalPrinterProvider>
+          <div className="flex flex-col">
+            <Logo />
+            {children}
+          </div>
+          <Toaster />
+        </ThermalPrinterProvider>
       </body>
     </html>
   );

@@ -3,19 +3,16 @@
 
 import * as _ from "lodash";
 import {
-  ArrowLeft,
   Banknote,
   CircleAlert,
   CircleCheck,
   Landmark,
-  Loader2,
-  PartyPopper,
   QrCode,
   WalletMinimal,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type HookActionStatus, useAction } from "next-safe-action/hooks";
+import { useAction } from "next-safe-action/hooks";
 import React from "react";
 import { Button, buttonVariants } from "~/components/ui/button";
 import {
@@ -39,6 +36,7 @@ import {
   usePrintReceipt,
 } from "../order/_hooks/usePrintReceipt";
 import CashPayment from "./cash-payment";
+import PaymentSelectionButton from "./payment-selection-button";
 
 interface IPaymentMethodDrawerProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -90,16 +88,17 @@ export default function PaymentMethodDrawer({
    * 3. print order invoice
    */
   const onPaymentDone = async (method: PaymentMethodType) => {
+    const _order = { ...order, paymentMethod: method };
+    execute(_order);
+
     const paymentDetails: PaymentDetails = {
       cashierName: "Nigma",
       paymentMethod: method,
       paymentTotal,
       paymentChange,
     };
-    await onPrintCustomerReceipt(paymentDetails);
 
-    // const _order = { ...order, paymentMethod: method };
-    // execute(_order);
+    await onPrintCustomerReceipt(paymentDetails);
   };
 
   /** local state to check payment sufficiency. */
@@ -110,7 +109,7 @@ export default function PaymentMethodDrawer({
 
   /** local state for payment method. */
   const [paymentMethod, setPaymentMethod] =
-    React.useState<PaymentMethodType>("cash");
+    React.useState<PaymentMethodType>(undefined);
   const onSelectPaymentMethod = (method: PaymentMethodType) => {
     setPaymentMethod(method);
 
@@ -127,7 +126,6 @@ export default function PaymentMethodDrawer({
     order.totalAmount
   );
   const [paymentChange, setPaymentChange] = React.useState<number>(0);
-
   const onHandlePaymentChange = (paidAmount: number, exchange: number) => {
     setPaymentTotal(paidAmount);
     setPaymentChange(exchange);
@@ -160,7 +158,7 @@ export default function PaymentMethodDrawer({
               <Button
                 className="flex justify-start gap-2 rounded-lg border px-6 py-4"
                 key={i.toString()}
-                onClick={() => setPaymentMethod(method)}
+                onClick={() => onSelectPaymentMethod(method)}
                 size={"lg"}
               >
                 {getIconFromPaymentMethod(method)}
@@ -200,7 +198,7 @@ export default function PaymentMethodDrawer({
               </div>
             )}
 
-            <ActionButton
+            <PaymentSelectionButton
               isCashSufficient={isSufficient}
               method={paymentMethod}
               onHandleCashSufficiency={onHandleCashSufficciency}
@@ -218,7 +216,7 @@ export default function PaymentMethodDrawer({
               <p className="font-bold text-3xl">{toRp(order.totalAmount)}</p>
             </div>
 
-            <ActionButton
+            <PaymentSelectionButton
               isCashSufficient={isSufficient}
               method={paymentMethod}
               onPaymentDone={onPaymentDone}
@@ -244,7 +242,7 @@ export default function PaymentMethodDrawer({
               </div>
             </div>
 
-            <ActionButton
+            <PaymentSelectionButton
               isCashSufficient={isSufficient}
               method={paymentMethod}
               onPaymentDone={onPaymentDone}
@@ -263,59 +261,5 @@ export default function PaymentMethodDrawer({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-}
-
-type IActionButton = {
-  readonly method: PaymentMethodType;
-  readonly onSelectPaymentMethod: (
-    method: PaymentMethodType | undefined
-  ) => void;
-  readonly onPaymentDone: (method: PaymentMethodType) => Promise<void>;
-  readonly isCashSufficient?: boolean;
-  readonly onHandleCashSufficiency?: (isSufficient: boolean) => void;
-  readonly status: HookActionStatus;
-};
-
-function ActionButton({
-  method,
-  onSelectPaymentMethod,
-  onPaymentDone,
-  isCashSufficient,
-  onHandleCashSufficiency,
-  status,
-}: IActionButton) {
-  return (
-    <div className="mt-8 flex items-center justify-between">
-      <Button
-        className="flex w-24 items-center gap-1"
-        onClick={() => {
-          onSelectPaymentMethod(undefined);
-          if (onHandleCashSufficiency) {
-            onHandleCashSufficiency(false);
-          }
-        }}
-        size={"sm"}
-        variant={"secondary"}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        <p>Kembali</p>
-      </Button>
-
-      <Button
-        className="flex w-24 items-center gap-2 font-normal"
-        disabled={!isCashSufficient || status === "executing"}
-        onClick={() => onPaymentDone(method)}
-        size={"sm"}
-        variant={"default"}
-      >
-        {status === "executing" ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <PartyPopper className="h-4 w-4" />
-        )}
-        <p>Selesai</p>
-      </Button>
-    </div>
   );
 }
