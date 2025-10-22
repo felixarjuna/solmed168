@@ -8,13 +8,12 @@ import { useThermalPrinterContext } from "../order/_hooks/useThermalPrinterConte
 export default function BluetoothIndicator() {
   const { isConnected, connectDevice } = useThermalPrinterContext();
 
-  console.log(isConnected);
   return (
     <Button
       className="relative"
       onClick={() => connectDevice()}
       size={"icon"}
-      variant={"default"}
+      variant={"outline"}
     >
       <BluetoothIcon className="h-4 w-4" />
       <span className="-right-1 -top-1 absolute flex h-3 w-3">
