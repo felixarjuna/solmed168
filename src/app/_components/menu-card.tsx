@@ -42,7 +42,7 @@ export default function MenuCard({
     <div className="flex flex-col gap-4 rounded-lg bg-neutral-200/30 p-4">
       <div className="flex flex-col">
         <h1 className="font-bold">{menu.name}</h1>
-        <p className="text-wrap text-xs">{menu.description ?? "-"}</p>
+        <p className="text-wrap text-xs">{menu.description ?? ""}</p>
         <div className="flex items-center justify-between">
           <p className="mt-2 text-sm">{toRp(total)}</p>
           <div className="mt-1 flex items-center justify-end gap-2">

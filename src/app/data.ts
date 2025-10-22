@@ -25,9 +25,16 @@ export const setMenus: ProductType[] = [
   },
   {
     id: uuidv4(),
-    name: "Bakso Polos (Isi 9)",
+    name: "Bakso Polos (Isi 6)",
+    price: 20_000,
+    description: "6 Bakso Halus/Kasar, Suun",
+    type: "bakso",
+  },
+  {
+    id: uuidv4(),
+    name: "Bakso Polos (Isi 8)",
     price: 25_000,
-    description: "9 Bakso Halus/Kasar, Suun",
+    description: "8 Bakso Halus/Kasar, Suun",
     type: "bakso",
   },
   {
@@ -40,28 +47,49 @@ export const setMenus: ProductType[] = [
   },
   {
     id: uuidv4(),
-    name: "Mie ayam pangsit",
-    price: 29_000,
+    name: "Mie polos",
+    price: 18_000,
     description: undefined,
+    type: "mie",
+  },
+  {
+    id: uuidv4(),
+    name: "Mie ayam",
+    price: 20_000,
+    description: undefined,
+    type: "mie",
+  },
+  {
+    id: uuidv4(),
+    name: "Mie ayam pangsit",
+    price: 23_000,
+    description: "Mie ayam dengan 2 pangsit",
     type: "mie",
   },
   {
     id: uuidv4(),
     name: "Mie ayam bakso",
     price: 26_000,
-    description: undefined,
+    description: "Mie ayam dengan 2 bakso",
     type: "mie",
   },
   {
     id: uuidv4(),
     name: "Mie ayam pangsit bakso",
-    price: 28_000,
+    price: 29_000,
+    description: "Mie ayam dengan 2 pangsit dan 2 bakso",
+    type: "mie",
+  },
+  {
+    id: uuidv4(),
+    name: "Pangsit goreng (Isi 10)",
+    price: 26_000,
     description: undefined,
     type: "mie",
   },
   {
     id: uuidv4(),
-    name: "Pangsit goreng/kuah (Isi 10)",
+    name: "Pangsit kuah (Isi 10)",
     price: 26_000,
     description: undefined,
     type: "mie",
@@ -101,6 +129,12 @@ export const alacarte: ProductType[] = [
   },
   {
     id: uuidv4(),
+    name: "Siomay Goreng",
+    price: 4000,
+    type: "satuan",
+  },
+  {
+    id: uuidv4(),
     name: "Tahu Bakso",
     price: 4000,
     type: "satuan",
@@ -121,6 +155,14 @@ export const alacarte: ProductType[] = [
     id: uuidv4(),
     name: "Pangsit kuah",
     price: 3000,
+    description: "Pembelian minimal 5 buah",
+    type: "satuan",
+  },
+  {
+    id: uuidv4(),
+    name: "Takeaway Box",
+    price: 1000,
+    description: undefined,
     type: "satuan",
   },
 ];
@@ -128,8 +170,13 @@ export const alacarte: ProductType[] = [
 export const snacks: ProductType[] = [
   {
     id: uuidv4(),
-    name: "Pisang Goreng",
-    price: 15_000,
+    name: "Pisang goreng",
+    price: 17_000,
+  },
+  {
+    id: uuidv4(),
+    name: "Pisang goreng pack",
+    price: 80_000,
   },
   {
     id: uuidv4(),
@@ -166,7 +213,7 @@ export const beverages: ProductType[] = [
   },
   {
     id: uuidv4(),
-    name: "Es Teh Tawar",
+    name: "Es Teh Tawar Jumbo",
     price: 7000,
   },
   {
@@ -223,11 +270,13 @@ export const beverages: ProductType[] = [
   { id: uuidv4(), name: "Es Degan", price: 12_000 },
   { id: uuidv4(), name: "Es Degan Jeruk", price: 15_000 },
   { id: uuidv4(), name: "Es Degan Cao", price: 15_000 },
-  { id: uuidv4(), name: "Es Jeruk Manis/Nipis", price: 10_000 },
+  { id: uuidv4(), name: "Es Jeruk Manis", price: 10_000 },
+  { id: uuidv4(), name: "Es Jeruk Nipis", price: 10_000 },
   { id: uuidv4(), name: "Es Campur", price: 20_000 },
   { id: uuidv4(), name: "Es Syrup", price: 7000 },
   { id: uuidv4(), name: "Es Cao", price: 8000 },
   { id: uuidv4(), name: "Es Soda Gembira", price: 15_000 },
+  { id: uuidv4(), name: "Es Milo", price: 12_000 },
   { id: uuidv4(), name: "Es Milo Cao", price: 15_000 },
 ];
 
