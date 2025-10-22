@@ -96,7 +96,6 @@ export const usePrintReceipt = (items: CartItem[]) => {
             right={toRp(paymentDetails.paymentTotal)}
           />
           <Row left="Kembali" right={toRp(paymentDetails.paymentChange ?? 0)} />
-          <Br />
           <Line />
           <Text align="center">
             TERIMA KASIH SUDAH BERKUNJUNG KE SOLMED168 PAKUWON CITY
@@ -127,7 +126,7 @@ export const usePrintReceipt = (items: CartItem[]) => {
         <Text align="center">PAKUWON CITY, SURABAYA</Text>
         <Text align="center">(031) 5929985 - (081) 287968899</Text>
         <Line />
-        <Text align="right">{formatDate(new Date())}</Text>
+        <Text>{formatDate(new Date())}</Text>
         {orderDetails.servingMethod === "dine_in" ? (
           <Row left={"No. Meja"} right={`Meja ${orderDetails.tableId}`} />
         ) : null}
@@ -167,16 +166,27 @@ export const usePrintReceipt = (items: CartItem[]) => {
     }
 
     const receipt = getReceipt("internal", orderDetails, undefined);
+    if (receipt === undefined) {
+      toast({ title: "An error occured while printing internal receipt. " });
+      return;
+    }
     const data = await render(receipt);
     await print(data);
   };
 
-  const onPrintClientReceipt = async (paymentDetails: PaymentDetails) => {
+  const onPrintCustomerReceipt = async (paymentDetails: PaymentDetails) => {
     if (device === undefined) {
       await onConnectDevice();
     }
 
     const receipt = getReceipt("client", undefined, paymentDetails);
+    if (receipt === undefined) {
+      toast({
+        title: "An error occured while printing customer receipt. ",
+      });
+      return;
+    }
+
     const data = await render(receipt);
     await print(data);
   };
@@ -199,6 +209,6 @@ export const usePrintReceipt = (items: CartItem[]) => {
     onConnectDevice,
     onDisconnectDevice,
     onPrintInternalReceipt,
-    onPrintClientReceipt,
+    onPrintCustomerReceipt,
   };
 };

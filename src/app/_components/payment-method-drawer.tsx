@@ -34,7 +34,10 @@ import type { Order } from "~/server/db/schema";
 import { type PaymentMethodType, paymentMethods } from "../data";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
-import { usePrintReceipt } from "../order/_hooks/useThermalPrinter";
+import {
+  type PaymentDetails,
+  usePrintReceipt,
+} from "../order/_hooks/usePrintReceipt";
 import CashPayment from "./cash-payment";
 
 interface IPaymentMethodDrawerProps
@@ -78,6 +81,8 @@ export default function PaymentMethodDrawer({
     }
   };
 
+  const { onPrintCustomerReceipt } = usePrintReceipt(order.products);
+
   /** Method to handle payment: cash, qris, and transfer.
    * The current workflow must be executed for each transaction:
    * 1. handle payment
@@ -85,9 +90,16 @@ export default function PaymentMethodDrawer({
    * 3. print order invoice
    */
   const onPaymentDone = async (method: PaymentMethodType) => {
-    const _order = { ...order, paymentMethod: method };
-    execute(_order);
-    await onPrint();
+    const paymentDetails: PaymentDetails = {
+      cashierName: "Nigma",
+      paymentMethod: method,
+      paymentTotal,
+      paymentChange,
+    };
+    await onPrintCustomerReceipt(paymentDetails);
+
+    // const _order = { ...order, paymentMethod: method };
+    // execute(_order);
   };
 
   /** local state to check payment sufficiency. */
@@ -97,16 +109,29 @@ export default function PaymentMethodDrawer({
   };
 
   /** local state for payment method. */
-  const [paymentMethod, setPaymentMethod] = React.useState<PaymentMethodType>();
-  const onSelectPaymentMethod = (method?: PaymentMethodType) => {
+  const [paymentMethod, setPaymentMethod] =
+    React.useState<PaymentMethodType>("cash");
+  const onSelectPaymentMethod = (method: PaymentMethodType) => {
     setPaymentMethod(method);
 
     if (method !== "cash") {
       onHandleCashSufficciency(true);
+      // Reset payment details for non-cash methods
+      setPaymentTotal(order.totalAmount);
+      setPaymentChange(0);
     }
   };
 
-  const { onPrint } = usePrintReceipt(order.products);
+  /** local state to track payment details for receipt */
+  const [paymentTotal, setPaymentTotal] = React.useState<number>(
+    order.totalAmount
+  );
+  const [paymentChange, setPaymentChange] = React.useState<number>(0);
+
+  const onHandlePaymentChange = (paidAmount: number, exchange: number) => {
+    setPaymentTotal(paidAmount);
+    setPaymentChange(exchange);
+  };
 
   return (
     <Drawer>
@@ -149,6 +174,7 @@ export default function PaymentMethodDrawer({
           <div className="grid w-60 gap-4">
             <CashPayment
               onHandleCashSufficiency={onHandleCashSufficciency}
+              onPaymentChange={onHandlePaymentChange}
               totalAmount={order.totalAmount}
             />
 

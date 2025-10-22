@@ -6,10 +6,11 @@ import { formatRp, toRp } from "~/lib/utils";
 
 const nominals = [10_000, 20_000, 50_000, 100_000, 200_000, 500_000];
 
-interface ICashPaymentProps {
+type ICashPaymentProps = {
   readonly totalAmount: number;
   readonly onHandleCashSufficiency: (isSufficient: boolean) => void;
-}
+  readonly onPaymentChange?: (paidAmount: number, exchange: number) => void;
+};
 
 export default function CashPayment(props: ICashPaymentProps) {
   /** local state to handle amount change */
@@ -23,9 +24,19 @@ export default function CashPayment(props: ICashPaymentProps) {
     const amount = formatRp(value);
     setPaidAmount(amount);
 
-    if (Number.parseInt(amount.replace(/\D/g, ""), 10) >= props.totalAmount)
+    const paidAmountNum = Number.parseInt(amount.replace(/\D/g, ""), 10);
+    const exchangeAmount = paidAmountNum - props.totalAmount;
+
+    if (paidAmountNum >= props.totalAmount) {
       props.onHandleCashSufficiency(true);
-    else props.onHandleCashSufficiency(false);
+    } else {
+      props.onHandleCashSufficiency(false);
+    }
+
+    // Notify parent component about payment changes
+    if (props.onPaymentChange) {
+      props.onPaymentChange(paidAmountNum, exchangeAmount);
+    }
   };
 
   return (
@@ -58,12 +69,21 @@ export default function CashPayment(props: ICashPaymentProps) {
             <div className="no-scrollbar mt-4 flex w-60 gap-2 overflow-x-scroll">
               {nominals.map((n, i) => (
                 <Button
-                  key={i}
+                  key={i.toString()}
                   onClick={() => {
                     setPaidAmount(n.toLocaleString("id-ID"));
-                    if (n > props.totalAmount)
+                    const exchangeAmount = n - props.totalAmount;
+
+                    if (n >= props.totalAmount) {
                       props.onHandleCashSufficiency(true);
-                    else props.onHandleCashSufficiency(false);
+                    } else {
+                      props.onHandleCashSufficiency(false);
+                    }
+
+                    // Notify parent component about payment changes
+                    if (props.onPaymentChange) {
+                      props.onPaymentChange(n, exchangeAmount);
+                    }
                   }}
                   size={"sm"}
                 >
