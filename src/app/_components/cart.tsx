@@ -12,8 +12,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
-import { getOrderById } from "../order-history/_actions/action";
 import { useCart } from "../order/_hooks/useCart";
+import { getOrderById } from "../order-history/_actions/action";
 import CartMenuCard from "./cart-menu-card";
 import ServingMethodDrawer from "./serving-method-drawer";
 
@@ -21,7 +21,7 @@ export default function Cart() {
   const { items, syncCart } = useCart();
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
-    0,
+    0
   );
 
   const searchParams = useSearchParams();
@@ -38,14 +38,14 @@ export default function Cart() {
   }, [syncCart, orderId]);
 
   return (
-    <div className="absolute right-0 top-0">
+    <div className="absolute top-0 right-0">
       <Drawer>
         <DrawerTrigger
           className={buttonVariants({ size: "icon", variant: "outline" })}
         >
           <div className="relative">
             <ShoppingCart className="h-4 w-4" />
-            <span className="absolute -top-5 left-4 flex h-6 w-6 items-center justify-center rounded-full border bg-neutral-100/90 text-xs">
+            <span className="-top-5 absolute left-4 flex h-6 w-6 items-center justify-center rounded-full border bg-neutral-100/90 text-xs">
               {numberOfItems}
             </span>
           </div>
@@ -75,7 +75,7 @@ export function CartContent() {
   const { items } = useCart();
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
-    0,
+    0
   );
 
   return (
@@ -89,9 +89,9 @@ export function CartContent() {
 
         {items.map((item) => (
           <CartMenuCard
+            amount={item.product.amount}
             key={item.product.id}
             menu={item.product}
-            amount={item.product.amount}
           />
         ))}
 
