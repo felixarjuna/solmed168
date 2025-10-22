@@ -243,3 +243,5 @@ export const servingMethods: ServingMethodType[] = ["dine_in", "takeaway"];
 
 export const tableNums = Array.from({ length: 10 }, (_, index) => index + 1);
 export const waiters = ["Lia", "Citra", "Nikma", "Fia", "Jelita"];
+
+export type ReceiptType = "internal" | "client";

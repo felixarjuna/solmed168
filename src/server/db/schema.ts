@@ -12,7 +12,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { type CartItem } from "~/app/order/_hooks/useCart";
+import type { CartItem } from "~/app/order/_hooks/useCart";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same

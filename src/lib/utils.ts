@@ -34,5 +34,5 @@ export function today() {
 export function formatDate(date: Date) {
   return DateTime.fromJSDate(date)
     .setLocale("id-ID")
-    .toFormat("dd MMMM yyyy | HH:mm");
+    .toFormat("dd MMMM yyyy HH:mm");
 }

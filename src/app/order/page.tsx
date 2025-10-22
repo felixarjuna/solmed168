@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noShadow: <explanation> */
 "use client";
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -33,7 +34,7 @@ import AddOrderButton from "./_components/add-order-button";
 import UpdateOrderButton from "./_components/update-order-button";
 import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
-import { usePrintReceipt } from "./_hooks/useThermalPrinter";
+import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
 export default function Page() {
   const { items, cartTotal } = useCart();
@@ -44,17 +45,19 @@ export default function Page() {
 
   const { servingMethod } = useClientState();
   const getTextFromServingMethod = (method: ServingMethodType) => {
-    if (method === "dine_in") return "Dine in";
-    if (method === "takeaway") return "Takeaway";
+    if (method === "dine_in") {
+      return "Dine in";
+    }
+    if (method === "takeaway") {
+      return "Takeaway";
+    }
   };
-
-  const { device, onPrint } = usePrintReceipt(items);
 
   /** local state for table id */
   const [tableId, setTableId] = React.useState<string>("1");
 
   /** local state for waiter name */
-  const [waiter, setWaiter] = React.useState<string>(waiters[0]!);
+  const [waiter, setWaiter] = React.useState<string>(waiters.at(0) ?? "Lia");
 
   /** handle update order by using order id */
   const searchParams = useSearchParams();
@@ -78,8 +81,12 @@ export default function Page() {
       }
     };
 
-    if (orderId) void fetchOrder(+orderId);
+    if (orderId) {
+      fetchOrder(+orderId);
+    }
   }, [orderId]);
+
+  const { device, onPrintInternalReceipt } = usePrintReceipt(items);
 
   return (
     <Suspense fallback={<PageLoader />}>
@@ -155,7 +162,7 @@ export default function Page() {
                   </SelectTrigger>
                   <SelectContent className="w-[24px]">
                     {waiters.map((waiter, i) => (
-                      <SelectItem key={i} value={waiter}>
+                      <SelectItem key={i.toString()} value={waiter}>
                         {waiter}
                       </SelectItem>
                     ))}
@@ -184,7 +191,11 @@ export default function Page() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button className="relative" onClick={onPrint} size={"icon"}>
+            <Button
+              className="relative"
+              onClick={() => onPrintInternalReceipt(order)}
+              size={"icon"}
+            >
               <PrinterIcon className="relative h-4 w-4" />
               <span className="-right-1 -top-1 absolute flex h-3 w-3">
                 <span
