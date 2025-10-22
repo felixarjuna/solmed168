@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noShadow: <explanation> */
 "use client";
 
 import * as _ from "lodash";
@@ -33,7 +34,7 @@ import type { Order } from "~/server/db/schema";
 import { type PaymentMethodType, paymentMethods } from "../data";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
-import { useThermalPrinter } from "../order/_hooks/useThermalPrinter";
+import { usePrintReceipt } from "../order/_hooks/useThermalPrinter";
 import CashPayment from "./cash-payment";
 
 interface IPaymentMethodDrawerProps
@@ -57,20 +58,25 @@ export default function PaymentMethodDrawer({
         });
         clearCart();
         router.push("/");
-      } else
+      } else {
         toast({
           title: "Pembayaran gagal. ❌",
         });
+      }
     },
   });
 
   const getIconFromPaymentMethod = (method: PaymentMethodType) => {
-    if (method === "cash") return <Banknote />;
-    if (method === "qris") return <QrCode />;
-    if (method === "transfer") return <Landmark />;
+    if (method === "cash") {
+      return <Banknote />;
+    }
+    if (method === "qris") {
+      return <QrCode />;
+    }
+    if (method === "transfer") {
+      return <Landmark />;
+    }
   };
-
-  const { onPrint } = useThermalPrinter(order.products);
 
   /** Method to handle payment: cash, qris, and transfer.
    * The current workflow must be executed for each transaction:
@@ -100,6 +106,8 @@ export default function PaymentMethodDrawer({
     }
   };
 
+  const { onPrint } = usePrintReceipt(order.products);
+
   return (
     <Drawer>
       <DrawerTrigger
@@ -126,7 +134,7 @@ export default function PaymentMethodDrawer({
             {paymentMethods.map((method, i) => (
               <Button
                 className="flex justify-start gap-2 rounded-lg border px-6 py-4"
-                key={i}
+                key={i.toString()}
                 onClick={() => setPaymentMethod(method)}
                 size={"lg"}
               >
@@ -232,7 +240,7 @@ export default function PaymentMethodDrawer({
   );
 }
 
-interface IActionButton {
+type IActionButton = {
   readonly method: PaymentMethodType;
   readonly onSelectPaymentMethod: (
     method: PaymentMethodType | undefined
@@ -241,7 +249,7 @@ interface IActionButton {
   readonly isCashSufficient?: boolean;
   readonly onHandleCashSufficiency?: (isSufficient: boolean) => void;
   readonly status: HookActionStatus;
-}
+};
 
 function ActionButton({
   method,
@@ -257,7 +265,9 @@ function ActionButton({
         className="flex w-24 items-center gap-1"
         onClick={() => {
           onSelectPaymentMethod(undefined);
-          if (onHandleCashSufficiency) onHandleCashSufficiency(false);
+          if (onHandleCashSufficiency) {
+            onHandleCashSufficiency(false);
+          }
         }}
         size={"sm"}
         variant={"secondary"}

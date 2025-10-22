@@ -1,11 +1,22 @@
 /** biome-ignore-all lint/nursery/noShadow: <explanation> */
 import React from "react";
 import { Br, Line, Printer, Row, render, Text } from "react-thermal-printer";
+import type { PaymentMethodType } from "~/app/data";
 import { calculateTotal, formatDate, toRp } from "~/lib/utils";
 import type { CartItem } from "./useCart";
 
+type PaymentDetails = {
+  cashierName: string;
+  paymentMethod: PaymentMethodType;
+  paymentTotal: number;
+  paymentChange?: number;
+};
+
 const serviceId = "E7810A71-73AE-499D-8C15-FAA9AEF0C3F2".toLowerCase();
-export const useThermalPrinter = (items: CartItem[]) => {
+export const usePrintReceipt = (
+  items: CartItem[],
+  paymentDetails: PaymentDetails
+) => {
   /** state to handle device status */
   const [device, setDevice] = React.useState<BluetoothDevice | undefined>(
     undefined
@@ -62,26 +73,29 @@ export const useThermalPrinter = (items: CartItem[]) => {
         <Text align="center">PAKUWON CITY, SURABAYA</Text>
         <Text align="center">(031) 5929985 - (081) 287968899</Text>
         <Line />
-        <Text>Waktu Pemesanan</Text>
         <Text>{formatDate(new Date())}</Text>
-        <Br />
+        <Row gap={1} left={"Kasir"} right={paymentDetails.cashierName} />
+        <Line />
         {items.map((item) => {
-          const amount = `${item.product.amount}x`;
-          const price = toRp(item.product.price);
+          const amount = `${item.product.amount} x ${item.product.price}`;
+          const subTotal = toRp(item.product.amount * item.product.price);
+
           return (
-            <Row
-              center={item.product.name}
-              gap={1}
-              key={item.product.id}
-              left={amount}
-              right={price}
-            />
+            <>
+              <Text align="left">{item.product.name}</Text>
+              <Row left={amount} right={subTotal} />
+            </>
           );
         })}
+        <Line />
+        <Row left="Total" right={<Text bold>{toRp(total)}</Text>} />
+        <Row
+          left={`Bayar (${paymentDetails.paymentMethod})`}
+          right={toRp(paymentDetails.paymentTotal)}
+        />
+        <Row left="Kembali" right={toRp(paymentDetails.paymentChange ?? 0)} />
         <Br />
-        <Row left="Grand Total" right={<Text bold>{toRp(total)}</Text>} />
-        <Br />
-        <Text align="center">HARGA SUDAH TERMASUK PAJAK</Text>
+        <Line />
         <Text align="center">
           TERIMA KASIH SUDAH BERKUNJUNG KE SOLMED168 PAKUWON CITY
         </Text>

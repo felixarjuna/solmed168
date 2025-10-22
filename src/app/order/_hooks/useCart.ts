@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { type ProductType } from "~/app/data";
+import type { ProductType } from "~/app/data";
 import { calculateTotal } from "~/lib/utils";
 
 export type CartItemExtended = ProductType & {
@@ -36,7 +36,7 @@ export const useCart = create<CartState>()(
       addItem: (product, amount) =>
         set((state) => {
           const index = state.items.findIndex(
-            (item) => item.product.id === product.id,
+            (item) => item.product.id === product.id
           );
           /* if index is not found, add new item to the cart
            * with the given quantity
@@ -54,7 +54,7 @@ export const useCart = create<CartState>()(
           const items = [...state.items];
           items[index]!.product.amount += amount ? amount : 1;
           const total = calculateTotal(items);
-          return { items: items, cartTotal: total };
+          return { items, cartTotal: total };
         }),
       removeItem: (id) =>
         set((state) => {
@@ -97,20 +97,18 @@ export const useCart = create<CartState>()(
           else
             items[index]!.product.amount = Math.max(
               1,
-              items[index]!.product.amount - 1,
+              items[index]!.product.amount - 1
             );
 
           const total = calculateTotal(items);
-          return { items: items, cartTotal: total };
+          return { items, cartTotal: total };
         }),
       syncCart: (items) =>
-        set(() => {
-          return { items: items, cartTotal: calculateTotal(items) };
-        }),
+        set(() => ({ items, cartTotal: calculateTotal(items) })),
     }),
     {
       name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 );
