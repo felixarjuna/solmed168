@@ -24,6 +24,8 @@ import PageLoader from "../_components/loading";
 import PaymentMethodDrawer from "../_components/payment-method-drawer";
 import { getOrders } from "./_actions/action";
 import EditOrderButton from "./_components/edit-order-button";
+import PrintOrderButton from "./_components/print-order-button";
+import PrintAllOrdersButton from "./_components/print-all-orders-button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -37,18 +39,21 @@ export default async function Page(
   const total = orders.reduce((total, order) => total + order.totalAmount, 0);
 
   function getTextForEmptyOrder() {
-    if (isActive) return "Belum ada pesanan aktif tercatat hari ini.";
+    if (isActive) {
+      return "Belum ada pesanan aktif tercatat hari ini.";
+    }
     return "Belum ada pesanan terbayar hari ini.";
   }
 
   function renderBadge() {
-    if (isActive)
+    if (isActive) {
       return (
         <Badge className="flex animate-pulse items-center gap-1 bg-yellow-200 text-black">
           <AlertCircle className="h-3 w-3" />
           <p>Unpaid</p>
         </Badge>
       );
+    }
     return (
       <Badge className="flex items-center gap-1 bg-green-200 text-black">
         <CheckCircle className="h-3 w-3" />
@@ -61,7 +66,12 @@ export default async function Page(
     <Suspense fallback={<PageLoader />}>
       <div className="flex min-h-screen flex-col gap-4 p-8 pb-20">
         <BackButton />
-        <h1 className="font-bold">Riwayat Pesanan</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="font-bold">Riwayat Pesanan</h1>
+          {orders.length > 0 && !isActive ? (
+            <PrintAllOrdersButton orders={orders} total={total} />
+          ) : null}
+        </div>
         <Suspense fallback={<Loader2 />}>
           {orders.length > 0 ? (
             orders.map((order) => (
@@ -131,9 +141,10 @@ export default async function Page(
                       </p>
                     </div>
                   ))}
-                  <p className="text-right font-bold">
-                    {toRp(order.totalAmount)}
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold">{toRp(order.totalAmount)}</p>
+                    <PrintOrderButton order={order} />
+                  </div>
                 </div>
 
                 <Separator className="mt-3" />
