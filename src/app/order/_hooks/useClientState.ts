@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { type PaymentMethodType, type ServingMethodType } from "~/app/data";
+import type { PaymentMethodType, ServingMethodType } from "~/app/data";
 
 type ClientState = {
   readonly servingMethod: ServingMethodType;
@@ -22,6 +22,6 @@ export const useClientState = create<ClientState>()(
     {
       name: "state-storage",
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 );

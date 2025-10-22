@@ -28,22 +28,52 @@ import type { NewOrder } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
 import PageLoader from "../_components/loading";
-import { type ServingMethodType, tableNums, waiters } from "../data";
+import { alacarte, type ServingMethodType, tableNums, waiters } from "../data";
 import { getOrderById } from "../order-history/_actions/action";
 import AddOrderButton from "./_components/add-order-button";
 import UpdateOrderButton from "./_components/update-order-button";
-import { useCart } from "./_hooks/useCart";
+import { type CartItem, useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
 import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
 export default function Page() {
-  const { items, cartTotal } = useCart();
+  const { items, cartTotal, syncCart } = useCart();
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
     0
   );
 
   const { servingMethod } = useClientState();
+
+  /** Automatically sync Takeaway Boxes based on serving method and mie/bakso items */
+  React.useEffect(() => {
+    const takeawayBox = alacarte.find((item) => item.name === "Takeaway Box");
+    if (!takeawayBox) {
+      return;
+    }
+
+    if (servingMethod === "dine_in") {
+      const newItems: CartItem[] = [
+        ...items.filter((item) => item.product.id !== takeawayBox.id),
+      ];
+      syncCart(newItems);
+
+      return;
+    }
+
+    const boxCount = items.filter(
+      (item) =>
+        (item.product.type === "mie" || item.product.type === "bakso") &&
+        item.product.id !== takeawayBox.id
+    ).length;
+
+    const newItems: CartItem[] = [
+      ...items.filter((item) => item.product.id !== takeawayBox.id),
+      { product: { ...takeawayBox, amount: boxCount } },
+    ];
+    syncCart(newItems);
+  }, [servingMethod]);
+
   const getTextFromServingMethod = (method: ServingMethodType) => {
     if (method === "dine_in") {
       return "Dine in";

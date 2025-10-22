@@ -41,7 +41,7 @@ export const useCart = create<CartState>()(
           /* if index is not found, add new item to the cart
            * with the given quantity
            */
-          if (index == -1) {
+          if (index === -1) {
             const item: CartItem = {
               product: { ...product, amount: amount ? amount : 1 },
             };
@@ -63,38 +63,13 @@ export const useCart = create<CartState>()(
           return { items, cartTotal: total };
         }),
       clearCart: () => set({ items: [], cartTotal: 0 }),
-      // updateAmount: (product, method, startAmount) =>
-      //   set((state) => {
-      //     /** index validation.
-      //      * if index is not found, add new item to the cart with the given
-      //      * start amount, push item to the array and update the search index.
-      //      */
-      //     let index = state.items.findIndex(
-      //       (item) => item.product.id === product.id,
-      //     );
-      //     const items = [...state.items];
-      //     if (index == -1) {
-      //       const item: CartItem = {
-      //         product: { ...product, amount: startAmount ? startAmount : 1 },
-      //       };
-      //       items.push(item);
-      //       index = items.findIndex((item) => item.product.id === product.id);
-      //     }
-
-      //     if (method === "increment") items[index]!.product.amount += 1;
-      //     else
-      //       items[index]!.product.amount = Math.max(
-      //         1,
-      //         items[index]!.product.amount - 1,
-      //       );
-      //     return { items: items };
-      //   }),
       updateAmount: (id, method) =>
         set((state) => {
           const index = state.items.findIndex((item) => item.product.id === id);
           const items = [...state.items];
-          if (method === "increment") items[index]!.product.amount += 1;
-          else
+          if (method === "increment") {
+            items[index]!.product.amount += 1;
+          } else
             items[index]!.product.amount = Math.max(
               1,
               items[index]!.product.amount - 1
