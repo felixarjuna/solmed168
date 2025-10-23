@@ -24,8 +24,8 @@ import PageLoader from "../_components/loading";
 import PaymentMethodDrawer from "../_components/payment-method-drawer";
 import { getOrders } from "./_actions/action";
 import EditOrderButton from "./_components/edit-order-button";
-import PrintOrderButton from "./_components/print-order-button";
 import PrintAllOrdersButton from "./_components/print-all-orders-button";
+import PrintOrderButton from "./_components/print-order-button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/complexity/noForEach: <explanation> */
 import _ from "lodash";
 
 import { Suspense } from "react";
@@ -25,7 +26,9 @@ export default function HomePage() {
   const groupedFoods = new Map<NewType, ProductType[]>();
   foods.forEach((item) => {
     const category = item.type;
-    if (!groupedFoods.has(category)) groupedFoods.set(category, []);
+    if (!groupedFoods.has(category)) {
+      groupedFoods.set(category, []);
+    }
     groupedFoods.get(category)?.push(item);
   });
 

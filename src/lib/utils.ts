@@ -19,6 +19,14 @@ export function formatRp(amount: string): string {
   return number.toLocaleString("id-ID");
 }
 
+export function calculateTakeawayBox(items: CartItem[]) {
+  return items
+    .filter(
+      (item) => item.product.type === "mie" || item.product.type === "bakso"
+    )
+    .reduce((total, { product }) => total + product.amount, 0);
+}
+
 export function calculateTotal(items: CartItem[]) {
   return items.reduce(
     (total, { product }) => total + product.price * product.amount,

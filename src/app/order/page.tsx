@@ -1,5 +1,7 @@
 /** biome-ignore-all lint/nursery/noShadow: <explanation> */
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 "use client";
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -23,7 +25,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
-import { cn, today, toRp } from "~/lib/utils";
+import { calculateTakeawayBox, cn, today, toRp } from "~/lib/utils";
 import type { NewOrder } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
@@ -38,41 +40,39 @@ import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
 export default function Page() {
   const { items, cartTotal, syncCart } = useCart();
+
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
     0
   );
 
   const { servingMethod } = useClientState();
-
-  /** Automatically sync Takeaway Boxes based on serving method and mie/bakso items */
-  React.useEffect(() => {
+  const updatedItems = React.useMemo(() => {
     const takeawayBox = alacarte.find((item) => item.name === "Takeaway Box");
-    if (!takeawayBox) {
+    if (takeawayBox === undefined) {
       return;
     }
+
+    const updated: CartItem[] = items.map((item) => ({
+      ...item,
+      product: { ...item.product, servingMethod },
+    }));
 
     if (servingMethod === "dine_in") {
-      const newItems: CartItem[] = [
-        ...items.filter((item) => item.product.id !== takeawayBox.id),
-      ];
-      syncCart(newItems);
-
-      return;
+      /** delete takeaway boxes. */
+      return updated.filter((item) => item.product.id !== takeawayBox.id);
     }
 
-    const boxCount = items.filter(
-      (item) =>
-        (item.product.type === "mie" || item.product.type === "bakso") &&
-        item.product.id !== takeawayBox.id
-    ).length;
+    /** add takeaway boxes. */
+    const boxCount = calculateTakeawayBox(updated);
 
-    const newItems: CartItem[] = [
-      ...items.filter((item) => item.product.id !== takeawayBox.id),
-      { product: { ...takeawayBox, amount: boxCount } },
-    ];
-    syncCart(newItems);
-  }, [servingMethod]);
+    updated.push({ product: { ...takeawayBox, amount: boxCount } });
+    return updated;
+  }, [items, servingMethod]);
+
+  React.useEffect(() => {
+    syncCart(updatedItems);
+  }, [syncCart]);
 
   const getTextFromServingMethod = (method: ServingMethodType) => {
     if (method === "dine_in") {
