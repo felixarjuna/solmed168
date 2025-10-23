@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noShadow: <explanation> */
 "use client";
 
 import { ShoppingCart } from "lucide-react";
@@ -31,10 +32,14 @@ export default function Cart() {
     const fetchOrder = async (orderId: number) => {
       const order = await getOrderById(orderId);
       const products = order?.products;
-      if (products) syncCart(products);
+      if (products) {
+        syncCart(products);
+      }
     };
 
-    if (orderId) void fetchOrder(+orderId);
+    if (orderId) {
+      fetchOrder(+orderId);
+    }
   }, [syncCart, orderId]);
 
   return (

@@ -33,10 +33,16 @@ export default function ServingMethodDrawer({ text }: ServingMethodProps) {
   const orderId = searchParams.get("orderId");
 
   const getIconFromServingMethod = (method: ServingMethodType) => {
-    if (method === "dine_in") return <HandPlatter className="h-4 w-4" />;
-    if (method === "takeaway") return <Utensils className="h-4 w-4" />;
+    if (method === "dine_in") {
+      return <HandPlatter className="h-4 w-4" />;
+    }
+    if (method === "takeaway") {
+      return <Utensils className="h-4 w-4" />;
+    }
   };
+
   const { onChangeServingMethod } = useClientState();
+
   /** method to handle serving */
   const onClickServingMethod = (method: ServingMethodType) => {
     /** cart validation.
@@ -51,8 +57,11 @@ export default function ServingMethodDrawer({ text }: ServingMethodProps) {
       return;
     }
     onChangeServingMethod(method);
-    if (orderId) router.push(`/order?orderId=${orderId}`);
-    else router.push("/order?");
+    if (orderId) {
+      router.push(`/order?orderId=${orderId}`);
+    } else {
+      router.push("/order?");
+    }
   };
 
   return (

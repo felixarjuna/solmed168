@@ -1,30 +1,32 @@
 import React from "react";
 import { Separator } from "~/components/ui/separator";
 import { cn, formatDate, toRp } from "~/lib/utils";
-import { type ReceiptProps } from "./view-receipt-button";
+import { useCart } from "../order/_hooks/useCart";
+import ServingMethodToggle from "./serving-method-toggle";
+import type { ReceiptProps } from "./view-receipt-button";
 
 interface InvoiceProps
   extends React.HTMLAttributes<HTMLDivElement>,
     ReceiptProps {}
 
-const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => {
-  return (
-    <div className={cn("grid max-w-xs gap-4", props.className)} ref={ref}>
-      <div className="text-center text-sm uppercase">
-        <h3>Bakso Solmed 168</h3>
-        <p>Ruko San Diego MR2–10/87</p>
-        <p>Pakuwon City, Surabaya, Jawa Timur</p>
-        <p>(031) 5929985 - (081) 287968899</p>
-      </div>
-      <InvoiceContent {...props} />
+const Invoice = React.forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => (
+  <div className={cn("grid max-w-xs gap-4", props.className)} ref={ref}>
+    <div className="text-center text-sm uppercase">
+      <h3>Bakso Solmed 168</h3>
+      <p>Ruko San Diego MR2–10/87</p>
+      <p>Pakuwon City, Surabaya, Jawa Timur</p>
+      <p>(031) 5929985 - (081) 287968899</p>
     </div>
-  );
-});
+    <InvoiceContent {...props} />
+  </div>
+));
 Invoice.displayName = "Invoice";
 
 export default Invoice;
 
 export function InvoiceContent({ items, totalAmount }: InvoiceProps) {
+  const { updateItemServingMethod } = useCart();
+
   return (
     <div className="text-sm">
       <div>
@@ -36,9 +38,14 @@ export function InvoiceContent({ items, totalAmount }: InvoiceProps) {
         {items.map(({ product: item }) => (
           <div className="grid grid-cols-10 gap-2" key={item.id}>
             <p className="col-span-1">{item.amount}x</p>
-            <div className="col-span-6 flex flex-col gap-x-2">
+            <div className="col-span-6 flex flex-col gap-2">
               <p>{item.name}</p>
               <p className="text-xs">{toRp(item.price)}</p>
+              <ServingMethodToggle
+                currentMethod={item.servingMethod}
+                itemId={item.id}
+                onToggle={updateItemServingMethod}
+              />
             </div>
             <p className="col-span-3 text-right">
               {toRp(item.price * item.amount)}

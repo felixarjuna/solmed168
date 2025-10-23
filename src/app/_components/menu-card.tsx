@@ -52,7 +52,9 @@ export default function MenuCard({
                   <Minus
                     className="h-4 w-4"
                     onClick={() => {
-                      if (amount > 1) setAmount((prev) => prev - 1);
+                      if (amount > 1) {
+                        setAmount((prev) => prev - 1);
+                      }
                     }}
                   />
                 </Button>
