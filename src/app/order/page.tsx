@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/nursery/noShadow: <explanation> */
+/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 "use client";
 
@@ -26,7 +27,7 @@ import {
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
 import { calculateTakeawayBox, cn, today, toRp } from "~/lib/utils";
-import type { NewOrder } from "~/server/db/schema";
+import type { NewOrder, Order } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
 import PageLoader from "../_components/loading";
@@ -40,7 +41,6 @@ import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
 export default function Page() {
   const { items, cartTotal, syncCart } = useCart();
-
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
     0
@@ -65,7 +65,6 @@ export default function Page() {
 
     /** add takeaway boxes. */
     const boxCount = calculateTakeawayBox(updated);
-
     updated.push({ product: { ...takeawayBox, amount: boxCount } });
     return updated;
   }, [items, servingMethod]);
@@ -74,49 +73,16 @@ export default function Page() {
     syncCart(updatedItems);
   }, [syncCart]);
 
-  const getTextFromServingMethod = (method: ServingMethodType) => {
-    if (method === "dine_in") {
-      return "Dine in";
-    }
-    if (method === "takeaway") {
-      return "Takeaway";
-    }
-  };
-
-  /** local state for table id */
-  const [tableId, setTableId] = React.useState<string>("1");
-
-  /** local state for waiter name */
-  const [waiter, setWaiter] = React.useState<string>(waiters.at(0) ?? "Lia");
-
-  /** handle update order by using order id */
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
+  const { device, onPrintInternalReceipt } = usePrintReceipt(items);
 
   /** Add new order. */
-  const order: NewOrder = {
-    tableId: +tableId,
-    waiter,
+  const newOrder: NewOrder = {
+    tableId: order?.tableId ?? 1,
+    waiter: order?.waiter ?? "Lia",
     products: items,
     totalAmount: cartTotal,
     servingMethod,
   };
-
-  React.useEffect(() => {
-    const fetchOrder = async (orderId: number) => {
-      const order = await getOrderById(orderId);
-      if (order) {
-        setTableId(order.tableId.toString());
-        setWaiter(order.waiter);
-      }
-    };
-
-    if (orderId) {
-      fetchOrder(+orderId);
-    }
-  }, [orderId]);
-
-  const { device, onPrintInternalReceipt } = usePrintReceipt(items);
 
   return (
     <Suspense fallback={<PageLoader />}>
@@ -158,8 +124,12 @@ export default function Page() {
                   <p className="text-sm">No. Meja</p>
                   <Select
                     disabled={orderId !== null}
-                    onValueChange={(value) => setTableId(value)}
-                    value={tableId}
+                    onValueChange={(value) => {
+                      if (order !== null) {
+                        setOrder({ ...order!, tableId: +value });
+                      }
+                    }}
+                    value={order?.tableId.toString()}
                   >
                     <SelectTrigger className="max-w-24">
                       <SelectValue placeholder="Meja 1" />
@@ -184,8 +154,12 @@ export default function Page() {
                 <p className="text-sm">Waiter</p>
                 <Select
                   disabled={orderId !== null}
-                  onValueChange={(value) => setWaiter(value)}
-                  value={waiter}
+                  onValueChange={(value) => {
+                    if (order !== null) {
+                      setOrder({ ...order!, waiter: value });
+                    }
+                  }}
+                  value={order?.waiter}
                 >
                   <SelectTrigger className="max-w-24">
                     <SelectValue placeholder="Nama" />
@@ -223,7 +197,7 @@ export default function Page() {
           <div className="flex gap-2">
             <Button
               className="relative"
-              onClick={() => onPrintInternalReceipt(order)}
+              onClick={() => onPrintInternalReceipt(newOrder)}
               size={"icon"}
             >
               <PrinterIcon className="relative h-4 w-4" />
@@ -250,9 +224,12 @@ export default function Page() {
             {/* <ViewReceiptButton items={items} totalAmount={cartTotal} /> */}
 
             {orderId ? (
-              <UpdateOrderButton orderId={+orderId} products={order.products} />
+              <UpdateOrderButton
+                orderId={+orderId}
+                products={newOrder.products}
+              />
             ) : (
-              <AddOrderButton order={order} />
+              <AddOrderButton order={newOrder} />
             )}
           </div>
         </section>
