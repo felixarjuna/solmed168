@@ -80,36 +80,52 @@ export default function Page() {
       return;
     }
 
-    /** only update relevance item when order id existed. */
-    const filtered =
-      orderId === null
-        ? items
-        : items.filter(
-            (item) =>
-              !order?.products
-                .map((product) => product.product.id)
-                .includes(item.product.id)
-          );
-
-    const updated: CartItem[] = filtered.map((item) => ({
-      ...item,
-      product: { ...item.product, servingMethod },
-    }));
-
-    if (servingMethod === "dine_in") {
-      /** delete takeaway boxes. */
-      return updated.filter((item) => item.product.id !== takeawayBox.id);
+    /** If editing an order but order data hasn't loaded yet, wait */
+    if (orderId !== null && order === null) {
+      return items; // Return items unchanged while waiting for order data
     }
 
-    /** add takeaway boxes. */
+    /** Get existing order product IDs for comparison */
+    const existingProductIds =
+      order?.products.map((product) => product.product.id) ?? [];
+
+    /** Update serving method only for newly added items (not in existing order) */
+    const updated: CartItem[] = items
+      .filter((item) => item.product.id !== takeawayBox.id) // Remove any existing takeaway boxes first
+      .map((item) => {
+        const isExistingItem = existingProductIds.includes(item.product.id);
+        if (isExistingItem) {
+          /** Keep existing item's serving method unchanged */
+          return item;
+        }
+
+        /** Assign current serving method to newly added items */
+        return {
+          ...item,
+          product: { ...item.product, servingMethod },
+        };
+      });
+
+    /** Calculate and add takeaway boxes based on all items with takeaway serving method */
     const boxCount = calculateTakeawayBox(updated);
-    updated.push({ product: { ...takeawayBox, amount: boxCount } });
+    if (boxCount > 0) {
+      updated.push({ product: { ...takeawayBox, amount: boxCount } });
+    }
+
     return updated;
-  }, [servingMethod, order]);
+  }, [servingMethod, order, items, orderId]);
 
   React.useEffect(() => {
-    syncCart(updatedItems);
-  }, [syncCart]);
+    if (!updatedItems) {
+      return;
+    }
+
+    /** Only sync if items have actually changed to prevent infinite loop */
+    const itemsChanged = JSON.stringify(items) !== JSON.stringify(updatedItems);
+    if (itemsChanged) {
+      syncCart(updatedItems);
+    }
+  }, [updatedItems, items, syncCart]);
 
   const { device, onPrintInternalReceipt } = usePrintReceipt(items);
 

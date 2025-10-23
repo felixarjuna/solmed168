@@ -24,6 +24,7 @@ export function calculateTakeawayBox(items: CartItem[]) {
     .filter(
       (item) => item.product.type === "mie" || item.product.type === "bakso"
     )
+    .filter((item) => item.product.servingMethod === "takeaway")
     .reduce((total, { product }) => total + product.amount, 0);
 }
 
