@@ -10,8 +10,10 @@ export const AddOrderValidator = z.object({
         name: z.string(),
         price: z.number(),
         amount: z.number(),
+        type: z.enum(["mie", "bakso"]).optional(),
+        servingMethod: z.enum(["dine_in", "takeaway"]).optional(),
       }),
-    }),
+    })
   ),
   paymentMethod: z.enum(["cash", "qris", "transfer"]),
   servingMethod: z.enum(["dine_in", "takeaway"]).nullable().optional(),
@@ -33,7 +35,7 @@ export const UpdateOrderValidator = z.object({
         price: z.number(),
         amount: z.number(),
       }),
-    }),
+    })
   ),
   totalAmount: z.number(),
 });

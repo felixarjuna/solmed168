@@ -1,13 +1,13 @@
 "use client";
 
 import { Loader2, PlusCircle } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
 import { calculateTotal } from "~/lib/utils";
 import { safeUpdateOrder } from "../_actions/order-actions";
-import { useCart, type CartItem } from "../_hooks/useCart";
+import { type CartItem, useCart } from "../_hooks/useCart";
 
 interface IUpdateOrderButtonProps {
   readonly orderId: number;
@@ -48,8 +48,8 @@ export default function UpdateOrderButton({
 
   const onUpdateOrder = async () => {
     execute({
-      orderId: orderId,
-      products: products,
+      orderId,
+      products,
       totalAmount: calculateTotal(products),
     });
   };

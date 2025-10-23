@@ -80,7 +80,18 @@ export default function Page() {
       return;
     }
 
-    const updated: CartItem[] = items.map((item) => ({
+    /** only update relevance item when order id existed. */
+    const filtered =
+      orderId === null
+        ? items
+        : items.filter(
+            (item) =>
+              !order?.products
+                .map((product) => product.product.id)
+                .includes(item.product.id)
+          );
+
+    const updated: CartItem[] = filtered.map((item) => ({
       ...item,
       product: { ...item.product, servingMethod },
     }));
@@ -94,7 +105,7 @@ export default function Page() {
     const boxCount = calculateTakeawayBox(updated);
     updated.push({ product: { ...takeawayBox, amount: boxCount } });
     return updated;
-  }, [items, servingMethod]);
+  }, [servingMethod, order]);
 
   React.useEffect(() => {
     syncCart(updatedItems);

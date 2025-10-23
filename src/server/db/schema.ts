@@ -56,8 +56,8 @@ export const orders = createTable("order", {
     .defaultNow(),
   waiter: text("waiter").notNull(),
   totalAmount: integer("total_amount").notNull(),
-  products: json("products").$type<CartItem[]>().notNull(),
   paymentMethod: paymentMethodEnum("payment_method"),
+  products: json("products").$type<CartItem[]>().notNull(),
   servingMethod: servingMethodEnum("serving_method"),
   paid: boolean("paid").notNull().default(false),
 });

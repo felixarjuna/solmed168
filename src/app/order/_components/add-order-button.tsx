@@ -1,18 +1,18 @@
 "use client";
 
 import { ConciergeBell, Loader2 } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
-import { type PaymentMethodType } from "~/app/data";
+import { useAction } from "next-safe-action/hooks";
+import type { PaymentMethodType } from "~/app/data";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
-import { type NewOrder } from "~/server/db/schema";
+import type { NewOrder } from "~/server/db/schema";
 import { safeAddOrder } from "../_actions/order-actions";
 import { useCart } from "../_hooks/useCart";
 
-interface AddOrderButtonProps {
+type AddOrderButtonProps = {
   readonly order: NewOrder;
-}
+};
 
 export default function AddOrderButton({ order }: AddOrderButtonProps) {
   const router = useRouter();
@@ -29,11 +29,12 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
         });
         clearCart();
         router.push("/order-history?active=true");
-      } else
+      } else {
         toast({
           title: "Pesanan gagal. ❌",
           description: "Pesanan anda gagal ditambahkan. ",
         });
+      }
     },
     onError: () => {
       toast({
