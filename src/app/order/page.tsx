@@ -46,6 +46,33 @@ export default function Page() {
     0
   );
 
+  const getTextFromServingMethod = (method: ServingMethodType) => {
+    if (method === "dine_in") {
+      return "Dine in";
+    }
+    if (method === "takeaway") {
+      return "Takeaway";
+    }
+  };
+
+  /** handle update order by using order id */
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
+
+  /** local state for order. */
+  const [order, setOrder] = React.useState<Order | null>(null);
+
+  React.useEffect(() => {
+    const fetchOrder = async (orderId: number) => {
+      const order = await getOrderById(orderId);
+      setOrder(order);
+    };
+
+    if (orderId) {
+      fetchOrder(+orderId);
+    }
+  }, [orderId]);
+
   const { servingMethod } = useClientState();
   const updatedItems = React.useMemo(() => {
     const takeawayBox = alacarte.find((item) => item.name === "Takeaway Box");
