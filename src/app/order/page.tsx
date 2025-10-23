@@ -65,7 +65,9 @@ export default function Page() {
   React.useEffect(() => {
     const fetchOrder = async (orderId: number) => {
       const order = await getOrderById(orderId);
-      setOrder(order);
+      if (order !== undefined) {
+        setOrder(order);
+      }
     };
 
     if (orderId) {
