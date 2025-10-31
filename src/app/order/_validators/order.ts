@@ -10,7 +10,7 @@ export const AddOrderValidator = z.object({
         name: z.string(),
         price: z.number(),
         amount: z.number(),
-        type: z.enum(["mie", "bakso"]).optional(),
+        type: z.enum(["mie", "bakso", "satuan"]).optional(),
         servingMethod: z.enum(["dine_in", "takeaway"]).optional(),
       }),
     })
