@@ -4,139 +4,96 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a restaurant management system (Solmed168) built with the T3 Stack. It's a Point of Sale (POS) system for managing food orders, beverages, expenses, and payment processing with thermal printer support.
+Restaurant POS system (Solmed168) built with the T3 Stack — manages food orders, beverages, expenses, and payment processing with thermal printer support.
 
-**Tech Stack:**
-- Next.js 14 (App Router)
-- TypeScript
-- Drizzle ORM + PostgreSQL
-- TanStack Query
-- next-safe-action (server actions)
-- Tailwind CSS + Radix UI
-- Zustand (state management)
-- Ultracite (linting/formatting via Biome)
+**Tech Stack:** Next.js 14 (App Router), TypeScript, Drizzle ORM + PostgreSQL, TanStack Query, next-safe-action, Tailwind CSS + Radix UI, Zustand, Ultracite (Biome)
 
 ## Development Commands
 
 ```bash
-# Development
-npm run dev              # Start Next.js dev server
+pnpm run dev              # Start Next.js dev server
+pnpm run build            # Build for production
+pnpm run lint             # Run Next.js linter
 
-# Database
-npm run db:push          # Push schema changes to database
-npm run db:generate      # Generate migrations
-npm run db:migrate       # Run migrations
-npm run db:studio        # Open Drizzle Studio
-
-# Build & Deploy
-npm run build            # Build for production
-npm run start            # Start production server
-npm run lint             # Run Next.js linter
+# Database (Drizzle Kit)
+pnpm run db:push          # Push schema changes to database
+pnpm run db:generate      # Generate migrations
+pnpm run db:migrate       # Run migrations
+pnpm run db:studio        # Open Drizzle Studio
 
 # Code Quality (Ultracite/Biome)
-npx ultracite fix        # Format and fix code automatically
-npx ultracite check      # Check for issues without fixing
+npx ultracite fix         # Format and fix code automatically
+npx ultracite check       # Check for issues without fixing
 ```
 
-## Project Structure
-
-```
-src/
-├── app/                          # Next.js App Router pages
-│   ├── _components/              # Shared components across pages
-│   ├── order/                    # Order management page
-│   │   ├── _actions/             # Server actions for orders
-│   │   ├── _components/          # Order-specific components
-│   │   ├── _hooks/               # React hooks (useCart, useThermalPrinter, etc.)
-│   │   └── _validators/          # Zod schemas for validation
-│   ├── order-history/            # View past orders
-│   ├── expense/                  # Expense tracking page
-│   └── data.ts                   # Static product/menu data
-├── components/ui/                # Reusable UI components (shadcn/ui)
-├── lib/                          # Utility functions
-├── server/
-│   └── db/
-│       ├── index.ts              # Database connection
-│       └── schema.ts             # Drizzle schema definitions
-└── env.js                        # Environment variable validation (@t3-oss/env-nextjs)
-```
+Run `npx ultracite fix` before committing.
 
 ## Architecture & Key Patterns
 
+### Path Alias
+
+`~/*` maps to `./src/*` (configured in `tsconfig.json`). Always use `~/` for imports.
+
+### Project Structure
+
+- `src/app/` — Next.js App Router pages (`/order`, `/order-history`, `/expense`)
+- Feature folders use `_` prefix subdirectories: `_actions/`, `_components/`, `_hooks/`, `_validators/`
+- `src/components/ui/` — shadcn/ui components
+- `src/server/db/schema.ts` — Drizzle schema definitions
+- `src/app/data.ts` — Static menu data (setMenus, alacarte, beverages, snacks, addons) with generated UUIDs
+
 ### Database Schema
-The app uses Drizzle ORM with three main tables (see [src/server/db/schema.ts](src/server/db/schema.ts)):
-- **orders**: Stores order records with products JSON, payment/serving methods, table numbers
-- **products**: Product catalog (currently menu items are in `data.ts` as static data)
+
+Drizzle ORM with `solmed168_` table prefix (see `drizzle.config.ts`). Three tables:
+
+- **orders**: Products stored as JSON (`CartItem[]`), payment/serving methods, table numbers
+- **products**: Product catalog (currently menu items live in `data.ts` as static data)
 - **expenses**: Business expense tracking
 
-All tables use the `solmed168_` prefix (configured in `drizzle.config.ts`).
+Use Drizzle ORM query builder exclusively, never raw SQL. After schema changes, run `pnpm run db:push`.
 
-### Server Actions Pattern
-Server actions are organized in `_actions/` directories within feature folders:
-- Actions use `next-safe-action` for type-safe server actions
-- Base action client is defined in `src/app/order/_actions/root.ts`
+### Server Actions
+
+- Built with `next-safe-action` — base client in `src/app/order/_actions/root.ts`
 - Each action validates inputs using Zod schemas from `_validators/`
+- All action files must have `"use server"` directive at top
+- Expense actions reuse the same base action client from `order/_actions/root.ts`
 
 ### State Management
-- **Zustand**: Used for cart state in `src/app/order/_hooks/useCart.ts`
-- **TanStack Query**: Used for server state management and data fetching
-- **React Hook Form + Zod**: Used for form validation
 
-### Menu Data
-All menu items, beverages, snacks, and add-ons are defined as static data in [src/app/data.ts](src/app/data.ts):
-- `setMenus`: Main food items (bakso, mie)
-- `alacarte`: Individual items
-- `beverages`: Drinks
-- `snacks`: Snack items
-- `addons`: Additional items like takeaway cups
-- UUIDs are generated for each item using the `uuid` package
+- **Zustand**: Cart state (`src/app/order/_hooks/useCart.ts`) — persisted to localStorage
+- **TanStack Query**: Server state management and data fetching
+- **React Hook Form + Zod**: Form validation
 
-### Component Organization
-- **Page components**: In app directory route folders
-- **Feature components**: In `_components/` subdirectories within feature folders (prefixed with `_` to exclude from routing)
-- **Shared UI components**: In `src/components/ui/` (shadcn/ui components)
-- **Shared app components**: In `src/app/_components/`
+### Thermal Printer
 
-### Thermal Printer Integration
-The app supports thermal printing via Web Bluetooth API:
-- Hook: `src/app/order/_hooks/useThermalPrinter.tsx`
-- Library: `react-thermal-printer` and `react-web-bluetooth`
-- Used for printing receipts after order completion
+Web Bluetooth API via `react-thermal-printer` and `react-web-bluetooth`. Hook: `src/app/order/_hooks/useThermalPrinterContext.tsx`
+
+### Date Handling
+
+Uses **Luxon** (`DateTime`) for date operations (see expense actions for example).
 
 ## Environment Variables
 
 Required in `.env`:
+
 ```
 DATABASE_URL=postgresql://...  # PostgreSQL connection string
 NODE_ENV=development          # development | test | production
 ```
 
-Environment variables are validated at build time using `@t3-oss/env-nextjs` in [src/env.js](src/env.js).
+Validated at build time via `@t3-oss/env-nextjs` in `src/env.js`. Skip with `SKIP_ENV_VALIDATION=1` for Docker builds.
 
-## Code Quality & Linting
+## Code Quality & Linting (Ultracite/Biome)
 
-This project uses **Ultracite** which enforces Biome rules for:
-- Strict TypeScript type safety
-- Accessibility standards (a11y)
-- React best practices
-- Code complexity limits
+This project extends Ultracite's strict Biome rules (`biome.jsonc`). Key rules that differ from defaults:
 
-**Key Ultracite rules** (comprehensive list in `.github/copilot-instructions.md` and `.claude/CLAUDE.md`):
-- Don't use TypeScript enums, use `as const` instead
-- Use `export type` and `import type` for types
-- Don't use `any` type
-- All React hooks must be at top level
-- Don't use Array index as keys
-- Always include button `type` attribute
-- Use `===` and `!==` for comparisons
-- Don't use `console` (use proper logging)
-
-## Important Notes
-
-- **No console.log**: Ultracite/Biome forbids console usage. Remove debug statements before committing.
-- **Type safety**: All components and functions should have proper TypeScript types. Avoid `any`.
-- **Server actions**: Always validate inputs with Zod schemas before database operations.
-- **Database operations**: Use Drizzle ORM query builder, never raw SQL strings.
-- **Accessibility**: All interactive elements must have proper ARIA attributes and keyboard support.
-- **Next.js Image**: Use `next/image` instead of `<img>` tags.
-- **Client/Server**: Mark client components with `"use client"` and server actions with `"use server"`.
+- **No `console` methods** — they are forbidden
+- **No TypeScript enums** — use `as const` instead
+- **No `any` type** — all code must be strictly typed
+- Use `export type` / `import type` for type-only imports/exports
+- Use arrow functions instead of function expressions
+- Always include button `type` attribute (`"button"`, `"submit"`, or `"reset"`)
+- Accompany `onClick` with keyboard handlers (`onKeyDown`/`onKeyUp`/`onKeyPress`)
+- Use `next/image` instead of `<img>` tags
+- Don't use Array index as keys — use stable IDs
