@@ -92,7 +92,7 @@ export const products = createTable(
   (t) => [
     index("product_category_idx").on(t.category),
     index("product_is_available_idx").on(t.isAvailable),
-  ],
+  ]
 );
 
 // 2. Customers
@@ -112,7 +112,7 @@ export const customers = createTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (t) => [uniqueIndex("customer_phone_idx").on(t.phoneNumber)],
+  (t) => [uniqueIndex("customer_phone_idx").on(t.phoneNumber)]
 );
 
 // 3. Tables
@@ -178,7 +178,7 @@ export const orders = createTable(
     index("order_customer_idx").on(t.customerId),
     index("order_table_idx").on(t.tableId),
     index("order_date_paid_idx").on(t.orderDate, t.paid),
-  ],
+  ]
 );
 
 // 6. Order Items
@@ -202,7 +202,7 @@ export const orderItems = createTable(
   (t) => [
     index("order_item_order_idx").on(t.orderId),
     index("order_item_product_idx").on(t.productId),
-  ],
+  ]
 );
 
 // 7. Order Payments
@@ -217,16 +217,14 @@ export const orderPayments = createTable(
     amount: integer("amount").notNull(),
     referenceNumber: text("reference_number"),
     notes: text("notes"),
-    paidAt: timestamp("paid_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    paidAt: timestamp("paid_at", { withTimezone: true }).notNull().defaultNow(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (t) => [
     index("payment_order_idx").on(t.orderId),
     index("payment_method_idx").on(t.paymentMethod),
     index("payment_paid_at_idx").on(t.paidAt),
-  ],
+  ]
 );
 
 // 8. Promotions
@@ -286,7 +284,7 @@ export const stockMovements = createTable(
     index("stock_movement_product_idx").on(t.productId),
     index("stock_movement_created_idx").on(t.createdAt),
     index("stock_movement_type_idx").on(t.movementType),
-  ],
+  ]
 );
 
 // 11. Expenses
@@ -311,7 +309,7 @@ export const expenses = createTable(
   (t) => [
     index("expense_date_idx").on(t.expenseDate),
     index("expense_category_idx").on(t.category),
-  ],
+  ]
 );
 
 // ─── Relations ───────────────────────────────────────────────────────────────
@@ -384,18 +382,15 @@ export const orderPromotionsRelations = relations(
       fields: [orderPromotions.promotionId],
       references: [promotions.promotionId],
     }),
-  }),
+  })
 );
 
-export const stockMovementsRelations = relations(
-  stockMovements,
-  ({ one }) => ({
-    product: one(products, {
-      fields: [stockMovements.productId],
-      references: [products.productId],
-    }),
+export const stockMovementsRelations = relations(stockMovements, ({ one }) => ({
+  product: one(products, {
+    fields: [stockMovements.productId],
+    references: [products.productId],
   }),
-);
+}));
 
 // ─── Inferred Types ──────────────────────────────────────────────────────────
 
