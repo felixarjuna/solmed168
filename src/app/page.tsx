@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { getAllProducts } from "./_actions/product-actions";
 import ActiveOrderButton from "./_components/active-order-button";
 import BluetoothIndicator from "./_components/bluetooth-indicator";
 import Cart from "./_components/cart";
@@ -11,21 +12,18 @@ import PageLoader from "./_components/loading";
 import MenuCard from "./_components/menu-card";
 import OrderHistoryButton from "./_components/order-history-button";
 import OrderSummary from "./_components/order-summary";
-import {
-  alacarte,
-  beverages,
-  type ProductType,
-  setMenus,
-  snacks,
-} from "./data";
+import type { ProductType } from "./data";
 
-type NewType = "bakso" | "mie" | "satuan" | undefined;
+export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  const foods = [...setMenus, ...alacarte];
-  const groupedFoods = new Map<NewType, ProductType[]>();
+type FoodType = "bakso" | "mie" | "satuan" | undefined;
+
+export default async function HomePage() {
+  const { foods, beverages, snacks } = await getAllProducts();
+
+  const groupedFoods = new Map<FoodType, ProductType[]>();
   foods.forEach((item) => {
-    const category = item.type;
+    const category = item.type as FoodType;
     if (!groupedFoods.has(category)) {
       groupedFoods.set(category, []);
     }
@@ -74,15 +72,25 @@ export default function HomePage() {
               </TabsContent>
               <TabsContent value="beverages">
                 <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {beverages.map((bev, i) => (
-                    <MenuCard hasCartButton isAdjustable key={i} menu={bev} />
+                  {beverages.map((bev) => (
+                    <MenuCard
+                      hasCartButton
+                      isAdjustable
+                      key={bev.id}
+                      menu={bev}
+                    />
                   ))}
                 </div>
               </TabsContent>
               <TabsContent value="snacks">
                 <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {snacks.map((snack, i) => (
-                    <MenuCard hasCartButton isAdjustable key={i} menu={snack} />
+                  {snacks.map((snack) => (
+                    <MenuCard
+                      hasCartButton
+                      isAdjustable
+                      key={snack.id}
+                      menu={snack}
+                    />
                   ))}
                 </div>
               </TabsContent>
