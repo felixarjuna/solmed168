@@ -3,7 +3,6 @@ import { Br, Line, Printer, Row, render, Text } from "react-thermal-printer";
 import type { PaymentMethodType, ReceiptType } from "~/app/data";
 import { toast } from "~/components/ui/use-toast";
 import { calculateTotal, formatDate, toRp } from "~/lib/utils";
-import type { NewOrder } from "~/server/db/schema";
 import type { CartItem } from "./useCart";
 import { useThermalPrinterContext } from "./useThermalPrinterContext";
 
@@ -12,6 +11,12 @@ export type PaymentDetails = {
   readonly paymentMethod: PaymentMethodType;
   readonly paymentTotal: number;
   readonly paymentChange?: number;
+};
+
+export type ReceiptOrderDetails = {
+  readonly tableId: number | null;
+  readonly waiterName: string;
+  readonly servingMethod: "dine_in" | "takeaway" | null;
 };
 
 export const usePrintReceipt = (items: CartItem[]) => {
@@ -25,7 +30,7 @@ export const usePrintReceipt = (items: CartItem[]) => {
 
   const getReceipt = (
     receiptType: ReceiptType,
-    orderDetails?: NewOrder,
+    orderDetails?: ReceiptOrderDetails,
     paymentDetails?: PaymentDetails
   ) => {
     const total = calculateTotal(items);
@@ -107,7 +112,7 @@ export const usePrintReceipt = (items: CartItem[]) => {
         {orderDetails.servingMethod === "dine_in" ? (
           <Row left={"No. Meja"} right={`Meja ${orderDetails.tableId}`} />
         ) : null}
-        <Row left={"Pramusaji"} right={orderDetails.waiter} />
+        <Row left={"Pramusaji"} right={orderDetails.waiterName} />
         <Text align="right" bold>
           {orderDetails.servingMethod === "dine_in" ? "DINE IN" : "TAKEAWAY"}
         </Text>
@@ -131,7 +136,9 @@ export const usePrintReceipt = (items: CartItem[]) => {
     );
   };
 
-  const onPrintInternalReceipt = async (orderDetails: NewOrder) => {
+  const onPrintInternalReceipt = async (
+    orderDetails: ReceiptOrderDetails
+  ) => {
     if (!isConnected) {
       await connectDevice();
     }

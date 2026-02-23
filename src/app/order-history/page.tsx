@@ -124,20 +124,23 @@ export default async function Page(
                     <div className="w-fit rounded-full bg-neutral-100 p-1">
                       <User className="h-3 w-3" />
                     </div>
-                    <p>Waiter: {order.waiter}</p>
+                    <p>Waiter: {order.waiter?.name ?? "-"}</p>
                   </div>
                 </div>
 
                 <div className="my-4">
-                  {order.products.map(({ product }) => (
-                    <div className="grid grid-cols-10 gap-2" key={product.id}>
-                      <p className="col-span-1">{product.amount}x</p>
+                  {order.orderItems.map((item) => (
+                    <div
+                      className="grid grid-cols-10 gap-2"
+                      key={item.orderItemId}
+                    >
+                      <p className="col-span-1">{item.quantity}x</p>
                       <div className="col-span-6 flex flex-col gap-x-2">
-                        <p>{product.name}</p>
-                        <p className="text-xs">{toRp(product.price)}</p>
+                        <p>{item.productName}</p>
+                        <p className="text-xs">{toRp(item.unitPrice)}</p>
                       </div>
                       <p className="col-span-3 text-right">
-                        {toRp(product.price * product.amount)}
+                        {toRp(item.lineTotal)}
                       </p>
                     </div>
                   ))}

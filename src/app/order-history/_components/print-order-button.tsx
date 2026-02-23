@@ -4,22 +4,28 @@ import { Printer } from "lucide-react";
 import { usePrintReceipt } from "~/app/order/_hooks/usePrintReceipt";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/use-toast";
-import type { Order } from "~/server/db/schema";
+import { orderItemsToCartItems } from "~/lib/utils";
+import type { OrderWithDetails } from "~/server/db/schema";
 
 type PrintOrderButtonProps = {
-  readonly order: Order;
+  readonly order: OrderWithDetails;
 };
 
 export default function PrintOrderButton({ order }: PrintOrderButtonProps) {
+  const cartItems = orderItemsToCartItems(order.orderItems);
   const { onPrintInternalReceipt, isConnected, connectDevice } =
-    usePrintReceipt(order.products);
+    usePrintReceipt(cartItems);
 
   const handlePrint = async () => {
     try {
       if (!isConnected) {
         await connectDevice();
       }
-      await onPrintInternalReceipt(order);
+      await onPrintInternalReceipt({
+        tableId: order.tableId,
+        waiterName: order.waiter?.name ?? "-",
+        servingMethod: order.servingMethod,
+      });
       toast({
         title: "Pesanan berhasil dicetak",
       });

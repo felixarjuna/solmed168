@@ -20,8 +20,8 @@ export const getExpenses = async () => {
   const endOfMonth = DateTime.now().endOf("month");
 
   const filters: SQLWrapper[] = [
-    gt(expenses.date, startOfMonth.toJSDate()),
-    lt(expenses.date, endOfMonth.toJSDate()),
+    gt(expenses.expenseDate, startOfMonth.toJSDate()),
+    lt(expenses.expenseDate, endOfMonth.toJSDate()),
   ];
 
   const query = db

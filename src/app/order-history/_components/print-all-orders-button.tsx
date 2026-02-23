@@ -13,10 +13,10 @@ import { useThermalPrinterContext } from "~/app/order/_hooks/useThermalPrinterCo
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/use-toast";
 import { formatDate, toRp } from "~/lib/utils";
-import type { Order } from "~/server/db/schema";
+import type { OrderWithDetails } from "~/server/db/schema";
 
 type PrintAllOrdersButtonProps = {
-  readonly orders: Order[];
+  readonly orders: OrderWithDetails[];
   readonly total: number;
 };
 
@@ -53,13 +53,16 @@ export default function PrintAllOrdersButton({
           {orders.map((order) => (
             <>
               <Text align="left">Order #{order.orderId}</Text>
-              <Row left={`Meja ${order.tableId}`} right={order.waiter} />
-              {order.products.map(({ product }) => (
+              <Row
+                left={`Meja ${order.tableId}`}
+                right={order.waiter?.name ?? "-"}
+              />
+              {order.orderItems.map((item) => (
                 <>
-                  <Text align="left">{product.name}</Text>
+                  <Text align="left">{item.productName}</Text>
                   <Row
-                    left={`${product.amount} x ${toRp(product.price)}`}
-                    right={toRp(product.amount * product.price)}
+                    left={`${item.quantity} x ${toRp(item.unitPrice)}`}
+                    right={toRp(item.lineTotal)}
                   />
                 </>
               ))}

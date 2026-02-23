@@ -149,7 +149,9 @@ export const orders = createTable(
     orderId: serial("order_id").primaryKey(),
     orderNumber: text("order_number").notNull().unique(),
     tableId: integer("table_id").references(() => tables.tableId),
-    waiterId: uuid("waiter_id").references(() => waiters.waiterId),
+    waiterId: uuid("waiter_id")
+      .notNull()
+      .references(() => waiters.waiterId),
     customerId: uuid("customer_id").references(() => customers.customerId),
     orderDate: timestamp("order_date", { withTimezone: true })
       .notNull()
@@ -426,3 +428,11 @@ export type NewStockMovement = typeof stockMovements.$inferInsert;
 
 export type Expense = typeof expenses.$inferSelect;
 export type NewExpense = typeof expenses.$inferInsert;
+
+// ─── Composite Types ─────────────────────────────────────────────────────────
+
+export type OrderWithDetails = Order & {
+  orderItems: OrderItem[];
+  waiter: Waiter | null;
+  orderPayments: OrderPayment[];
+};

@@ -67,7 +67,7 @@ export default async function Expense() {
 
                     <div className="col-span-7">
                       <h3 className="text-normal font-semibold">{e.name}</h3>
-                      <p className="text-sm opacity-50">{formatDate(e.date)}</p>
+                      <p className="text-sm opacity-50">{formatDate(e.expenseDate)}</p>
                     </div>
                     <p className="col-span-4 text-right text-sm font-semibold">
                       {toRp(e.amount)}

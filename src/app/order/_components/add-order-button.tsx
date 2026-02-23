@@ -1,20 +1,29 @@
 "use client";
 
 import { ConciergeBell, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
-import type { PaymentMethodType } from "~/app/data";
+import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
-import type { NewOrder } from "~/server/db/schema";
+import { cartItemsToOrderItems } from "~/lib/utils";
 import { safeAddOrder } from "../_actions/order-actions";
-import { useCart } from "../_hooks/useCart";
+import { type CartItem, useCart } from "../_hooks/useCart";
 
 type AddOrderButtonProps = {
-  readonly order: NewOrder;
+  readonly tableId: number;
+  readonly waiterName: string;
+  readonly servingMethod: "dine_in" | "takeaway" | null | undefined;
+  readonly items: CartItem[];
+  readonly totalAmount: number;
 };
 
-export default function AddOrderButton({ order }: AddOrderButtonProps) {
+export default function AddOrderButton({
+  tableId,
+  waiterName,
+  servingMethod,
+  items,
+  totalAmount,
+}: AddOrderButtonProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { clearCart } = useCart();
@@ -22,7 +31,6 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
   const { execute, status } = useAction(safeAddOrder, {
     onSuccess: ({ success }) => {
       if (success) {
-        /** show toast for success scenario, clear cart and re-route to home page */
         toast({
           title: "Pesanan berhasil. ✅",
           description: "Pesanan anda telah berhasil ditambahkan.",
@@ -36,17 +44,30 @@ export default function AddOrderButton({ order }: AddOrderButtonProps) {
         });
       }
     },
-    onError: () => {
-      toast({
-        title: "Pesanan gagal. ❌",
-        description: "Pesanan anda gagal ditambahkan. ",
-      });
+    onError: ({ serverError, fetchError, validationErrors }) => {
+      if (serverError || fetchError || validationErrors) {
+        toast({
+          title: "Pesanan gagal. ❌",
+          description:
+            serverError || fetchError || "Pesanan anda gagal ditambahkan. ",
+        });
+      } else {
+        toast({
+          title: "Pesanan gagal. ❌",
+          description: "Pesanan anda gagal ditambahkan. ",
+        });
+      }
     },
   });
 
   const onAddOrder = () => {
-    const _order = { ...order, paymentMethod: "cash" as PaymentMethodType };
-    execute(_order);
+    execute({
+      tableId,
+      waiterName,
+      servingMethod,
+      items: cartItemsToOrderItems(items),
+      totalAmount,
+    });
   };
 
   return (

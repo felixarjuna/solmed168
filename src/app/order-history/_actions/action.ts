@@ -5,7 +5,6 @@ import { DateTime } from "luxon";
 import { db } from "~/server/db";
 import { orders } from "~/server/db/schema";
 
-/** method to return all today orders */
 export async function getOrders(isActive: boolean) {
   const startOfDay = DateTime.now().startOf("day");
   const startOfTomorrow = startOfDay.plus({ day: 1 });
@@ -18,18 +17,23 @@ export async function getOrders(isActive: boolean) {
   if (isActive) filters.push(eq(orders.paid, false));
   else filters.push(eq(orders.paid, true));
 
-  const query = db
-    .select()
-    .from(orders)
-    .where(and(...filters));
-
-  return await query;
+  return db.query.orders.findMany({
+    where: and(...filters),
+    with: {
+      orderItems: true,
+      waiter: true,
+      orderPayments: true,
+    },
+  });
 }
 
 export async function getOrderById(orderId: number) {
-  const query = db.query.orders.findFirst({
+  return db.query.orders.findFirst({
     where: eq(orders.orderId, orderId),
+    with: {
+      orderItems: true,
+      waiter: true,
+      orderPayments: true,
+    },
   });
-
-  return await query;
 }

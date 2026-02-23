@@ -13,6 +13,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
+import { orderItemsToCartItems } from "~/lib/utils";
 import { useCart } from "../order/_hooks/useCart";
 import { getOrderById } from "../order-history/_actions/action";
 import CartMenuCard from "./cart-menu-card";
@@ -31,9 +32,9 @@ export default function Cart() {
   React.useEffect(() => {
     const fetchOrder = async (orderId: number) => {
       const order = await getOrderById(orderId);
-      const products = order?.products;
-      if (products) {
-        syncCart(products);
+      if (order?.orderItems) {
+        const cartItems = orderItemsToCartItems(order.orderItems);
+        syncCart(cartItems);
       }
     };
 

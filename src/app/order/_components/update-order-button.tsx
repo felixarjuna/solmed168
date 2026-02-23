@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/components/ui/use-toast";
-import { calculateTotal } from "~/lib/utils";
+import { calculateTotal, cartItemsToOrderItems } from "~/lib/utils";
 import { safeUpdateOrder } from "../_actions/order-actions";
 import { type CartItem, useCart } from "../_hooks/useCart";
 
@@ -25,7 +25,6 @@ export default function UpdateOrderButton({
   const { execute, status } = useAction(safeUpdateOrder, {
     onSuccess: ({ success }) => {
       if (success) {
-        /** show toast for success scenario, clear cart and re-route to home page */
         toast({
           title: "Update pesanan berhasil. ✅",
           description: "Pesanan anda telah berhasil diupdate.",
@@ -49,7 +48,7 @@ export default function UpdateOrderButton({
   const onUpdateOrder = async () => {
     execute({
       orderId,
-      products,
+      items: cartItemsToOrderItems(products),
       totalAmount: calculateTotal(products),
     });
   };

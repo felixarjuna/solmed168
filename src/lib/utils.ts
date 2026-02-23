@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge";
 import type { CartItem } from "~/app/order/_hooks/useCart";
+import type { OrderItem } from "~/server/db/schema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -44,4 +45,34 @@ export function formatDate(date: Date) {
   return DateTime.fromJSDate(date)
     .setLocale("id-ID")
     .toFormat("dd MMMM yyyy HH:mm");
+}
+
+export function orderItemsToCartItems(items: OrderItem[]): CartItem[] {
+  return items.map((item) => ({
+    product: {
+      id: item.productId ?? item.orderItemId,
+      name: item.productName,
+      price: item.unitPrice,
+      amount: item.quantity,
+      servingMethod: item.servingMethod ?? undefined,
+    },
+  }));
+}
+
+export function cartItemsToOrderItems(
+  items: CartItem[]
+): {
+  productName: string;
+  unitPrice: number;
+  quantity: number;
+  lineTotal: number;
+  servingMethod: "dine_in" | "takeaway" | null | undefined;
+}[] {
+  return items.map((item) => ({
+    productName: item.product.name,
+    unitPrice: item.product.price,
+    quantity: item.product.amount,
+    lineTotal: item.product.price * item.product.amount,
+    servingMethod: item.product.servingMethod,
+  }));
 }

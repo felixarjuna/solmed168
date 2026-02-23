@@ -26,8 +26,8 @@ import {
   DrawerTrigger,
 } from "~/components/ui/drawer";
 import { useToast } from "~/components/ui/use-toast";
-import { cn, toRp } from "~/lib/utils";
-import type { Order } from "~/server/db/schema";
+import { cn, orderItemsToCartItems, toRp } from "~/lib/utils";
+import type { OrderWithDetails } from "~/server/db/schema";
 import { type PaymentMethodType, paymentMethods } from "../data";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
@@ -40,7 +40,7 @@ import PaymentSelectionButton from "./payment-selection-button";
 
 interface IPaymentMethodDrawerProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  readonly order: Order;
+  readonly order: OrderWithDetails;
 }
 
 export default function PaymentMethodDrawer({
@@ -50,10 +50,14 @@ export default function PaymentMethodDrawer({
   const { toast } = useToast();
   const { clearCart } = useCart();
 
+  const cartItems = React.useMemo(
+    () => orderItemsToCartItems(order.orderItems),
+    [order.orderItems]
+  );
+
   const { execute, status } = useAction(safePayOrder, {
     onSuccess: ({ success }) => {
       if (success) {
-        /** show toast for success scenario, clear cart and re-route to home page */
         toast({
           title: "Pembayaran berhasil. ✅",
         });
@@ -79,17 +83,16 @@ export default function PaymentMethodDrawer({
     }
   };
 
-  const { onPrintCustomerReceipt } = usePrintReceipt(order.products);
+  const { onPrintCustomerReceipt } = usePrintReceipt(cartItems);
 
-  /** Method to handle payment: cash, qris, and transfer.
-   * The current workflow must be executed for each transaction:
-   * 1. handle payment
-   * 2. save order to database if payment success
-   * 3. print order invoice
-   */
   const onPaymentDone = async (method: PaymentMethodType) => {
-    const _order = { ...order, paymentMethod: method };
-    execute(_order);
+    if (method === undefined) return;
+
+    execute({
+      orderId: order.orderId,
+      paymentMethod: method,
+      amount: order.totalAmount,
+    });
 
     const paymentDetails: PaymentDetails = {
       cashierName: "Nikma",
@@ -115,7 +118,6 @@ export default function PaymentMethodDrawer({
 
     if (method !== "cash") {
       onHandleCashSufficciency(true);
-      // Reset payment details for non-cash methods
       setPaymentTotal(order.totalAmount);
       setPaymentChange(0);
     }

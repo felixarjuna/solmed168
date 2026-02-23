@@ -1,11 +1,4 @@
-/** biome-ignore-all lint/nursery/noShadow: <explanation> */
-/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
-/** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 "use client";
-
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import {
   HandPlatter,
@@ -26,8 +19,14 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
-import { calculateTakeawayBox, cn, today, toRp } from "~/lib/utils";
-import type { NewOrder, Order } from "~/server/db/schema";
+import {
+  calculateTakeawayBox,
+  cn,
+  orderItemsToCartItems,
+  today,
+  toRp,
+} from "~/lib/utils";
+import type { OrderWithDetails } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
 import PageLoader from "../_components/loading";
@@ -60,13 +59,20 @@ export default function Page() {
   const orderId = searchParams.get("orderId");
 
   /** local state for order. */
-  const [order, setOrder] = React.useState<Order | null>(null);
+  const [order, setOrder] = React.useState<OrderWithDetails | null>(null);
+  const [selectedTableId, setSelectedTableId] = React.useState<number>(1);
+  const [selectedWaiterName, setSelectedWaiterName] =
+    React.useState<string>("Lia");
 
   React.useEffect(() => {
     const fetchOrder = async (orderId: number) => {
       const order = await getOrderById(orderId);
       if (order !== undefined) {
         setOrder(order);
+        setSelectedTableId(order.tableId ?? 1);
+        setSelectedWaiterName(order.waiter?.name ?? "Lia");
+        const cartItems = orderItemsToCartItems(order.orderItems);
+        syncCart(cartItems);
       }
     };
 
@@ -84,24 +90,22 @@ export default function Page() {
 
     /** If editing an order but order data hasn't loaded yet, wait */
     if (orderId !== null && order === null) {
-      return items; // Return items unchanged while waiting for order data
+      return items;
     }
 
-    /** Get existing order product IDs for comparison */
+    /** Get existing order item product IDs for comparison */
     const existingProductIds =
-      order?.products.map((product) => product.product.id) ?? [];
+      order?.orderItems.map((item) => item.productId ?? item.orderItemId) ?? [];
 
     /** Update serving method only for newly added items (not in existing order) */
     const updated: CartItem[] = items
-      .filter((item) => item.product.id !== takeawayBox.id) // Remove any existing takeaway boxes first
+      .filter((item) => item.product.id !== takeawayBox.id)
       .map((item) => {
         const isExistingItem = existingProductIds.includes(item.product.id);
         if (isExistingItem) {
-          /** Keep existing item's serving method unchanged */
           return item;
         }
 
-        /** Assign current serving method to newly added items */
         return {
           ...item,
           product: { ...item.product, servingMethod },
@@ -122,7 +126,6 @@ export default function Page() {
       return;
     }
 
-    /** Only sync if items have actually changed to prevent infinite loop */
     const itemsChanged = JSON.stringify(items) !== JSON.stringify(updatedItems);
     if (itemsChanged) {
       syncCart(updatedItems);
@@ -131,12 +134,9 @@ export default function Page() {
 
   const { device, onPrintInternalReceipt } = usePrintReceipt(items);
 
-  /** Add new order. */
-  const newOrder: NewOrder = {
-    tableId: order?.tableId ?? 1,
-    waiter: order?.waiter ?? "Lia",
-    products: items,
-    totalAmount: cartTotal,
+  const receiptOrderDetails = {
+    tableId: selectedTableId,
+    waiterName: selectedWaiterName,
     servingMethod,
   };
 
@@ -180,12 +180,8 @@ export default function Page() {
                   <p className="text-sm">No. Meja</p>
                   <Select
                     disabled={orderId !== null}
-                    onValueChange={(value) => {
-                      if (order !== null) {
-                        setOrder({ ...order!, tableId: +value });
-                      }
-                    }}
-                    value={order?.tableId.toString()}
+                    onValueChange={(value) => setSelectedTableId(+value)}
+                    value={selectedTableId.toString()}
                   >
                     <SelectTrigger className="max-w-24">
                       <SelectValue placeholder="Meja 1" />
@@ -210,12 +206,8 @@ export default function Page() {
                 <p className="text-sm">Waiter</p>
                 <Select
                   disabled={orderId !== null}
-                  onValueChange={(value) => {
-                    if (order !== null) {
-                      setOrder({ ...order!, waiter: value });
-                    }
-                  }}
-                  value={order?.waiter}
+                  onValueChange={(value) => setSelectedWaiterName(value)}
+                  value={selectedWaiterName}
                 >
                   <SelectTrigger className="max-w-24">
                     <SelectValue placeholder="Nama" />
@@ -253,7 +245,7 @@ export default function Page() {
           <div className="flex gap-2">
             <Button
               className="relative"
-              onClick={() => onPrintInternalReceipt(newOrder)}
+              onClick={() => onPrintInternalReceipt(receiptOrderDetails)}
               size={"icon"}
             >
               <PrinterIcon className="relative h-4 w-4" />
@@ -277,15 +269,16 @@ export default function Page() {
               </span>
             </Button>
 
-            {/* <ViewReceiptButton items={items} totalAmount={cartTotal} /> */}
-
             {orderId ? (
-              <UpdateOrderButton
-                orderId={+orderId}
-                products={newOrder.products}
-              />
+              <UpdateOrderButton orderId={+orderId} products={items} />
             ) : (
-              <AddOrderButton order={newOrder} />
+              <AddOrderButton
+                items={items}
+                servingMethod={servingMethod}
+                tableId={selectedTableId}
+                totalAmount={cartTotal}
+                waiterName={selectedWaiterName}
+              />
             )}
           </div>
         </section>
