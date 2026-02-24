@@ -429,6 +429,22 @@ export type NewStockMovement = typeof stockMovements.$inferInsert;
 export type Expense = typeof expenses.$inferSelect;
 export type NewExpense = typeof expenses.$inferInsert;
 
+// ─── Enum Value Types ────────────────────────────────────────────────────────
+
+export type ServingMethodType = (typeof servingMethodEnum.enumValues)[number];
+export type PaymentMethodType = (typeof paymentMethodEnum.enumValues)[number];
+export type ProductCategoryType =
+  (typeof productCategoryEnum.enumValues)[number];
+
+/** lightweight client-side product shape used by the cart and UI. */
+export type ProductType = {
+  id: string;
+  name: string;
+  price: number;
+  type?: "bakso" | "mie" | "satuan";
+  description?: string;
+};
+
 // ─── Composite Types ─────────────────────────────────────────────────────────
 
 export type OrderItemWithProduct = OrderItem & {

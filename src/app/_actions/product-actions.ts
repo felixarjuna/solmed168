@@ -2,8 +2,7 @@
 
 import { and, asc, eq, isNull } from "drizzle-orm";
 import { db } from "~/server/db";
-import { products } from "~/server/db/schema";
-import type { ProductType } from "../data";
+import { type ProductType, products } from "~/server/db/schema";
 
 export async function getProductsByCategory(
   category: "food" | "beverage" | "snack" | "addon"

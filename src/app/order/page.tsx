@@ -20,11 +20,12 @@ import {
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
 import { cn, orderItemsToCartItems, today, toRp } from "~/lib/utils";
-import type { OrderWithDetails } from "~/server/db/schema";
+import type { OrderWithDetails, ServingMethodType } from "~/server/db/schema";
+import { getTables } from "../_actions/table-actions";
+import { getWaiters } from "../_actions/waiter-actions";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
 import PageLoader from "../_components/loading";
-import { type ServingMethodType, tableNums, waiters } from "../data";
 import { getOrderById } from "../order-history/_actions/action";
 import AddOrderButton from "./_components/add-order-button";
 import UpdateOrderButton from "./_components/update-order-button";
@@ -32,7 +33,7 @@ import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
 import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
-export default function Page() {
+export default async function Page() {
   const { items, cartTotal, syncCart } = useCart();
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
@@ -58,7 +59,9 @@ export default function Page() {
   const [selectedWaiterName, setSelectedWaiterName] =
     React.useState<string>("Lia");
 
-  console.log(order);
+  const tables = await getTables();
+  const waiters = await getWaiters();
+
   /** Fetch order data when editing */
   React.useEffect(() => {
     const fetchOrder = async (id: number) => {
@@ -166,9 +169,12 @@ export default function Page() {
                       <SelectValue placeholder="Meja 1" />
                     </SelectTrigger>
                     <SelectContent>
-                      {tableNums.map((num) => (
-                        <SelectItem key={num} value={`${num}`}>
-                          {`Meja ${num}`}
+                      {tables.map((table) => (
+                        <SelectItem
+                          key={table.tableId}
+                          value={`${table.tableNumber}`}
+                        >
+                          {`Meja ${table.tableNumber}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -193,8 +199,8 @@ export default function Page() {
                   </SelectTrigger>
                   <SelectContent className="w-[24px]">
                     {waiters.map((waiter, i) => (
-                      <SelectItem key={i.toString()} value={waiter}>
-                        {waiter}
+                      <SelectItem key={i.toString()} value={waiter.name}>
+                        {waiter.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -3,6 +3,7 @@ import _ from "lodash";
 
 import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import type { ProductType } from "~/server/db/schema";
 import { getAllProducts } from "./_actions/product-actions";
 import ActiveOrderButton from "./_components/active-order-button";
 import BluetoothIndicator from "./_components/bluetooth-indicator";
@@ -12,7 +13,6 @@ import PageLoader from "./_components/loading";
 import MenuCard from "./_components/menu-card";
 import OrderHistoryButton from "./_components/order-history-button";
 import OrderSummary from "./_components/order-summary";
-import type { ProductType } from "./data";
 
 export const dynamic = "force-dynamic";
 
