@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { alacarte, type ProductType, type ServingMethodType } from "~/app/data";
+import type { ProductType, ServingMethodType } from "~/app/data";
 import { calculateTotal } from "~/lib/utils";
 
 export type CartItemExtended = ProductType & {
@@ -14,35 +14,45 @@ export type CartItem = {
 
 export type UpdateAmountMethod = "increment" | "decrement";
 
+const TAKEAWAY_BOX_NAME = "Takeaway Box";
+const TAKEAWAY_BOX_PRICE = 1000;
+
 /**
- * Helper function to sync takeaway boxes based on mie/bakso items with takeaway serving method
+ * Helper function to sync takeaway boxes based on mie/bakso items with takeaway serving method.
+ * Identifies takeaway boxes by name (not by ID) to support DB-backed products.
  */
 const syncTakeawayBoxes = (items: CartItem[]): CartItem[] => {
-  const takeawayBox = alacarte.find((item) => item.name === "Takeaway Box");
-  if (!takeawayBox) {
-    return items;
-  }
-
   // Count mie/bakso items with takeaway serving method
   const boxCount = items
     .filter(
       (item) =>
         (item.product.type === "mie" || item.product.type === "bakso") &&
         item.product.servingMethod === "takeaway" &&
-        item.product.id !== takeawayBox.id
+        item.product.name !== TAKEAWAY_BOX_NAME
     )
     .reduce((sum, item) => sum + item.product.amount, 0);
 
-  // Remove existing takeaway boxes
+  // Remove existing takeaway boxes (by name)
   const itemsWithoutBoxes = items.filter(
-    (item) => item.product.id !== takeawayBox.id
+    (item) => item.product.name !== TAKEAWAY_BOX_NAME
   );
 
   // Add correct number of boxes if needed
   if (boxCount > 0) {
+    // Reuse existing box product data if available (preserves DB product ID)
+    const existingBox = items.find(
+      (item) => item.product.name === TAKEAWAY_BOX_NAME
+    );
     return [
       ...itemsWithoutBoxes,
-      { product: { ...takeawayBox, amount: boxCount } },
+      {
+        product: {
+          id: existingBox?.product.id ?? "takeaway-box",
+          name: TAKEAWAY_BOX_NAME,
+          price: TAKEAWAY_BOX_PRICE,
+          amount: boxCount,
+        },
+      },
     ];
   }
 
@@ -98,9 +108,10 @@ export const useCart = create<CartState>()(
             }
           }
 
+          const itemsWithBoxes = syncTakeawayBoxes(updatedItems);
           return {
-            items: updatedItems,
-            cartTotal: calculateTotal(updatedItems),
+            items: itemsWithBoxes,
+            cartTotal: calculateTotal(itemsWithBoxes),
           };
         }),
       removeItem: (id) =>
@@ -108,8 +119,9 @@ export const useCart = create<CartState>()(
           const updatedItems = state.items.filter(
             (item) => item.product.id !== id
           );
-          const total = calculateTotal(updatedItems);
-          return { items: updatedItems, cartTotal: total };
+          const itemsWithBoxes = syncTakeawayBoxes(updatedItems);
+          const total = calculateTotal(itemsWithBoxes);
+          return { items: itemsWithBoxes, cartTotal: total };
         }),
       clearCart: () => set({ items: [], cartTotal: 0 }),
       updateAmount: (id, method) =>
@@ -129,8 +141,9 @@ export const useCart = create<CartState>()(
             }
           }
 
-          const total = calculateTotal(updatedItems);
-          return { items: updatedItems, cartTotal: total };
+          const itemsWithBoxes = syncTakeawayBoxes(updatedItems);
+          const total = calculateTotal(itemsWithBoxes);
+          return { items: itemsWithBoxes, cartTotal: total };
         }),
       updateItemServingMethod: (id, servingMethod) =>
         set((state) => {
@@ -144,14 +157,12 @@ export const useCart = create<CartState>()(
             return item;
           });
 
-          // Sync takeaway boxes automatically when serving method changes
           const itemsWithBoxes = syncTakeawayBoxes(updatedItems);
           const total = calculateTotal(itemsWithBoxes);
           return { items: itemsWithBoxes, cartTotal: total };
         }),
       syncCart: (items) =>
         set(() => {
-          // Sync takeaway boxes when syncing cart
           const itemsWithBoxes = syncTakeawayBoxes(items);
           return {
             items: itemsWithBoxes,

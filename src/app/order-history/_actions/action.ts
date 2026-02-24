@@ -20,7 +20,7 @@ export async function getOrders(isActive: boolean) {
   return db.query.orders.findMany({
     where: and(...filters),
     with: {
-      orderItems: true,
+      orderItems: { with: { product: true } },
       waiter: true,
       orderPayments: true,
     },
@@ -31,7 +31,7 @@ export async function getOrderById(orderId: number) {
   return db.query.orders.findFirst({
     where: eq(orders.orderId, orderId),
     with: {
-      orderItems: true,
+      orderItems: { with: { product: true } },
       waiter: true,
       orderPayments: true,
     },

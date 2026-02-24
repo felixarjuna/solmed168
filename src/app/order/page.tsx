@@ -19,22 +19,16 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
-import {
-  calculateTakeawayBox,
-  cn,
-  orderItemsToCartItems,
-  today,
-  toRp,
-} from "~/lib/utils";
+import { cn, orderItemsToCartItems, today, toRp } from "~/lib/utils";
 import type { OrderWithDetails } from "~/server/db/schema";
 import BackButton from "../_components/back-button";
 import { InvoiceContent } from "../_components/invoice";
 import PageLoader from "../_components/loading";
-import { alacarte, type ServingMethodType, tableNums, waiters } from "../data";
+import { type ServingMethodType, tableNums, waiters } from "../data";
 import { getOrderById } from "../order-history/_actions/action";
 import AddOrderButton from "./_components/add-order-button";
 import UpdateOrderButton from "./_components/update-order-button";
-import { type CartItem, useCart } from "./_hooks/useCart";
+import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
 import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
@@ -58,20 +52,22 @@ export default function Page() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
-  /** local state for order. */
+  /** local state for order (edit mode). */
   const [order, setOrder] = React.useState<OrderWithDetails | null>(null);
   const [selectedTableId, setSelectedTableId] = React.useState<number>(1);
   const [selectedWaiterName, setSelectedWaiterName] =
     React.useState<string>("Lia");
 
+  console.log(order);
+  /** Fetch order data when editing */
   React.useEffect(() => {
-    const fetchOrder = async (orderId: number) => {
-      const order = await getOrderById(orderId);
-      if (order !== undefined) {
-        setOrder(order);
-        setSelectedTableId(order.tableId ?? 1);
-        setSelectedWaiterName(order.waiter?.name ?? "Lia");
-        const cartItems = orderItemsToCartItems(order.orderItems);
+    const fetchOrder = async (id: number) => {
+      const fetchedOrder = await getOrderById(id);
+      if (fetchedOrder !== undefined) {
+        setOrder(fetchedOrder);
+        setSelectedTableId(fetchedOrder.tableId ?? 1);
+        setSelectedWaiterName(fetchedOrder.waiter?.name ?? "Lia");
+        const cartItems = orderItemsToCartItems(fetchedOrder.orderItems);
         syncCart(cartItems);
       }
     };
@@ -82,55 +78,38 @@ export default function Page() {
   }, [orderId]);
 
   const { servingMethod } = useClientState();
-  const updatedItems = React.useMemo(() => {
-    const takeawayBox = alacarte.find((item) => item.name === "Takeaway Box");
-    if (takeawayBox === undefined) {
-      return;
-    }
 
-    /** If editing an order but order data hasn't loaded yet, wait */
-    if (orderId !== null && order === null) {
-      return items;
-    }
-
-    /** Get existing order item product IDs for comparison */
-    const existingProductIds =
-      order?.orderItems.map((item) => item.productId ?? item.orderItemId) ?? [];
-
-    /** Update serving method only for newly added items (not in existing order) */
-    const updated: CartItem[] = items
-      .filter((item) => item.product.id !== takeawayBox.id)
-      .map((item) => {
-        const isExistingItem = existingProductIds.includes(item.product.id);
-        if (isExistingItem) {
-          return item;
-        }
-
-        return {
-          ...item,
-          product: { ...item.product, servingMethod },
-        };
-      });
-
-    /** Calculate and add takeaway boxes based on all items with takeaway serving method */
-    const boxCount = calculateTakeawayBox(updated);
-    if (boxCount > 0) {
-      updated.push({ product: { ...takeawayBox, amount: boxCount } });
-    }
-
-    return updated;
-  }, [servingMethod, order, items, orderId]);
-
+  /**
+   * Stamp the global serving method on items that don't have one yet.
+   * This applies to newly added items (from the homepage) that haven't been
+   * assigned a serving method. Items from an existing order or items that the
+   * user has already toggled keep their serving method.
+   *
+   * syncCart will also trigger syncTakeawayBoxes inside the cart store.
+   */
   React.useEffect(() => {
-    if (!updatedItems) {
-      return;
-    }
+    // In edit mode, wait for order data before stamping
+    if (orderId !== null && order === null) return;
+    if (items.length === 0) return;
 
-    const itemsChanged = JSON.stringify(items) !== JSON.stringify(updatedItems);
-    if (itemsChanged) {
-      syncCart(updatedItems);
+    let hasChanges = false;
+    const updated = items.map((item) => {
+      // Skip takeaway boxes — they're managed by the cart
+      if (item.product.name === "Takeaway Box") return item;
+      // Skip items that already have a serving method (from DB or user toggle)
+      if (item.product.servingMethod !== undefined) return item;
+
+      hasChanges = true;
+      return {
+        ...item,
+        product: { ...item.product, servingMethod },
+      };
+    });
+
+    if (hasChanges) {
+      syncCart(updated);
     }
-  }, [updatedItems, items, syncCart]);
+  }, [items, servingMethod, orderId, order, syncCart]);
 
   const { device, onPrintInternalReceipt } = usePrintReceipt(items);
 

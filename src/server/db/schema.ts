@@ -431,8 +431,12 @@ export type NewExpense = typeof expenses.$inferInsert;
 
 // ─── Composite Types ─────────────────────────────────────────────────────────
 
+export type OrderItemWithProduct = OrderItem & {
+  product: Product | null;
+};
+
 export type OrderWithDetails = Order & {
-  orderItems: OrderItem[];
+  orderItems: OrderItemWithProduct[];
   waiter: Waiter | null;
   orderPayments: OrderPayment[];
 };

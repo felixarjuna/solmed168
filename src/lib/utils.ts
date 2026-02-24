@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge";
 import type { CartItem } from "~/app/order/_hooks/useCart";
-import type { OrderItem } from "~/server/db/schema";
+import type { OrderItemWithProduct } from "~/server/db/schema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,15 +18,6 @@ export function formatRp(amount: string): string {
     return "0";
   }
   return number.toLocaleString("id-ID");
-}
-
-export function calculateTakeawayBox(items: CartItem[]) {
-  return items
-    .filter(
-      (item) => item.product.type === "mie" || item.product.type === "bakso"
-    )
-    .filter((item) => item.product.servingMethod === "takeaway")
-    .reduce((total, { product }) => total + product.amount, 0);
 }
 
 export function calculateTotal(items: CartItem[]) {
@@ -47,7 +38,7 @@ export function formatDate(date: Date) {
     .toFormat("dd MMMM yyyy HH:mm");
 }
 
-export function orderItemsToCartItems(items: OrderItem[]): CartItem[] {
+export function orderItemsToCartItems(items: OrderItemWithProduct[]): CartItem[] {
   return items.map((item) => ({
     product: {
       id: item.productId ?? item.orderItemId,
@@ -55,6 +46,7 @@ export function orderItemsToCartItems(items: OrderItem[]): CartItem[] {
       price: item.unitPrice,
       amount: item.quantity,
       servingMethod: item.servingMethod ?? undefined,
+      type: item.product?.type as CartItem["product"]["type"],
     },
   }));
 }
