@@ -37,7 +37,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.383.0",
     "luxon": "^3.4.4",
-    "next": "^14.2.1",
+    "next": "14.2.35",
     "next-safe-action": "^6.2.0",
     "postgres": "^3.4.4",
     "react": "^18.3.0",
