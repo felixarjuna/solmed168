@@ -34,7 +34,7 @@ import PageLoader from "../_components/loading";
 import { getOrderById } from "../order-history/_actions/action";
 import AddOrderButton from "./_components/add-order-button";
 import UpdateOrderButton from "./_components/update-order-button";
-import { useCart } from "./_hooks/useCart";
+import { getDerivedServingMethod, useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
 import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
@@ -96,6 +96,7 @@ export default function Page() {
   }, [orderId]);
 
   const { servingMethod } = useClientState();
+  const derivedServingMethod = getDerivedServingMethod(items);
 
   /**
    * Stamp the global serving method on items that don't have one yet.
@@ -134,7 +135,7 @@ export default function Page() {
   const receiptOrderDetails = {
     tableId: selectedTableId,
     waiterName: selectedWaiterName,
-    servingMethod,
+    servingMethod: derivedServingMethod,
   };
 
   return (
@@ -162,13 +163,16 @@ export default function Page() {
               </div>
               <div className="-space-y-1 flex flex-col">
                 <p className="text-sm">
-                  {getTextFromServingMethod(servingMethod)}.
+                  {derivedServingMethod
+                    ? getTextFromServingMethod(derivedServingMethod)
+                    : getTextFromServingMethod(servingMethod)}
+                  .
                 </p>
                 <p className="font-bold text-xs">{today()}</p>
               </div>
             </div>
 
-            {servingMethod === "dine_in" ? (
+            {(derivedServingMethod ?? servingMethod) === "dine_in" ? (
               <div className="flex items-center gap-4">
                 <div className="w-fit rounded-full bg-neutral-100 p-2">
                   <Utensils className="h-4 w-4" />
@@ -274,7 +278,7 @@ export default function Page() {
             ) : (
               <AddOrderButton
                 items={items}
-                servingMethod={servingMethod}
+                servingMethod={derivedServingMethod ?? servingMethod}
                 tableId={selectedTableId}
                 totalAmount={cartTotal}
                 waiterName={selectedWaiterName}

@@ -76,6 +76,23 @@ type CartState = {
   readonly syncCart: (items: CartItem[]) => void;
 };
 
+export const getDerivedServingMethod = (
+  items: CartItem[]
+): ServingMethodType | null => {
+  const methods = items
+    .filter(
+      (item) =>
+        item.product.name !== "Takeaway Box" &&
+        item.product.servingMethod !== undefined
+    )
+    .map((item) => item.product.servingMethod);
+
+  if (methods.length === 0) return null;
+
+  const allSame = methods.every((m) => m === methods[0]);
+  return allSame ? methods[0]! : "dine_in";
+};
+
 export const useCart = create<CartState>()(
   persist(
     (set) => ({
