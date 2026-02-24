@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import type { ProductType } from "~/server/db/schema";
+import type { FoodType, ProductType } from "~/server/db/schema";
 import { getAllProducts } from "./_actions/product-actions";
 import ActiveOrderButton from "./_components/active-order-button";
 import BluetoothIndicator from "./_components/bluetooth-indicator";
@@ -16,9 +16,7 @@ import OrderSummary from "./_components/order-summary";
 
 export const dynamic = "force-dynamic";
 
-type FoodType = "bakso" | "mie" | "satuan" | undefined;
-
-export default async function HomePage() {
+export default async function Page() {
   const { foods, beverages, snacks } = await getAllProducts();
 
   const groupedFoods = new Map<FoodType, ProductType[]>();

@@ -28,7 +28,10 @@ import {
 import { useToast } from "~/components/ui/use-toast";
 import { cn, orderItemsToCartItems, toRp } from "~/lib/utils";
 import type { OrderWithDetails } from "~/server/db/schema";
-import { type PaymentMethodType, paymentMethods } from "../data";
+import {
+  type PaymentMethodType,
+  paymentMethodEnum,
+} from "~/server/db/schema";
 import { safePayOrder } from "../order/_actions/order-actions";
 import { useCart } from "../order/_hooks/useCart";
 import {
@@ -112,8 +115,8 @@ export default function PaymentMethodDrawer({
 
   /** local state for payment method. */
   const [paymentMethod, setPaymentMethod] =
-    React.useState<PaymentMethodType>(undefined);
-  const onSelectPaymentMethod = (method: PaymentMethodType) => {
+    React.useState<PaymentMethodType | undefined>(undefined);
+  const onSelectPaymentMethod = (method: PaymentMethodType | undefined) => {
     setPaymentMethod(method);
 
     if (method !== "cash") {
@@ -156,7 +159,7 @@ export default function PaymentMethodDrawer({
 
         {paymentMethod === undefined ? (
           <div className="flex flex-col gap-2">
-            {paymentMethods.map((method, i) => (
+            {paymentMethodEnum.enumValues.map((method, i) => (
               <Button
                 className="flex justify-start gap-2 rounded-lg border px-6 py-4"
                 key={i.toString()}

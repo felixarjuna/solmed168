@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/nursery/noShadow: <explanation> */
 import { Br, Line, Printer, Row, render, Text } from "react-thermal-printer";
-import type { PaymentMethodType, ReceiptType } from "~/app/data";
+import type { PaymentMethodType, ReceiptType } from "~/server/db/schema";
 import { toast } from "~/components/ui/use-toast";
 import { calculateTotal, formatDate, toRp } from "~/lib/utils";
 import type { CartItem } from "./useCart";

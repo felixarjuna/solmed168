@@ -1,11 +1,13 @@
 import { ArrowLeft, Loader2, PartyPopper } from "lucide-react";
 import type { HookActionStatus } from "next-safe-action/hooks";
 import { Button } from "~/components/ui/button";
-import type { PaymentMethodType } from "../data";
+import type { PaymentMethodType } from "~/server/db/schema";
 
 type IActionButton = {
   readonly method: PaymentMethodType;
-  readonly onSelectPaymentMethod: (method: PaymentMethodType) => void;
+  readonly onSelectPaymentMethod: (
+    method: PaymentMethodType | undefined
+  ) => void;
 
   readonly onPaymentDone: (method: PaymentMethodType) => Promise<void>;
   readonly isCashSufficient?: boolean;

@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "~/server/db";
 import type { Waiter } from "~/server/db/schema";
 

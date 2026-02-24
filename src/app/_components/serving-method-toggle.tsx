@@ -3,7 +3,7 @@
 import { Package, Utensils } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import type { ServingMethodType } from "../data";
+import type { ServingMethodType } from "~/server/db/schema";
 
 type ServingMethodToggleProps = {
   readonly itemId: string;

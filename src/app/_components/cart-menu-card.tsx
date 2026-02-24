@@ -1,7 +1,7 @@
 import { Minus, Plus, Trash } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { toRp } from "~/lib/utils";
-import type { ProductType } from "../data";
+import type { ProductType } from "~/server/db/schema";
 import { useCart } from "../order/_hooks/useCart";
 
 type CartMenuCardProps = {

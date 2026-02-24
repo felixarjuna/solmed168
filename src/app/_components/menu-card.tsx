@@ -4,7 +4,7 @@ import { Minus, Plus } from "lucide-react";
 import React from "react";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { cn, toRp } from "~/lib/utils";
-import type { ProductType } from "../data";
+import type { ProductType } from "~/server/db/schema";
 import { useCart } from "../order/_hooks/useCart";
 
 interface MenuCardProps {

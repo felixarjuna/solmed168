@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { customers, products, tables, waiters } from "./schema";
+import { customers, type FoodType, products, tables, waiters } from "./schema";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
@@ -221,7 +221,7 @@ const seed = async () => {
       name: p.name,
       price: p.price,
       category: "food" as const,
-      type: "type" in p ? (p.type as string) : undefined,
+      type: "type" in p ? (p.type as FoodType) : undefined,
       description: "description" in p ? (p.description as string) : undefined,
       displayOrder: p.displayOrder,
       trackInventory: false,

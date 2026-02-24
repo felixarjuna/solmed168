@@ -20,7 +20,12 @@ import {
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
 import { cn, orderItemsToCartItems, today, toRp } from "~/lib/utils";
-import type { OrderWithDetails, ServingMethodType } from "~/server/db/schema";
+import type {
+  OrderWithDetails,
+  ServingMethodType,
+  Table,
+  Waiter,
+} from "~/server/db/schema";
 import { getTables } from "../_actions/table-actions";
 import { getWaiters } from "../_actions/waiter-actions";
 import BackButton from "../_components/back-button";
@@ -33,7 +38,7 @@ import { useCart } from "./_hooks/useCart";
 import { useClientState } from "./_hooks/useClientState";
 import { usePrintReceipt } from "./_hooks/usePrintReceipt";
 
-export default async function Page() {
+export default function Page() {
   const { items, cartTotal, syncCart } = useCart();
   const numberOfItems = items.reduce(
     (total, { product }) => total + product.amount,
@@ -59,8 +64,18 @@ export default async function Page() {
   const [selectedWaiterName, setSelectedWaiterName] =
     React.useState<string>("Lia");
 
-  const tables = await getTables();
-  const waiters = await getWaiters();
+  const [tableList, setTableList] = React.useState<Table[]>([]);
+  const [waiterList, setWaiterList] = React.useState<Waiter[]>([]);
+
+  /** fetch table and waiter list. */
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const [tables, waiters] = await Promise.all([getTables(), getWaiters()]);
+      setTableList(tables);
+      setWaiterList(waiters);
+    };
+    fetchData();
+  }, []);
 
   /** fetch order data when editing */
   React.useEffect(() => {
@@ -169,7 +184,7 @@ export default async function Page() {
                       <SelectValue placeholder="Meja 1" />
                     </SelectTrigger>
                     <SelectContent>
-                      {tables.map((table) => (
+                      {tableList.map((table) => (
                         <SelectItem
                           key={table.tableId}
                           value={`${table.tableNumber}`}
@@ -198,8 +213,8 @@ export default async function Page() {
                     <SelectValue placeholder="Nama" />
                   </SelectTrigger>
                   <SelectContent className="w-[24px]">
-                    {waiters.map((waiter, i) => (
-                      <SelectItem key={i.toString()} value={waiter.name}>
+                    {waiterList.map((waiter) => (
+                      <SelectItem key={waiter.waiterId} value={waiter.name}>
                         {waiter.name}
                       </SelectItem>
                     ))}
