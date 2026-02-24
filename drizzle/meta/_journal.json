@@ -8,6 +8,13 @@
       "when": 1771869499968,
       "tag": "0000_cloudy_the_phantom",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771919705961,
+      "tag": "0001_mysterious_deathbird",
+      "breakpoints": true
     }
   ]
 }

@@ -20,6 +20,8 @@ export const createTable = pgTableCreator((name) => `solmed168_${name}`);
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
+export const foodTypeEnum = pgEnum("food_type", ["bakso", "mie", "satuan"]);
+
 export const productCategoryEnum = pgEnum("product_category", [
   "food",
   "beverage",
@@ -76,7 +78,7 @@ export const products = createTable(
     description: text("description"),
     price: integer("price").notNull(),
     category: productCategoryEnum("category").notNull(),
-    type: text("type"),
+    type: foodTypeEnum("type"),
     trackInventory: boolean("track_inventory").notNull().default(true),
     stockQuantity: integer("stock_quantity").default(0),
     lowStockThreshold: integer("low_stock_threshold").default(10),
@@ -435,13 +437,15 @@ export type ServingMethodType = (typeof servingMethodEnum.enumValues)[number];
 export type PaymentMethodType = (typeof paymentMethodEnum.enumValues)[number];
 export type ProductCategoryType =
   (typeof productCategoryEnum.enumValues)[number];
+export type FoodType = (typeof foodTypeEnum.enumValues)[number];
+export type ReceiptType = "internal" | "client";
 
-/** lightweight client-side product shape used by the cart and UI. */
+/** Lightweight client-side product shape used by the cart and UI. */
 export type ProductType = {
   id: string;
   name: string;
   price: number;
-  type?: "bakso" | "mie" | "satuan";
+  type?: FoodType;
   description?: string;
 };
 

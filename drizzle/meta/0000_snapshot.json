@@ -1,7 +1,5 @@
 {
-  "id": "4f80d063-906e-45a0-aca5-00de9bfd09f7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.solmed168_customer": {
@@ -77,11 +75,19 @@
       },
       "indexes": {
         "customer_phone_idx": {
-          "name": "customer_phone_idx",
           "columns": [
-            "phone_number"
+            {
+              "expression": "phone_number",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "customer_phone_idx",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
@@ -89,12 +95,15 @@
       "uniqueConstraints": {
         "solmed168_customer_phone_number_unique": {
           "name": "solmed168_customer_phone_number_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "phone_number"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_expense": {
       "name": "solmed168_expense",
@@ -166,23 +175,42 @@
       },
       "indexes": {
         "expense_date_idx": {
-          "name": "expense_date_idx",
           "columns": [
-            "expense_date"
+            {
+              "expression": "expense_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "expense_date_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "expense_category_idx": {
-          "name": "expense_category_idx",
           "columns": [
-            "category"
+            {
+              "expression": "category",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "expense_category_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_order_item": {
       "name": "solmed168_order_item",
@@ -261,50 +289,69 @@
       },
       "indexes": {
         "order_item_order_idx": {
-          "name": "order_item_order_idx",
           "columns": [
-            "order_id"
+            {
+              "expression": "order_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_item_order_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "order_item_product_idx": {
-          "name": "order_item_product_idx",
           "columns": [
-            "product_id"
+            {
+              "expression": "product_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_item_product_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "solmed168_order_item_order_id_solmed168_order_order_id_fk": {
           "name": "solmed168_order_item_order_id_solmed168_order_order_id_fk",
           "tableFrom": "solmed168_order_item",
-          "tableTo": "solmed168_order",
           "columnsFrom": [
             "order_id"
           ],
+          "tableTo": "solmed168_order",
           "columnsTo": [
             "order_id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "solmed168_order_item_product_id_solmed168_product_product_id_fk": {
           "name": "solmed168_order_item_product_id_solmed168_product_product_id_fk",
           "tableFrom": "solmed168_order_item",
-          "tableTo": "solmed168_product",
           "columnsFrom": [
             "product_id"
           ],
+          "tableTo": "solmed168_product",
           "columnsTo": [
             "product_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_order_payment": {
       "name": "solmed168_order_payment",
@@ -365,44 +412,71 @@
       },
       "indexes": {
         "payment_order_idx": {
-          "name": "payment_order_idx",
           "columns": [
-            "order_id"
+            {
+              "expression": "order_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "payment_order_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "payment_method_idx": {
-          "name": "payment_method_idx",
           "columns": [
-            "payment_method"
+            {
+              "expression": "payment_method",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "payment_method_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "payment_paid_at_idx": {
-          "name": "payment_paid_at_idx",
           "columns": [
-            "paid_at"
+            {
+              "expression": "paid_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "payment_paid_at_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "solmed168_order_payment_order_id_solmed168_order_order_id_fk": {
           "name": "solmed168_order_payment_order_id_solmed168_order_order_id_fk",
           "tableFrom": "solmed168_order_payment",
-          "tableTo": "solmed168_order",
           "columnsFrom": [
             "order_id"
           ],
+          "tableTo": "solmed168_order",
           "columnsTo": [
             "order_id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_order_promotion": {
       "name": "solmed168_order_promotion",
@@ -446,32 +520,35 @@
         "solmed168_order_promotion_order_id_solmed168_order_order_id_fk": {
           "name": "solmed168_order_promotion_order_id_solmed168_order_order_id_fk",
           "tableFrom": "solmed168_order_promotion",
-          "tableTo": "solmed168_order",
           "columnsFrom": [
             "order_id"
           ],
+          "tableTo": "solmed168_order",
           "columnsTo": [
             "order_id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "solmed168_order_promotion_promotion_id_solmed168_promotion_promotion_id_fk": {
           "name": "solmed168_order_promotion_promotion_id_solmed168_promotion_promotion_id_fk",
           "tableFrom": "solmed168_order_promotion",
-          "tableTo": "solmed168_promotion",
           "columnsFrom": [
             "promotion_id"
           ],
+          "tableTo": "solmed168_promotion",
           "columnsTo": [
             "promotion_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_order": {
       "name": "solmed168_order",
@@ -612,100 +689,156 @@
       },
       "indexes": {
         "order_date_idx": {
-          "name": "order_date_idx",
           "columns": [
-            "order_date"
+            {
+              "expression": "order_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_date_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "order_status_idx": {
-          "name": "order_status_idx",
           "columns": [
-            "status"
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_status_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "order_paid_idx": {
-          "name": "order_paid_idx",
           "columns": [
-            "paid"
+            {
+              "expression": "paid",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_paid_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "order_customer_idx": {
-          "name": "order_customer_idx",
           "columns": [
-            "customer_id"
+            {
+              "expression": "customer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_customer_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "order_table_idx": {
-          "name": "order_table_idx",
           "columns": [
-            "table_id"
+            {
+              "expression": "table_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_table_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "order_date_paid_idx": {
-          "name": "order_date_paid_idx",
           "columns": [
-            "order_date",
-            "paid"
+            {
+              "expression": "order_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "paid",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "order_date_paid_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "solmed168_order_table_id_solmed168_table_table_id_fk": {
           "name": "solmed168_order_table_id_solmed168_table_table_id_fk",
           "tableFrom": "solmed168_order",
-          "tableTo": "solmed168_table",
           "columnsFrom": [
             "table_id"
           ],
+          "tableTo": "solmed168_table",
           "columnsTo": [
             "table_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "solmed168_order_waiter_id_solmed168_waiter_waiter_id_fk": {
           "name": "solmed168_order_waiter_id_solmed168_waiter_waiter_id_fk",
           "tableFrom": "solmed168_order",
-          "tableTo": "solmed168_waiter",
           "columnsFrom": [
             "waiter_id"
           ],
+          "tableTo": "solmed168_waiter",
           "columnsTo": [
             "waiter_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "solmed168_order_customer_id_solmed168_customer_customer_id_fk": {
           "name": "solmed168_order_customer_id_solmed168_customer_customer_id_fk",
           "tableFrom": "solmed168_order",
-          "tableTo": "solmed168_customer",
           "columnsFrom": [
             "customer_id"
           ],
+          "tableTo": "solmed168_customer",
           "columnsTo": [
             "customer_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "solmed168_order_order_number_unique": {
           "name": "solmed168_order_order_number_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "order_number"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_product": {
       "name": "solmed168_product",
@@ -813,23 +946,42 @@
       },
       "indexes": {
         "product_category_idx": {
-          "name": "product_category_idx",
           "columns": [
-            "category"
+            {
+              "expression": "category",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "product_category_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "product_is_available_idx": {
-          "name": "product_is_available_idx",
           "columns": [
-            "is_available"
+            {
+              "expression": "is_available",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "product_is_available_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_promotion": {
       "name": "solmed168_promotion",
@@ -939,12 +1091,15 @@
       "uniqueConstraints": {
         "solmed168_promotion_code_unique": {
           "name": "solmed168_promotion_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_stock_movement": {
       "name": "solmed168_stock_movement",
@@ -1016,44 +1171,71 @@
       },
       "indexes": {
         "stock_movement_product_idx": {
-          "name": "stock_movement_product_idx",
           "columns": [
-            "product_id"
+            {
+              "expression": "product_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "stock_movement_product_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "stock_movement_created_idx": {
-          "name": "stock_movement_created_idx",
           "columns": [
-            "created_at"
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "stock_movement_created_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "stock_movement_type_idx": {
-          "name": "stock_movement_type_idx",
           "columns": [
-            "movement_type"
+            {
+              "expression": "movement_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "stock_movement_type_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "solmed168_stock_movement_product_id_solmed168_product_product_id_fk": {
           "name": "solmed168_stock_movement_product_id_solmed168_product_product_id_fk",
           "tableFrom": "solmed168_stock_movement",
-          "tableTo": "solmed168_product",
           "columnsFrom": [
             "product_id"
           ],
+          "tableTo": "solmed168_product",
           "columnsTo": [
             "product_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_table": {
       "name": "solmed168_table",
@@ -1120,12 +1302,15 @@
       "uniqueConstraints": {
         "solmed168_table_table_number_unique": {
           "name": "solmed168_table_table_number_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "table_number"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
     "public.solmed168_waiter": {
       "name": "solmed168_waiter",
@@ -1184,12 +1369,15 @@
       "uniqueConstraints": {
         "solmed168_waiter_employee_code_unique": {
           "name": "solmed168_waiter_employee_code_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "employee_code"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
-      }
+      },
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     }
   },
   "enums": {
@@ -1262,8 +1450,14 @@
   },
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "4f80d063-906e-45a0-aca5-00de9bfd09f7",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
 }
