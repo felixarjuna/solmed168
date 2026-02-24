@@ -6,20 +6,20 @@ import { cn } from "~/lib/utils";
 import type { ServingMethodType } from "~/server/db/schema";
 
 type ServingMethodToggleProps = {
-  readonly itemId: string;
+  readonly cartItemId: string;
   readonly currentMethod: ServingMethodType | undefined;
-  readonly onToggle: (itemId: string, newMethod: ServingMethodType) => void;
+  readonly onToggle: (cartItemId: string, newMethod: ServingMethodType) => void;
 };
 
 export default function ServingMethodToggle({
-  itemId,
+  cartItemId,
   currentMethod,
   onToggle,
 }: ServingMethodToggleProps) {
   const handleToggle = () => {
     const newMethod: ServingMethodType =
       currentMethod === "dine_in" ? "takeaway" : "dine_in";
-    onToggle(itemId, newMethod);
+    onToggle(cartItemId, newMethod);
   };
 
   const isDineIn = currentMethod === "dine_in";

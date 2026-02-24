@@ -3,13 +3,12 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { calculateTotal } from "~/lib/utils";
 import type { ProductType, ServingMethodType } from "~/server/db/schema";
 
-export type CartItemExtended = ProductType & {
-  amount: number;
-  servingMethod?: ServingMethodType;
-};
-
 export type CartItem = {
-  readonly product: CartItemExtended;
+  readonly cartItemId: string;
+  readonly product: ProductType & {
+    amount: number;
+    servingMethod?: ServingMethodType;
+  };
 };
 
 export type UpdateAmountMethod = "increment" | "decrement";
@@ -22,7 +21,7 @@ const TAKEAWAY_BOX_PRICE = 1000;
  * Identifies takeaway boxes by name (not by ID) to support DB-backed products.
  */
 const syncTakeawayBoxes = (items: CartItem[]): CartItem[] => {
-  // Count mie/bakso items with takeaway serving method
+  /** product with food type mie or bakso.  */
   const boxCount = items
     .filter(
       (item) =>
@@ -32,20 +31,19 @@ const syncTakeawayBoxes = (items: CartItem[]): CartItem[] => {
     )
     .reduce((sum, item) => sum + item.product.amount, 0);
 
-  // Remove existing takeaway boxes (by name)
+  /** remove existing takeaway boxes. */
   const itemsWithoutBoxes = items.filter(
     (item) => item.product.name !== TAKEAWAY_BOX_NAME
   );
 
-  // Add correct number of boxes if needed
   if (boxCount > 0) {
-    // Reuse existing box product data if available (preserves DB product ID)
     const existingBox = items.find(
       (item) => item.product.name === TAKEAWAY_BOX_NAME
     );
     return [
       ...itemsWithoutBoxes,
       {
+        cartItemId: existingBox?.cartItemId ?? crypto.randomUUID(),
         product: {
           id: existingBox?.product.id ?? "takeaway-box",
           name: TAKEAWAY_BOX_NAME,
@@ -67,13 +65,14 @@ type CartState = {
     startAmount?: number,
     servingMethod?: ServingMethodType
   ) => void;
-  readonly removeItem: (itemId: string) => void;
+  readonly removeItem: (cartItemId: string) => void;
   readonly clearCart: () => void;
-  readonly updateAmount: (itemId: string, method: UpdateAmountMethod) => void;
+  readonly updateAmount: (cartItemId: string, method: UpdateAmountMethod) => void;
   readonly updateItemServingMethod: (
-    itemId: string,
+    cartItemId: string,
     servingMethod: ServingMethodType
   ) => void;
+  readonly splitItem: (cartItemId: string) => void;
   readonly syncCart: (items: CartItem[]) => void;
 };
 
@@ -94,13 +93,12 @@ export const useCart = create<CartState>()(
           let updatedItems: CartItem[];
 
           if (index === -1) {
-            // Add new item to cart
             const newItem: CartItem = {
+              cartItemId: crypto.randomUUID(),
               product: { ...product, amount: quantity, servingMethod },
             };
             updatedItems = [...state.items, newItem];
           } else {
-            // Update existing item
             updatedItems = [...state.items];
             const existingItem = updatedItems[index];
             if (existingItem) {
@@ -114,19 +112,21 @@ export const useCart = create<CartState>()(
             cartTotal: calculateTotal(itemsWithBoxes),
           };
         }),
-      removeItem: (id) =>
+      removeItem: (cartItemId) =>
         set((state) => {
           const updatedItems = state.items.filter(
-            (item) => item.product.id !== id
+            (item) => item.cartItemId !== cartItemId
           );
           const itemsWithBoxes = syncTakeawayBoxes(updatedItems);
           const total = calculateTotal(itemsWithBoxes);
           return { items: itemsWithBoxes, cartTotal: total };
         }),
       clearCart: () => set({ items: [], cartTotal: 0 }),
-      updateAmount: (id, method) =>
+      updateAmount: (cartItemId, method) =>
         set((state) => {
-          const index = state.items.findIndex((item) => item.product.id === id);
+          const index = state.items.findIndex(
+            (item) => item.cartItemId === cartItemId
+          );
           const updatedItems = [...state.items];
           const existingItem = updatedItems[index];
 
@@ -145,10 +145,10 @@ export const useCart = create<CartState>()(
           const total = calculateTotal(itemsWithBoxes);
           return { items: itemsWithBoxes, cartTotal: total };
         }),
-      updateItemServingMethod: (id, servingMethod) =>
+      updateItemServingMethod: (cartItemId, servingMethod) =>
         set((state) => {
           const updatedItems = state.items.map((item) => {
-            if (item.product.id === id) {
+            if (item.cartItemId === cartItemId) {
               return {
                 ...item,
                 product: { ...item.product, servingMethod },
@@ -161,9 +161,48 @@ export const useCart = create<CartState>()(
           const total = calculateTotal(itemsWithBoxes);
           return { items: itemsWithBoxes, cartTotal: total };
         }),
+      splitItem: (cartItemId) =>
+        set((state) => {
+          const index = state.items.findIndex(
+            (item) => item.cartItemId === cartItemId
+          );
+          const existingItem = state.items[index];
+          if (!existingItem || existingItem.product.amount <= 1) {
+            return state;
+          }
+
+          const updatedItems = [...state.items];
+          updatedItems[index] = {
+            ...existingItem,
+            product: {
+              ...existingItem.product,
+              amount: existingItem.product.amount - 1,
+            },
+          };
+
+          const newItem: CartItem = {
+            cartItemId: crypto.randomUUID(),
+            product: {
+              ...existingItem.product,
+              amount: 1,
+            },
+          };
+
+          updatedItems.splice(index + 1, 0, newItem);
+
+          const itemsWithBoxes = syncTakeawayBoxes(updatedItems);
+          return {
+            items: itemsWithBoxes,
+            cartTotal: calculateTotal(itemsWithBoxes),
+          };
+        }),
       syncCart: (items) =>
         set(() => {
-          const itemsWithBoxes = syncTakeawayBoxes(items);
+          const itemsWithId = items.map((item) => ({
+            ...item,
+            cartItemId: item.cartItemId || crypto.randomUUID(),
+          }));
+          const itemsWithBoxes = syncTakeawayBoxes(itemsWithId);
           return {
             items: itemsWithBoxes,
             cartTotal: calculateTotal(itemsWithBoxes),

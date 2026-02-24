@@ -96,7 +96,8 @@ export function CartContent() {
         {items.map((item) => (
           <CartMenuCard
             amount={item.product.amount}
-            key={item.product.id}
+            cartItemId={item.cartItemId}
+            key={item.cartItemId}
             menu={item.product}
           />
         ))}

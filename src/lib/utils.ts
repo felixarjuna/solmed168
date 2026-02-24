@@ -40,6 +40,7 @@ export function formatDate(date: Date) {
 
 export function orderItemsToCartItems(items: OrderItemWithProduct[]): CartItem[] {
   return items.map((item) => ({
+    cartItemId: crypto.randomUUID(),
     product: {
       id: item.productId ?? item.orderItemId,
       name: item.productName,

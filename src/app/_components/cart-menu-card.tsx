@@ -5,11 +5,12 @@ import type { ProductType } from "~/server/db/schema";
 import { useCart } from "../order/_hooks/useCart";
 
 type CartMenuCardProps = {
+  readonly cartItemId: string;
   readonly menu: ProductType;
   readonly amount: number;
 };
 
-export default function CartMenuCard({ menu, amount }: CartMenuCardProps) {
+export default function CartMenuCard({ cartItemId, menu, amount }: CartMenuCardProps) {
   const { updateAmount, removeItem } = useCart();
 
   const total = amount * menu.price;
@@ -27,7 +28,7 @@ export default function CartMenuCard({ menu, amount }: CartMenuCardProps) {
               <Minus
                 className="h-4 w-4"
                 onClick={() => {
-                  updateAmount(menu.id, "decrement");
+                  updateAmount(cartItemId, "decrement");
                 }}
               />
             </Button>
@@ -35,13 +36,13 @@ export default function CartMenuCard({ menu, amount }: CartMenuCardProps) {
             <Button className="h-6 w-6" size={"icon"} variant={"outline"}>
               <Plus
                 className="h-4 w-4"
-                onClick={() => updateAmount(menu.id, "increment")}
+                onClick={() => updateAmount(cartItemId, "increment")}
               />
             </Button>
 
             <Button
               className="h-6 w-6"
-              onClick={() => removeItem(menu.id)}
+              onClick={() => removeItem(cartItemId)}
               size={"icon"}
               variant={"outline"}
             >

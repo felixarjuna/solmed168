@@ -1,4 +1,6 @@
+import { Scissors } from "lucide-react";
 import React from "react";
+import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { cn, formatDate, toRp } from "~/lib/utils";
 import { useCart } from "../order/_hooks/useCart";
@@ -25,7 +27,7 @@ Invoice.displayName = "Invoice";
 export default Invoice;
 
 export function InvoiceContent({ items, totalAmount }: InvoiceProps) {
-  const { updateItemServingMethod } = useCart();
+  const { updateItemServingMethod, splitItem } = useCart();
 
   return (
     <div className="text-sm">
@@ -35,17 +37,31 @@ export function InvoiceContent({ items, totalAmount }: InvoiceProps) {
       </div>
 
       <div className="my-4">
-        {items.map(({ product: item }) => (
-          <div className="grid grid-cols-10 gap-2" key={item.id}>
+        {items.map(({ cartItemId, product: item }) => (
+          <div className="grid grid-cols-10 gap-2" key={cartItemId}>
             <p className="col-span-1">{item.amount}x</p>
             <div className="col-span-6 flex flex-col gap-2">
               <p>{item.name}</p>
               <p className="text-xs">{toRp(item.price)}</p>
-              <ServingMethodToggle
-                currentMethod={item.servingMethod}
-                itemId={item.id}
-                onToggle={updateItemServingMethod}
-              />
+              <div className="flex items-center gap-1">
+                <ServingMethodToggle
+                  cartItemId={cartItemId}
+                  currentMethod={item.servingMethod}
+                  onToggle={updateItemServingMethod}
+                />
+                {item.amount > 1 && item.name !== "Takeaway Box" && (
+                  <Button
+                    className="h-7 w-7 px-0"
+                    onClick={() => splitItem(cartItemId)}
+                    size="sm"
+                    title="Split item"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <Scissors className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
             </div>
             <p className="col-span-3 text-right">
               {toRp(item.price * item.amount)}
