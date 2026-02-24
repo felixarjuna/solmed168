@@ -24,8 +24,8 @@ import PageLoader from "../_components/loading";
 import PaymentMethodDrawer from "../_components/payment-method-drawer";
 import { getOrders } from "./_actions/action";
 import EditOrderButton from "./_components/edit-order-button";
+import OrderItemsList from "./_components/order-item-lits";
 import PrintAllOrdersButton from "./_components/print-all-orders-button";
-import PrintOrderButton from "./_components/print-order-button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -128,27 +128,11 @@ export default async function Page(
                   </div>
                 </div>
 
-                <div className="my-4">
-                  {order.orderItems.map((item) => (
-                    <div
-                      className="grid grid-cols-10 gap-2"
-                      key={item.orderItemId}
-                    >
-                      <p className="col-span-1">{item.quantity}x</p>
-                      <div className="col-span-6 flex flex-col gap-x-2">
-                        <p>{item.productName}</p>
-                        <p className="text-xs">{toRp(item.unitPrice)}</p>
-                      </div>
-                      <p className="col-span-3 text-right">
-                        {toRp(item.lineTotal)}
-                      </p>
-                    </div>
-                  ))}
-                  <div className="flex items-center justify-between">
-                    <p className="font-bold">{toRp(order.totalAmount)}</p>
-                    <PrintOrderButton order={order} />
-                  </div>
-                </div>
+                <OrderItemsList
+                  items={order.orderItems}
+                  order={order}
+                  totalAmount={order.totalAmount}
+                />
 
                 <Separator className="mt-3" />
               </div>
