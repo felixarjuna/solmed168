@@ -56,7 +56,7 @@ export function InvoiceContent({ items, totalAmount }: InvoiceProps) {
                     size="sm"
                     title="Split item"
                     type="button"
-                    variant="ghost"
+                    variant="secondary"
                   >
                     <Scissors className="h-3 w-3" />
                   </Button>
