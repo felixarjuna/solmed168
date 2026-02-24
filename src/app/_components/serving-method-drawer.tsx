@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/drawer";
 import { useToast } from "~/components/ui/use-toast";
 import { cn } from "~/lib/utils";
-import { type ServingMethodType, servingMethods } from "../data";
+import { type ServingMethodType, servingMethodEnum } from "~/server/db/schema";
 import { useCart } from "../order/_hooks/useCart";
 import { useClientState } from "../order/_hooks/useClientState";
 
@@ -79,7 +79,7 @@ export default function ServingMethodDrawer({ text }: ServingMethodProps) {
             Silahkan pilih metode pelayanan di bawah ini.
           </DrawerDescription>
         </DrawerHeader>
-        {servingMethods.map((method, i) => (
+        {servingMethodEnum.enumValues.map((method, i) => (
           <Button
             className="flex w-40 justify-start gap-2 rounded-lg border px-6 py-4"
             key={i}

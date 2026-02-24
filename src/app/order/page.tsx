@@ -62,7 +62,7 @@ export default async function Page() {
   const tables = await getTables();
   const waiters = await getWaiters();
 
-  /** Fetch order data when editing */
+  /** fetch order data when editing */
   React.useEffect(() => {
     const fetchOrder = async (id: number) => {
       const fetchedOrder = await getOrderById(id);
