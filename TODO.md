@@ -26,13 +26,14 @@
 - [x] Loading spinner for selesai
 - [x] Automatically delete form data after submission
 - [x] Edit logic for monthly expenses
-- [ ] Skip serving method choice when editing order
-- [ ] Add dashboard page for income
-- [ ] Calculate growth/decline for expenses
+- [x] Skip serving method choice when editing order
 
 ## **Nice to have**
 
+- [x] Add cost for takeaway
+- [ ] Add dashboard to manage income and expenses (financial)
+- [ ] Add dashboard to manage orders, products, stocks, promotion, table and waiter (operational)
+- [ ] Calculate growth/decline for expenses
 - [ ] Add animation for payment method selection
 - [ ] Handle desktop mode
 - [ ] Change order design?
-- [ ] Add cost for takeaway
